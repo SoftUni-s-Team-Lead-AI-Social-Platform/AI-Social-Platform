@@ -8,7 +8,7 @@ namespace AI_Social_Platform.Common
 {
     public static class NotificationMessagesConstants
     {
-        public const string ErrorMessage = "Expected Error!";
+        public const string ErrorMessage = "Unexpected Error!";
         public const string WarningMessage = "Warning!";
         public const string InformationMessage = "Info Message";
         public const string SuccessMessage = "Success Message";
