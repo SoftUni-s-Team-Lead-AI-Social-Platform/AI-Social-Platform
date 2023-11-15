@@ -9,6 +9,7 @@
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:5173</SpaProxyServerUrl>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <UserSecretsId>fc5ce5c8-6a04-41c9-b13c-041da3f6b237</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,7 +33,7 @@
     </ProjectReference>
     <ProjectReference Include="..\AI-Social-Platform.Common\AI-Social-Platform.Common.csproj" />
     <ProjectReference Include="..\AI-Social-Platform.Data\AI-Social-Platform.Data.csproj" />
-    <ProjectReference Include="..\AI-Social-Platform.Services.Data\AI-Social-Platform.Services.Data.csproj" />
+    <ProjectReference Include="..\TravelAgency.Services.Data\AI-Social-Platform.Services.Data.csproj" />
   </ItemGroup>
 
 </Project>
