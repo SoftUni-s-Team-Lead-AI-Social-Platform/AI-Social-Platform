@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -33,7 +33,7 @@
     </ProjectReference>
     <ProjectReference Include="..\AI-Social-Platform.Common\AI-Social-Platform.Common.csproj" />
     <ProjectReference Include="..\AI-Social-Platform.Data\AI-Social-Platform.Data.csproj" />
-    <ProjectReference Include="..\TravelAgency.Services.Data\AI-Social-Platform.Services.Data.csproj" />
+    <ProjectReference Include="..\AI-Social-Platform.Services.Data\AI-Social-Platform.Services.Data.csproj" />
   </ItemGroup>
 
 </Project>
