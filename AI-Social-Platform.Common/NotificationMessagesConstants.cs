@@ -16,5 +16,6 @@ namespace AI_Social_Platform.Common
         public const string InvalidLoginData = "Invalid login data!";
         public const string LoginSuccessful = "Login successful!";
         public const string LoginFailed = "Login failed!";
+        public const string SuccessLogout = "Logout successful.";
     }
 }

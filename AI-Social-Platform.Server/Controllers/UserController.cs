@@ -7,6 +7,8 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Caching.Memory;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Authentication;
 
     using static Common.NotificationMessagesConstants;
     using static Common.GeneralApplicationConstants;
@@ -86,6 +88,13 @@
             {
                 return BadRequest(new { Message = LoginFailed });
             }
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            return Ok(new { Message = SuccessLogout });
         }
 
     }
