@@ -36,6 +36,7 @@
     <ProjectReference Include="..\AI-Social-Platform.Data\AI-Social-Platform.Data.csproj" />
     <ProjectReference Include="..\AI-Social-Platform.Services.Data.Models\AI-Social-Platform.Services.Data.Models.csproj" />
     <ProjectReference Include="..\AI-Social-Platform.Services.Data\AI-Social-Platform.Services.Data.csproj" />
+    <ProjectReference Include="..\AI_Social_Platform.Extensions\AI_Social_Platform.Extensions.csproj" />
   </ItemGroup>
 
 </Project>
