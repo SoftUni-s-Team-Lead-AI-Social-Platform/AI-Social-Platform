@@ -11,7 +11,7 @@ using static AI_Social_Platform.Common.ExceptionMessages.PublicationExceptionMes
 namespace Ai_Social_Platform.Tests
 {
     [TestFixture]
-    internal class PublicationServiceTest
+    public class PublicationServiceTest
     {
         private DbContextOptions<ASPDbContext> options;
         private ASPDbContext dbContext;
@@ -247,7 +247,7 @@ namespace Ai_Social_Platform.Tests
         }
 
         [Test]
-        public async Task DeletePublicationAsync_ThrowsNullReferenceException()
+        public Task DeletePublicationAsync_ThrowsNullReferenceException()
         {
             // Arrange
             var invalidPublicationId = Guid.NewGuid(); // Use a non-existing ID
@@ -260,6 +260,7 @@ namespace Ai_Social_Platform.Tests
 
             // Optionally assert on the exception message or other details
             Assert.That(exception!.Message, Is.EqualTo(PublicationNotFound));
+            return Task.CompletedTask;
         }
 
         [Test]
