@@ -40,12 +40,11 @@ public class PublicationService : IPublicationService
     public async Task<PublicationDto> GetPublicationAsync(Guid id)
     {
         var publication = await dbContext.Publications
-            .Where(p => p.Id == id)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(p => p.Id == id);
 
         if (publication == null)
         {
-            throw new Exception(PublicationNotFound);
+            throw new NullReferenceException(PublicationNotFound);
         }
 
         PublicationDto publicationDto = new()
