@@ -15,7 +15,7 @@ public class PublicationService : IPublicationService
     private readonly ASPDbContext dbContext;
     private readonly HttpContext httpContext;
 
-    public PublicationService(ASPDbContext dbContext, HttpContextAccessor accessor)
+    public PublicationService(ASPDbContext dbContext, IHttpContextAccessor accessor)
     {
         this.dbContext = dbContext;
         this.httpContext = accessor.HttpContext!;
