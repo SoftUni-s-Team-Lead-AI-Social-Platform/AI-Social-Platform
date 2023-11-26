@@ -10,40 +10,40 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Ai_Social_Platform.Tests
 {
-    internal static class DatabaseSeeder
+    public static class DatabaseSeeder
     {
-        internal static List<Publication> Publications;
-        internal static List<Comment> Comments;
-        internal static List<ApplicationUser> ApplicationUsers;
-        internal static List<Media> MediaFiles;
+        public static List<Publication> Publications;
+        public static HashSet<Comment> Comments;
+        public static List<ApplicationUser> ApplicationUsers;
+        public static List<Media> MediaFiles;
 
-        internal static void SeedDatabase(ASPDbContext dbContext)
+        public static void SeedDatabase(ASPDbContext dbContext)
         {
             var hasher = new PasswordHasher<ApplicationUser>();
             ApplicationUsers = new List<ApplicationUser>()
             { 
-                new ApplicationUser()
+                new()
                 {
-                Id = Guid.Parse("6d5800ce-d726-4fc8-83d9-d6b3ac1f591e"),
+                Id = Guid.Parse("123400ce-d726-4fc8-83d9-d6b3ac1f591e"),
                 FirstName = "Georgi",
-                LastName = "Georgiev",
-                UserName = "user@user.com",
-                NormalizedUserName = "USER@USER.com",
-                Email = "user@user.com",
-                NormalizedEmail = "user@user.com",
+                LastName = "Testov",
+                UserName = "user@test.com",
+                NormalizedUserName = "USER@TEST.com",
+                Email = "user@test.com",
+                NormalizedEmail = "user@test.com",
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
                 PasswordHash = hasher.HashPassword(null, "123456")
                 },
-                new ApplicationUser()
+                new()
                 {
-                    Id = Guid.Parse("949a14ed-2e82-4f5a-a684-a9c7e3ccb52e"),
+                    Id = Guid.Parse("123456ed-2e82-4f5a-a684-a9c7e3ccb52e"),
                     FirstName = "Ivan",
-                    LastName = "Ivanov",
-                    UserName = "admin@admin.com",
-                    NormalizedUserName = "ADMIN@ADMIN.com",
-                    Email = "admin@admin.com",
-                    NormalizedEmail = "ADMIN@ADMIN.com",
+                    LastName = "Testov",
+                    UserName = "admin@test.com",
+                    NormalizedUserName = "ADMIN@test.com",
+                    Email = "admin@test.com",
+                    NormalizedEmail = "ADMIN@test.com",
                     SecurityStamp = Guid.NewGuid().ToString(),
                     ConcurrencyStamp = Guid.NewGuid().ToString(),
                     PasswordHash = hasher.HashPassword(null, "123456")
@@ -52,49 +52,56 @@ namespace Ai_Social_Platform.Tests
 
             Publications = new List<Publication>()
             {
-                new Publication()
+                new()
                 {
+                    Id = Guid.Parse("d0b0b6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b"),
                     Content = "This is the first seeded publication Content from Ivan",
-                    AuthorId = Guid.Parse("949a14ed-2e82-4f5a-a684-a9c7e3ccb52e"),
+                    AuthorId = Guid.Parse("123456ed-2e82-4f5a-a684-a9c7e3ccb52e")
                 },
-                new Publication()
+                new()
                 {
+                    Id = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b"),
                     Content = "This is the second seeded publication Content from Georgi",
-                    AuthorId = Guid.Parse("6d5800ce-d726-4fc8-83d9-d6b3ac1f591e"),
+                    AuthorId = Guid.Parse("123400ce-d726-4fc8-83d9-d6b3ac1f591e"),
                 }
             };
 
-            Comments = new List<Comment>()
+            Comments = new HashSet<Comment>()
             {
-                new Comment()
+                new()
                 {
                     Content = "This is the first seeded comment Content from Ivan",
-                    AuthorId = Guid.Parse("949a14ed-2e82-4f5a-a684-a9c7e3ccb52e"),
-                    PublicationId = Publications.First().Id
+                    AuthorId = Guid.Parse("123456ed-2e82-4f5a-a684-a9c7e3ccb52e"),
+                    PublicationId = Guid.Parse("d0b0b6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b")
                 },
-                new Comment()
+                new()
                 {
                     Content = "This is the second seeded comment Content from Ivan",
-                    AuthorId = Guid.Parse("949a14ed-2e82-4f5a-a684-a9c7e3ccb52e"),
-                    PublicationId = Publications.Skip(1).First().Id
+                    AuthorId = Guid.Parse("123456ed-2e82-4f5a-a684-a9c7e3ccb52e"),
+                    PublicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b")
                 },
-                new Comment()
+                new()
                 {
                     Content = "This is the first seeded comment Content from Georgi",
-                    AuthorId = Guid.Parse("6d5800ce-d726-4fc8-83d9-d6b3ac1f591e"),
-                    PublicationId = Publications.First().Id
+                    AuthorId = Guid.Parse("123400ce-d726-4fc8-83d9-d6b3ac1f591e"),
+                    PublicationId = Guid.Parse("d0b0b6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b")
                 },
-                new Comment()
+                new()
                 {
                     Content = "This is the second seeded comment Content from Georgi",
-                    AuthorId = Guid.Parse("6d5800ce-d726-4fc8-83d9-d6b3ac1f591e"),
-                    PublicationId = Publications.Skip(1).First().Id
+                    AuthorId = Guid.Parse("123400ce-d726-4fc8-83d9-d6b3ac1f591e"),
+                    PublicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b")
                 }
               
             };
          
             MediaFiles = new List<Media>();
 
+            dbContext.Users.AddRange(ApplicationUsers);
+            dbContext.Publications.AddRange(Publications);
+            dbContext.Comments.AddRange(Comments);
+            dbContext.MediaFiles.AddRange(MediaFiles);
+            dbContext.SaveChanges();
         }
     }
 }
