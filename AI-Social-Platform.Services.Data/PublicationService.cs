@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
+using static AI_Social_Platform.Common.ExceptionMessages.PublicationExceptionMessages;
+
 namespace AI_Social_Platform.Services.Data;
 
 public class PublicationService : IPublicationService
@@ -43,7 +45,7 @@ public class PublicationService : IPublicationService
 
         if (publication == null)
         {
-            throw new Exception("Publication not found");
+            throw new Exception(PublicationNotFound);
         }
 
         PublicationDto publicationDto = new()
@@ -78,12 +80,12 @@ public class PublicationService : IPublicationService
 
         if (publication == null)
         {
-            throw new Exception("Publication not found");
+            throw new NullReferenceException(PublicationNotFound);
         }
 
         if (publication.AuthorId != userId)
         {
-            throw new Exception("You are not the author of this publication");
+            throw new AccessViolationException(NotAuthorizedToEditPublication);
         }
 
         publication.Content = dto.Content;
@@ -93,22 +95,20 @@ public class PublicationService : IPublicationService
     public async Task DeletePublicationAsync(Guid id)
     {
         var publication = await dbContext.Publications
-            //.Include(p => p.Comments)
             .FirstOrDefaultAsync(p => p.Id == id);
 
         var userId = await GetUserId();
 
         if (publication == null)
         {
-            throw new Exception("Publication not found");
+            throw new NullReferenceException(PublicationNotFound);
         }
 
         if (publication.AuthorId != userId)
         {
-            throw new Exception("You are not the author of this publication");
+            throw new AccessViolationException(NotAuthorizedToDeletePublication);
         }
 
-        //dbContext.Comments.RemoveRange(publication.Comments);
         dbContext.Publications.Remove(publication);
         await dbContext.SaveChangesAsync();
     }
@@ -122,7 +122,7 @@ public class PublicationService : IPublicationService
 
         if (publication == null)
         {
-            throw new Exception("Publication not found");
+            throw new NullReferenceException(PublicationNotFound);
         }
 
         await dbContext.Comments.AddAsync(new Comment()
@@ -141,12 +141,12 @@ public class PublicationService : IPublicationService
 
         if (comment == null)
        {
-           throw new Exception("Comment not found");
+           throw new NullReferenceException(CommentNotFound);
        }
 
        if (comment.AuthorId != userId)
        {
-           throw new Exception("You are not the author of this comment");
+           throw new AccessViolationException(NotAuthorizedToEditComment);
        }
 
        comment.Content = dto.Content;
@@ -160,12 +160,12 @@ public class PublicationService : IPublicationService
 
         if (comment == null)
         {
-            throw new Exception("Comment not found");
+            throw new NullReferenceException(CommentNotFound);
         }
 
         if (comment.AuthorId != userId)
         {
-            throw new Exception("You are not the author of this comment");
+            throw new AccessViolationException(NotAuthorizedToDeleteComment);
         }
 
         dbContext.Comments.Remove(comment);
@@ -197,7 +197,7 @@ public class PublicationService : IPublicationService
 
         if (userId == null)
         {
-            throw new Exception("User not found");
+            throw new NullReferenceException(PublicationAuthorNotFound);
         }
 
         return userId.Id;
