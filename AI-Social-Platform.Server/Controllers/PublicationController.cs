@@ -30,21 +30,15 @@ public class PublicationController : ControllerBase
         {
             throw new Exception(ex.Message);
         }
-        
     }
 
     [HttpPost(Name = "create")]
     public async Task<IActionResult> Create(PublicationFormDto dto)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest();
-        }
-
         try
         {
             await publicationService.CreatePublicationAsync(dto);
-            return Ok();
+            return CreatedAtAction(nameof(Create), new { message = "Successfully created publication"});
         }
         catch (Exception ex)
         {
@@ -66,7 +60,7 @@ public class PublicationController : ControllerBase
         }
     }
 
-    [HttpDelete(Name = "delete")]
+    [HttpDelete("{id}",Name = "delete")]
     public async Task<IActionResult> Delete(Guid id)
     {
         try
