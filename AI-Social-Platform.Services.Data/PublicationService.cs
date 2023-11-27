@@ -18,7 +18,7 @@ public class PublicationService : IPublicationService
     public PublicationService(ASPDbContext dbContext, IHttpContextAccessor accessor)
     {
         this.dbContext = dbContext;
-        this.httpContext = accessor.HttpContext!;
+        httpContext = accessor.HttpContext!;
     }
     public async Task<IEnumerable<PublicationDto>> GetPublicationsAsync()
     {
@@ -191,14 +191,14 @@ public class PublicationService : IPublicationService
 
     private async Task<Guid> GetUserId()
     {
-        var userEmail = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value!;
-        var userId = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        var userId = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value!;
+        //var userId = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
 
         if (userId == null)
         {
             throw new NullReferenceException(PublicationAuthorNotFound);
         }
 
-        return userId.Id;
+        return Guid.Parse(userId);
     }
 }

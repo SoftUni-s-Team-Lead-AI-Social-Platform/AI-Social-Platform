@@ -33,7 +33,7 @@ namespace Ai_Social_Platform.Tests
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, "user@test.com")
+                new Claim(ClaimTypes.NameIdentifier, "123400ce-d726-4fc8-83d9-d6b3ac1f591e")
             };
 
             var identity = new ClaimsIdentity(claims, "TestAuthType");
@@ -161,14 +161,13 @@ namespace Ai_Social_Platform.Tests
             {
                 Content = "This is a test publication"
             };
-            var userEmail = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            var userId = dbContext.Users.First(u => u.Email == userEmail).Id;
+            var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             // Act
             await publicationService.CreatePublicationAsync(dto);
 
             // Assert
-            Assert.That(dbContext.Publications.Last().AuthorId, Is.EqualTo(userId));
+            Assert.That(dbContext.Publications.Last().AuthorId.ToString(), Is.EqualTo(userId));
         }
 
         [Test]
