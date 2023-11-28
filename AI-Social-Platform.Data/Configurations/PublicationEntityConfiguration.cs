@@ -21,6 +21,12 @@
                 .WithMany(x => x.Publications)
                 .HasForeignKey(x => x.AuthorId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder
+                .HasMany(p => p.MediaFiles)
+                .WithOne(m => m.Publication)
+                .HasForeignKey(m => m.PublicationId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         private Publication[] Seed()

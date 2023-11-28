@@ -3,6 +3,7 @@
     using System;
     using System.ComponentModel.DataAnnotations;
     using static Common.EntityValidationConstants.MediaConstants;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class Media
     {
@@ -21,6 +22,11 @@
         public ApplicationUser User { get; set; } = null!;
 
         public Guid UserId { get; set; }
+
+        public Publication.Publication Publication { get; set; } = null!;
+
+        [ForeignKey(nameof(Publication))]
+        public Guid PublicationId { get; set; }
 
         public bool IsDeleted { get; set; } = false;
     }
