@@ -6,7 +6,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Mvc;    
+    using Microsoft.AspNetCore.Mvc;
 
     using static Extensions.ClaimsPrincipalExtensions;
 
@@ -16,11 +16,9 @@
     public class MediaController : ControllerBase
     {
         private readonly IMediaService mediaService;
-        private readonly UserManager<ApplicationUser> userManager;
-        public MediaController(IMediaService mediaService, UserManager<ApplicationUser> userManager)
+        public MediaController(IMediaService mediaService)
         {
             this.mediaService = mediaService;
-            this.userManager = userManager;
         }
 
         [HttpPost("upload")]
@@ -33,7 +31,7 @@
 
             try
             {
-                var userId = await GetUserId();
+                var userId = HttpContext.User.GetUserId();
 
                 await mediaService.UploadMediaAsync(file, userId!);
                 return Ok("Successfully upload media");
@@ -48,7 +46,7 @@
         [HttpPut("edit/{id}")]
         public async Task<IActionResult> ReplaceMedia(string id, [FromForm] MediaFormModel updatedMedia)
         {
-            var userId = await GetUserId();
+            var userId = HttpContext.User.GetUserId();
 
             bool isUserOwner = await mediaService.IsUserOwnThedMedia(userId, id);
 
@@ -84,7 +82,7 @@
                 return BadRequest("Media is not selected");
             }
 
-            string userId = await GetUserId();
+            var userId = HttpContext.User.GetUserId();
 
             bool isUserOwner = await mediaService.IsUserOwnThedMedia(userId, id);
 
@@ -104,12 +102,5 @@
             }
         }
 
-        private async Task<string> GetUserId()
-        {
-            string userName = HttpContext.User.GetUserId()!;
-            var user = await userManager.FindByEmailAsync(userName);
-            var userId = user.Id.ToString();
-            return userId;
-        }
     }
 }
