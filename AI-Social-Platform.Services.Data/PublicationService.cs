@@ -179,8 +179,8 @@ public class PublicationService : IPublicationService
             {
                 Id = c.Id,
                 Content = c.Content,
-                DateCreated = c.DateCreated,
-                AuthorId = c.UserId,
+                DateCreated = c.DateCreated, 
+                UserId = c.UserId,
                 PublicationId = c.PublicationId
             })
             .OrderByDescending(c => c.DateCreated)
