@@ -126,7 +126,7 @@ public class PublicationService : IPublicationService
 
         await dbContext.Comments.AddAsync(new Comment()
         {
-            AuthorId = userId,
+            UserId = userId,
             Content = dto.Content,
             PublicationId = publicationId
         });
@@ -143,7 +143,7 @@ public class PublicationService : IPublicationService
            throw new NullReferenceException(CommentNotFound);
        }
 
-       if (comment.AuthorId != userId)
+       if (comment.UserId != userId)
        {
            throw new AccessViolationException(NotAuthorizedToEditComment);
        }
@@ -162,7 +162,7 @@ public class PublicationService : IPublicationService
             throw new NullReferenceException(CommentNotFound);
         }
 
-        if (comment.AuthorId != userId)
+        if (comment.UserId != userId)
         {
             throw new AccessViolationException(NotAuthorizedToDeleteComment);
         }
@@ -180,7 +180,7 @@ public class PublicationService : IPublicationService
                 Id = c.Id,
                 Content = c.Content,
                 DateCreated = c.DateCreated,
-                AuthorId = c.AuthorId,
+                AuthorId = c.UserId,
                 PublicationId = c.PublicationId
             })
             .OrderByDescending(c => c.DateCreated)
