@@ -189,7 +189,7 @@ namespace Ai_Social_Platform.Tests
         }
 
         [Test]
-        public async Task UpdatePublicationAsync_ThrowsNullReferenceException()
+        public void UpdatePublicationAsync_ThrowsNullReferenceException()
         {
             // Arrange
             var dto = new PublicationFormDto()
@@ -210,7 +210,7 @@ namespace Ai_Social_Platform.Tests
 
 
         [Test]
-        public async Task UpdatePublicationAsync_ThrowsAccessViolationExceptionException()
+        public void UpdatePublicationAsync_ThrowsAccessViolationExceptionException()
         {
             // Arrange
             var dto = new PublicationFormDto()
@@ -356,7 +356,7 @@ namespace Ai_Social_Platform.Tests
                 Content = "This is a test comment"
             };
             var comment =
-                dbContext.Comments.First(c => c.AuthorId.ToString() == "123400ce-d726-4fc8-83d9-d6b3ac1f591e");
+                dbContext.Comments.First(c => c.UserId.ToString() == "123400ce-d726-4fc8-83d9-d6b3ac1f591e");
 
             // Act
             await publicationService.UpdateCommentAsync(dto, comment.Id);
@@ -394,7 +394,7 @@ namespace Ai_Social_Platform.Tests
                 Content = "This is a test comment"
             };
             var comment =
-                dbContext.Comments.First(c => c.AuthorId.ToString() == "123456ed-2e82-4f5a-a684-a9c7e3ccb52e");
+                dbContext.Comments.First(c => c.UserId.ToString() == "123456ed-2e82-4f5a-a684-a9c7e3ccb52e");
 
             // Act and Assert
             var exception = Assert.ThrowsAsync<AccessViolationException>(async () =>
@@ -411,7 +411,7 @@ namespace Ai_Social_Platform.Tests
         {
             // Arrange
             var comment =
-                dbContext.Comments.First(c => c.AuthorId.ToString() == "123400ce-d726-4fc8-83d9-d6b3ac1f591e");
+                dbContext.Comments.First(c => c.UserId.ToString() == "123400ce-d726-4fc8-83d9-d6b3ac1f591e");
             var countBefore = dbContext.Comments.Count();
 
             // Act
@@ -442,7 +442,7 @@ namespace Ai_Social_Platform.Tests
         {
             // Arrange
             var comment =
-                dbContext.Comments.First(c => c.AuthorId.ToString() == "123456ed-2e82-4f5a-a684-a9c7e3ccb52e");
+                dbContext.Comments.First(c => c.UserId.ToString() == "123456ed-2e82-4f5a-a684-a9c7e3ccb52e");
 
             // Act and Assert
             var exception = Assert.ThrowsAsync<AccessViolationException>(async () =>

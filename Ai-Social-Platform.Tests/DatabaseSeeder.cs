@@ -71,25 +71,25 @@ namespace Ai_Social_Platform.Tests
                 new()
                 {
                     Content = "This is the first seeded comment Content from Ivan",
-                    AuthorId = Guid.Parse("123456ed-2e82-4f5a-a684-a9c7e3ccb52e"),
+                    UserId = Guid.Parse("123456ed-2e82-4f5a-a684-a9c7e3ccb52e"),
                     PublicationId = Guid.Parse("d0b0b6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b")
                 },
                 new()
                 {
                     Content = "This is the second seeded comment Content from Ivan",
-                    AuthorId = Guid.Parse("123456ed-2e82-4f5a-a684-a9c7e3ccb52e"),
+                    UserId = Guid.Parse("123456ed-2e82-4f5a-a684-a9c7e3ccb52e"),
                     PublicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b")
                 },
                 new()
                 {
                     Content = "This is the first seeded comment Content from Georgi",
-                    AuthorId = Guid.Parse("123400ce-d726-4fc8-83d9-d6b3ac1f591e"),
+                    UserId = Guid.Parse("123400ce-d726-4fc8-83d9-d6b3ac1f591e"),
                     PublicationId = Guid.Parse("d0b0b6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b")
                 },
                 new()
                 {
                     Content = "This is the second seeded comment Content from Georgi",
-                    AuthorId = Guid.Parse("123400ce-d726-4fc8-83d9-d6b3ac1f591e"),
+                    UserId = Guid.Parse("123400ce-d726-4fc8-83d9-d6b3ac1f591e"),
                     PublicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b")
                 }
               
