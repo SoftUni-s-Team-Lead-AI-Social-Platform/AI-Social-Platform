@@ -23,10 +23,10 @@
 
         public Guid UserId { get; set; }
 
-        public Publication.Publication Publication { get; set; } = null!;
+        public Publication.Publication? Publication { get; set; }
 
         [ForeignKey(nameof(Publication))]
-        public Guid PublicationId { get; set; }
+        public Guid? PublicationId { get; set; }
 
         public bool IsDeleted { get; set; } = false;
     }
