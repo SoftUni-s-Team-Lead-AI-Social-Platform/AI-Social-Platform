@@ -71,7 +71,7 @@ public class PublicationService : IPublicationService
     
     public async Task CreatePublicationAsync(PublicationFormDto dto)
     {
-        var userId = await GetUserId();
+        var userId = GetUserId();
         Publication publication = new()
         {
            Content = dto.Content,
@@ -85,7 +85,7 @@ public class PublicationService : IPublicationService
     public async Task UpdatePublicationAsync(PublicationFormDto dto, Guid id)
     {
         var publication = await dbContext.Publications.FirstOrDefaultAsync(p => p.Id == id);
-        var userId = await GetUserId();
+        var userId = GetUserId();
 
         if (publication == null)
         {
@@ -106,7 +106,7 @@ public class PublicationService : IPublicationService
         var publication = await dbContext.Publications
             .FirstOrDefaultAsync(p => p.Id == id);
 
-        var userId = await GetUserId();
+        var userId = GetUserId();
 
         if (publication == null)
         {
@@ -127,7 +127,7 @@ public class PublicationService : IPublicationService
     {
         var publication = await dbContext.Publications
             .FirstOrDefaultAsync(p => p.Id == publicationId);
-        var userId = await GetUserId();
+        var userId = GetUserId();
 
         if (publication == null)
         {
@@ -146,7 +146,7 @@ public class PublicationService : IPublicationService
     public async Task UpdateCommentAsync(CommentFormDto dto, Guid id)
     {
        var comment = await dbContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
-       var userId = await GetUserId();
+       var userId = GetUserId();
 
         if (comment == null)
        {
@@ -165,7 +165,7 @@ public class PublicationService : IPublicationService
     public async Task DeleteCommentAsync(Guid id)
     {
         var comment = await dbContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
-        var userId = await GetUserId();
+        var userId = GetUserId();
 
         if (comment == null)
         {
@@ -199,10 +199,9 @@ public class PublicationService : IPublicationService
         return publicationComments;
     }
 
-    private async Task<Guid> GetUserId()
+    private Guid GetUserId()
     {
         var userId = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value!;
-        //var userId = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
 
         if (userId == null)
         {

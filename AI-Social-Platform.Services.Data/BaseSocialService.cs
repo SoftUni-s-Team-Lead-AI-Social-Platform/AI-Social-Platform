@@ -17,27 +17,20 @@ namespace AI_Social_Platform.Services.Data
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
+            Expression<Func<TEntity, bool>> filter = null!,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null!)
         {
             IQueryable<TEntity> query = _dbContext.Set<TEntity>();
-
-            if (filter != null)
-            {
                 query = query.Where(filter);
-            }
-
-            if (orderBy != null)
-            {
                 query = orderBy(query);
-            }
 
             return await query.ToListAsync();
         }
 
         public async Task<TEntity> GetByIdAsync(Guid id)
         {
-            return await _dbContext.Set<TEntity>().FindAsync(id);
+            var entity = await _dbContext.Set<TEntity>().FindAsync(id);
+            return entity!;
         }
 
         public async Task CreateAsync(TEntity entity)
@@ -46,15 +39,16 @@ namespace AI_Social_Platform.Services.Data
             await _dbContext.SaveChangesAsync();
         }
 
-        public Task UpdateAsync(TEntity entity)
+        public async Task UpdateAsync(TEntity entity)
         {
             _dbContext.Set<TEntity>().Update(entity);
-            return _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            _dbContext.Set<TEntity>().Remove(await _dbContext.Set<TEntity>().FindAsync(id));
+            var entity = await _dbContext.Set<TEntity>().FindAsync(id);
+            _dbContext.Set<TEntity>().Remove(entity!);
         }
     }
 }
