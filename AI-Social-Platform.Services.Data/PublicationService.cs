@@ -14,11 +14,21 @@ public class PublicationService : IPublicationService
 {
     private readonly ASPDbContext dbContext;
     private readonly HttpContext httpContext;
+    private readonly BaseSocialService<Like> likeService;
+    private readonly BaseSocialService<Comment> commentService;
+    private readonly BaseSocialService<Share> shareService;
 
-    public PublicationService(ASPDbContext dbContext, IHttpContextAccessor accessor)
+    public PublicationService(ASPDbContext dbContext,
+        IHttpContextAccessor accessor,
+        BaseSocialService<Like> likeService,
+        BaseSocialService<Comment> commentService,
+        BaseSocialService<Share> shareService)
     {
         this.dbContext = dbContext;
         httpContext = accessor.HttpContext!;
+        this.likeService = likeService;
+        this.commentService = commentService;
+        this.shareService = shareService;
     }
     public async Task<IEnumerable<PublicationDto>> GetPublicationsAsync()
     {
