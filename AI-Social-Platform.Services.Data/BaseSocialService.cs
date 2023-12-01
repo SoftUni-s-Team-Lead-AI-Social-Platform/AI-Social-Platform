@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Reflection;
 using AI_Social_Platform.Data;
 using AI_Social_Platform.Services.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ namespace AI_Social_Platform.Services.Data
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync(
+        public async Task<IQueryable<TEntity>> GetAllAsync(
             Expression<Func<TEntity, bool>> filter = null!,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null!)
         {
@@ -24,7 +25,7 @@ namespace AI_Social_Platform.Services.Data
                 query = query.Where(filter);
                 query = orderBy(query);
 
-            return await query.ToListAsync();
+                return query;
         }
 
         public async Task<TEntity> GetByIdAsync(Guid id)
@@ -45,10 +46,26 @@ namespace AI_Social_Platform.Services.Data
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task UpdatePropertyAsync(TEntity entity,
+            Expression<Func<TEntity, string>> propertyExpression,
+            string newValue)
         {
-            var entity = await _dbContext.Set<TEntity>().FindAsync(id);
+            var propertyInfo = ((MemberExpression)propertyExpression.Body).Member as PropertyInfo;
+            if (propertyInfo == null)
+            {
+                throw new ArgumentException("Invalid property expression");
+            }
+
+            _dbContext.Entry(entity).Property(propertyInfo.Name).CurrentValue = newValue;
+            _dbContext.Entry(entity).Property(propertyInfo.Name).IsModified = true;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(TEntity entity)
+        {
             _dbContext.Set<TEntity>().Remove(entity!);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

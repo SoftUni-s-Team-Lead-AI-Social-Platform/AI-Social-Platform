@@ -14,15 +14,15 @@ public class PublicationService : IPublicationService
 {
     private readonly ASPDbContext dbContext;
     private readonly HttpContext httpContext;
-    private readonly BaseSocialService<Like> likeService;
-    private readonly BaseSocialService<Comment> commentService;
-    private readonly BaseSocialService<Share> shareService;
+    private readonly IBaseSocialService<Like> likeService;
+    private readonly IBaseSocialService<Comment> commentService;
+    private readonly IBaseSocialService<Share> shareService;
 
     public PublicationService(ASPDbContext dbContext,
         IHttpContextAccessor accessor,
-        BaseSocialService<Like> likeService,
-        BaseSocialService<Comment> commentService,
-        BaseSocialService<Share> shareService)
+        IBaseSocialService<Like> likeService,
+        IBaseSocialService<Comment> commentService,
+        IBaseSocialService<Share> shareService)
     {
         this.dbContext = dbContext;
         httpContext = accessor.HttpContext!;
@@ -133,14 +133,14 @@ public class PublicationService : IPublicationService
         {
             throw new NullReferenceException(PublicationNotFound);
         }
-
-        await dbContext.Comments.AddAsync(new Comment()
+        var comment = new Comment()
         {
-            UserId = userId,
             Content = dto.Content,
+            UserId = userId,
             PublicationId = publicationId
-        });
-        await dbContext.SaveChangesAsync();
+        };
+
+        await commentService.CreateAsync(comment);
     }
 
     public async Task UpdateCommentAsync(CommentFormDto dto, Guid id)
@@ -157,9 +157,7 @@ public class PublicationService : IPublicationService
        {
            throw new AccessViolationException(NotAuthorizedToEditComment);
        }
-
-       comment.Content = dto.Content;
-       await dbContext.SaveChangesAsync();
+       await commentService.UpdatePropertyAsync(comment,x => x.Content, dto.Content);
     }
 
     public async Task DeleteCommentAsync(Guid id)
@@ -177,24 +175,23 @@ public class PublicationService : IPublicationService
             throw new AccessViolationException(NotAuthorizedToDeleteComment);
         }
 
-        dbContext.Comments.Remove(comment);
-        await dbContext.SaveChangesAsync();
+        await commentService.DeleteAsync(comment);
     }
 
     public async Task<IEnumerable<CommentDto>> GetCommentsOnPublicationAsync(Guid publicationId)
     {
-        var publicationComments = await dbContext.Comments
-            .Where(c => c.PublicationId == publicationId)
-            .Select(c => new CommentDto()
-            {
-                Id = c.Id,
-                Content = c.Content,
-                DateCreated = c.DateCreated, 
-                UserId = c.UserId,
-                PublicationId = c.PublicationId
-            })
-            .OrderByDescending(c => c.DateCreated)
-            .ToListAsync();
+        var commentsQuery = await commentService
+            .GetAllAsync(filter: x => x.PublicationId == publicationId,
+            orderBy: q => q.OrderByDescending(x => x.DateCreated));
+
+        var publicationComments = await commentsQuery.Select(c => new CommentDto()
+        {
+            Id = c.Id,
+            Content = c.Content,
+            DateCreated = c.DateCreated,
+            UserId = c.UserId,
+            PublicationId = c.PublicationId
+        }).ToListAsync();
 
         return publicationComments;
     }
