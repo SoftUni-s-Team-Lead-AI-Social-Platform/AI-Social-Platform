@@ -1,24 +1,21 @@
 ﻿using System.Linq.Expressions;
+using AI_Social_Platform.Data;
 using AI_Social_Platform.Services.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
 
 namespace AI_Social_Platform.Services.Data
 {
-    public class BaseSocialService<TEntity, TDto> : IBaseSocialService<TEntity,TDto> 
+    public class BaseSocialService<TEntity> : IBaseSocialService<TEntity> 
         where TEntity : class 
-        where TDto : class
     {
-        private readonly DbContext _dbContext;
-        private readonly IMapper _mapper;
+        private readonly ASPDbContext _dbContext;
 
-        public BaseSocialService(DbContext dbContext, IMapper mapper)
+        public BaseSocialService(ASPDbContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<IEnumerable<TDto>> GetAllAsync(
+        public async Task<IEnumerable<TEntity>> GetAllAsync(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
         {
@@ -34,29 +31,29 @@ namespace AI_Social_Platform.Services.Data
                 query = orderBy(query);
             }
 
-            var entities = await query.ToListAsync();
-            return _mapper.Map<IEnumerable<TDto>>(entities);
+            return await query.ToListAsync();
         }
 
-        public async Task<TDto> GetByIdAsync(Guid id)
+        public async Task<TEntity> GetByIdAsync(Guid id)
         {
-            var entity = await _dbContext.Set<TEntity>().FindAsync(id);
-            return _mapper.Map<TDto>(entity);
+            return await _dbContext.Set<TEntity>().FindAsync(id);
         }
 
-        public Task CreateAsync(TDto dto)
+        public async Task CreateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            await _dbContext.Set<TEntity>().AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public Task UpdateAsync(TDto dto, Guid id)
+        public Task UpdateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            _dbContext.Set<TEntity>().Update(entity);
+            return _dbContext.SaveChangesAsync();
         }
 
-        public Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            _dbContext.Set<TEntity>().Remove(await _dbContext.Set<TEntity>().FindAsync(id));
         }
     }
 }
