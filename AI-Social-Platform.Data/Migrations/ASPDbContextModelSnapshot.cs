@@ -266,10 +266,32 @@ namespace AI_Social_Platform.Data.Migrations
                             Id = new Guid("4c6f2908-ee71-495e-b855-ff2eb4fe8d63"),
                             AuthorId = new Guid("6d5800ce-d726-4fc8-83d9-d6b3ac1f591e"),
                             Content = "This is the second seeded publication Content from Georgi",
-                            DateCreated = new DateTime(2023, 11, 30, 17, 31, 56, 169, DateTimeKind.Utc).AddTicks(4114)
-                        });
                             DateCreated = new DateTime(2023, 11, 29, 8, 28, 56, 282, DateTimeKind.Utc).AddTicks(2880)
                         });
+                });
+
+            modelBuilder.Entity("AI_Social_Platform.Data.Models.Publication.Share", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("PublicationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PublicationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Shares");
                 });
 
             modelBuilder.Entity("AI_Social_Platform.Data.Models.Publication.Share", b =>

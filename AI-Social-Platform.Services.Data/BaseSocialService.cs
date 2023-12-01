@@ -2,17 +2,20 @@
 using AI_Social_Platform.Data;
 using AI_Social_Platform.Services.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace AI_Social_Platform.Services.Data
 {
     public class BaseSocialService<TEntity> : IBaseSocialService<TEntity> 
         where TEntity : class 
+        where TDto : class
     {
         private readonly ASPDbContext _dbContext;
 
         public BaseSocialService(ASPDbContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync(
