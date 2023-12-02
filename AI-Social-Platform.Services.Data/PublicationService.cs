@@ -166,11 +166,17 @@ public class PublicationService : IPublicationService
             throw new NullReferenceException(PublicationNotFound);
         }
 
+        if (await dbContext.Likes.AnyAsync(l => l.PublicationId == publicationId && l.UserId == userId))
+        {
+            throw new InvalidOperationException(AlreadyLiked);
+        }
+
         var like = new Like
         {
             PublicationId = publicationId,
             UserId = userId
         };
+
 
         await dbContext.Likes.AddAsync(like);
         await dbContext.SaveChangesAsync();

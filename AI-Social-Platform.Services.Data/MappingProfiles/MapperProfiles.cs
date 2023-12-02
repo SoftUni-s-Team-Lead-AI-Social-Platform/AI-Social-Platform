@@ -14,6 +14,7 @@ namespace AI_Social_Platform.Services.Data.MappingProfiles
             this.CreateMap<ShareDto, Share>().ReverseMap();
             this.CreateMap<PublicationDto, Publication>().ReverseMap();
             this.CreateMap<PublicationFormDto, Publication>().ReverseMap();
+            
         }
 
     }
