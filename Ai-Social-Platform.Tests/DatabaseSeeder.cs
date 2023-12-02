@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AI_Social_Platform.Data;
+﻿using AI_Social_Platform.Data;
 using AI_Social_Platform.Data.Models;
 using AI_Social_Platform.Data.Models.Publication;
 using Microsoft.AspNetCore.Identity;

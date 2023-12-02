@@ -5,7 +5,8 @@ using AI_Social_Platform.Services.Data.Models.PublicationDtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using static AI_Social_Platform.Common.ExceptionMessages.PublicationExceptionMessages;
 
 namespace AI_Social_Platform.Services.Data;
@@ -14,39 +15,20 @@ public class PublicationService : IPublicationService
 {
     private readonly ASPDbContext dbContext;
     private readonly HttpContext httpContext;
-    private readonly IBaseSocialService<Like> likeService;
-    private readonly IBaseSocialService<Comment> commentService;
-    private readonly IBaseSocialService<Share> shareService;
+    private readonly IMapper mapper;
 
-    public PublicationService(ASPDbContext dbContext,
-        IHttpContextAccessor accessor,
-        IBaseSocialService<Like> likeService,
-        IBaseSocialService<Comment> commentService,
-        IBaseSocialService<Share> shareService)
+    public PublicationService(ASPDbContext dbContext, IHttpContextAccessor accessor, IMapper mapper)
     {
+        this.mapper = mapper;
         this.dbContext = dbContext;
         httpContext = accessor.HttpContext!;
-        this.likeService = likeService;
-        this.commentService = commentService;
-        this.shareService = shareService;
     }
     public async Task<IEnumerable<PublicationDto>> GetPublicationsAsync()
     {
-        var publications = await
-            dbContext.Publications
-                .Select(p => new PublicationDto()
-                {
-                    Id = p.Id,
-                    Content = p.Content,
-                    DateCreated = p.DateCreated,
-                    AuthorId = p.AuthorId
-                })
-                .OrderByDescending(p => p.DateCreated)
-                .ToListAsync();
-
-        return publications;
+       return await mapper.ProjectTo<PublicationDto>(dbContext.Publications.AsQueryable())
+           .OrderByDescending(p => p.DateCreated).ToListAsync();
     }
-    
+
     public async Task<PublicationDto> GetPublicationAsync(Guid id)
     {
         var publication = await dbContext.Publications
@@ -56,27 +38,14 @@ public class PublicationService : IPublicationService
         {
             throw new NullReferenceException(PublicationNotFound);
         }
-
-        PublicationDto publicationDto = new()
-        {
-            Id = publication.Id,
-            Content = publication.Content,
-            DateCreated = publication.DateCreated,
-            AuthorId = publication.AuthorId
-        };
-
-        return publicationDto;
-
+        return mapper.Map<PublicationDto>(publication);
     }
     
     public async Task CreatePublicationAsync(PublicationFormDto dto)
     {
         var userId = GetUserId();
-        Publication publication = new()
-        {
-           Content = dto.Content,
-           AuthorId = userId
-        };
+        var publication = mapper.Map<Publication>(dto);
+        publication.AuthorId = userId;
 
        await dbContext.AddAsync(publication);
        await dbContext.SaveChangesAsync();
@@ -103,8 +72,7 @@ public class PublicationService : IPublicationService
     
     public async Task DeletePublicationAsync(Guid id)
     {
-        var publication = await dbContext.Publications
-            .FirstOrDefaultAsync(p => p.Id == id);
+        var publication = await dbContext.Publications.FirstOrDefaultAsync(p => p.Id == id);
 
         var userId = GetUserId();
 
@@ -123,32 +91,30 @@ public class PublicationService : IPublicationService
     }
 
     //Comment
-    public async Task CreateCommentAsync(CommentFormDto dto, Guid publicationId)
+    public async Task CreateCommentAsync(CommentFormDto dto)
     {
         var publication = await dbContext.Publications
-            .FirstOrDefaultAsync(p => p.Id == publicationId);
+            .FirstOrDefaultAsync(p => p.Id == dto.PublicationId);
         var userId = GetUserId();
 
         if (publication == null)
         {
             throw new NullReferenceException(PublicationNotFound);
         }
-        var comment = new Comment()
-        {
-            Content = dto.Content,
-            UserId = userId,
-            PublicationId = publicationId
-        };
+        
+        var comment = mapper.Map<Comment>(dto);
+        comment.UserId = userId;
 
-        await commentService.CreateAsync(comment);
+        await dbContext.Comments.AddAsync(comment);
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task UpdateCommentAsync(CommentFormDto dto, Guid id)
     {
-       var comment = await dbContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
+       var comment = await dbContext.Comments.FindAsync(id);
        var userId = GetUserId();
 
-        if (comment == null)
+       if (comment == null)
        {
            throw new NullReferenceException(CommentNotFound);
        }
@@ -157,7 +123,8 @@ public class PublicationService : IPublicationService
        {
            throw new AccessViolationException(NotAuthorizedToEditComment);
        }
-       await commentService.UpdatePropertyAsync(comment,x => x.Content, dto.Content);
+       comment.Content = dto.Content;
+       await dbContext.SaveChangesAsync();
     }
 
     public async Task DeleteCommentAsync(Guid id)
@@ -174,26 +141,17 @@ public class PublicationService : IPublicationService
         {
             throw new AccessViolationException(NotAuthorizedToDeleteComment);
         }
-
-        await commentService.DeleteAsync(comment);
+        dbContext.Comments.Remove(comment);
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<CommentDto>> GetCommentsOnPublicationAsync(Guid publicationId)
     {
-        var commentsQuery = await commentService
-            .GetAllAsync(filter: x => x.PublicationId == publicationId,
-            orderBy: q => q.OrderByDescending(x => x.DateCreated));
-
-        var publicationComments = await commentsQuery.Select(c => new CommentDto()
-        {
-            Id = c.Id,
-            Content = c.Content,
-            DateCreated = c.DateCreated,
-            UserId = c.UserId,
-            PublicationId = c.PublicationId
-        }).ToListAsync();
-
-        return publicationComments;
+        return await dbContext.Comments
+            .Where(c => c.PublicationId == publicationId)
+            .ProjectTo<CommentDto>(mapper.ConfigurationProvider)
+            .OrderByDescending(c => c.DateCreated)
+            .ToListAsync();
     }
 
     private Guid GetUserId()

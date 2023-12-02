@@ -1,8 +1,6 @@
 ﻿namespace AI_Social_Platform.Data.Models.Publication
 {
-    using System;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
     using static Common.EntityValidationConstants.Comment;
 
     public class Comment : BaseSocialFeature
