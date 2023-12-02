@@ -8,12 +8,6 @@ namespace AI_Social_Platform.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Share> builder)
         {
-            builder
-                .HasOne(x => x.Publication)
-                .WithMany(x => x.Shares)
-                .HasForeignKey(x => x.PublicationId)
-                .OnDelete(DeleteBehavior.NoAction);
-
             builder.HasOne(x => x.User)
                 .WithMany(x => x.Shares)
                 .HasForeignKey(x => x.UserId)

@@ -1,13 +1,14 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-
-using AI_Social_Platform.Data;
+﻿using AI_Social_Platform.Data;
+using AI_Social_Platform.Data.Models.Publication;
 using AI_Social_Platform.Services.Data;
 using AI_Social_Platform.Services.Data.Models.PublicationDtos;
+
 using AutoMapper;
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using static AI_Social_Platform.Common.ExceptionMessages.PublicationExceptionMessages;
-using AI_Social_Platform.Data.Models.Publication;
 
 namespace Ai_Social_Platform.Tests
 {
@@ -61,7 +62,6 @@ namespace Ai_Social_Platform.Tests
                 x.CreateMap<PublicationFormDto, Publication>().ReverseMap();
             });
             mapper = config.CreateMapper();
-
             publicationService = new PublicationService(dbContext, httpContextAccessor, mapper);
         }
 
@@ -247,12 +247,12 @@ namespace Ai_Social_Platform.Tests
         public async Task DeletePublicationAsync_ValidId_DeletesPublication()
         {
             // Arrange
-            var publication =
-                dbContext.Publications.First(p => p.AuthorId.ToString() == "123400ce-d726-4fc8-83d9-d6b3ac1f591e");
+            var publicationId =
+                dbContext.Publications.First(p => p.AuthorId.ToString() == "123400ce-d726-4fc8-83d9-d6b3ac1f591e").Id;
             var countBefore = dbContext.Publications.Count();
 
             // Act
-            await publicationService.DeletePublicationAsync(publication.Id);
+            await publicationService.DeletePublicationAsync(publicationId);
 
             // Assert
             Assert.That(dbContext.Publications.Count(), Is.EqualTo(countBefore - 1));
@@ -293,16 +293,19 @@ namespace Ai_Social_Platform.Tests
         }
 
         [Test]
-        public async Task DeletePublicationAsync_DeletesComments()
+        public async Task DeletePublicationAsync_DeletesCollections()
         {
             // Arrange
-            var publicationId = dbContext.Publications.Last().Id;
+            var publicationId = dbContext.Publications.First(p => p.AuthorId.ToString() == "123400ce-d726-4fc8-83d9-d6b3ac1f591e").Id;
 
             // Act
             await publicationService.DeletePublicationAsync(publicationId);
 
             // Assert
             Assert.IsEmpty(dbContext.Comments.Where(c => c.PublicationId == publicationId));
+            Assert.IsEmpty(dbContext.Likes.Where(l => l.PublicationId == publicationId));
+            Assert.IsEmpty(dbContext.Shares.Where(s => s.PublicationId == publicationId));
+            Assert.IsEmpty(dbContext.MediaFiles.Where(p => p.Id == publicationId));
         }
 
         [Test]
@@ -320,7 +323,8 @@ namespace Ai_Social_Platform.Tests
             await publicationService.CreateCommentAsync(dto);
 
             // Assert
-            Assert.That(dbContext.Comments.Count(c => c.PublicationId == dto.PublicationId), Is.EqualTo(countBefore + 1));
+            Assert.That(dbContext.Comments.Count(c => c.PublicationId == dto.PublicationId),
+                Is.EqualTo(countBefore + 1));
         }
 
         [Test]
@@ -483,5 +487,226 @@ namespace Ai_Social_Platform.Tests
             // Assuming some comments were seeded during setup
             Assert.IsTrue(result.Any());
         }
-    }
+
+        //Like Tests
+        [Test]
+        public async Task LikePublicationAsync_ValidPublicationId_LikesPublication()
+        {
+            // Arrange
+            var publicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b");
+            var countBefore = dbContext.Likes.Count(l => l.PublicationId == publicationId);
+
+            // Act
+            await publicationService.CreateLikesOnPublicationAsync(publicationId);
+
+            // Assert
+            Assert.That(dbContext.Likes.Count(l => l.PublicationId == publicationId), Is.EqualTo(countBefore + 1));
+        }
+
+        [Test]
+        public async Task LikePublicationAsync_InvalidPublicationId_ThrowsNullReferenceException()
+        {
+            // Arrange
+            var invalidPublicationId = Guid.NewGuid(); // Use a non-existing ID
+
+            // Act and Assert
+            var exception = Assert.ThrowsAsync<NullReferenceException>(async () =>
+            {
+                await publicationService.CreateLikesOnPublicationAsync(invalidPublicationId);
+            });
+
+            // Optionally assert on the exception message or other details
+            Assert.That(exception!.Message, Is.EqualTo(PublicationNotFound));
+        }
+
+        [Test]
+        public async Task LikePublicationAsync_ValidPublicationIdAndUserId_LikesPublication()
+        {
+            // Arrange
+            var publicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b");
+            var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            var countBefore = dbContext.Likes.Count(l => l.PublicationId == publicationId);
+
+            // Act
+            await publicationService.CreateLikesOnPublicationAsync(publicationId);
+
+            // Assert
+            Assert.That(dbContext.Likes.Count(l => l.PublicationId == publicationId), Is.EqualTo(countBefore + 1));
+            Assert.That(dbContext.Likes.Last().UserId.ToString(), Is.EqualTo(userId));
+        }
+
+        [Test]
+        public async Task DeleteLikeOnPublicationAsync_ValidLikeId_DeletesLike()
+        {
+            // Arrange
+            var likeId = dbContext.Likes.FirstOrDefault(l => l.UserId == Guid.Parse("123400ce-d726-4fc8-83d9-d6b3ac1f591e"))!.Id;
+            var countBefore = dbContext.Likes.Count();
+
+            // Act
+            await publicationService.DeleteLikeOnPublicationAsync(likeId);
+
+            // Assert
+            Assert.That(dbContext.Likes.Count(), Is.EqualTo(countBefore - 1));
+        }
+
+        [Test]
+        public async Task DeleteLikeOnPublicationAsync_ThrowsNullReferenceException()
+        {
+            // Arrange
+            var invalidLikeId = Guid.NewGuid(); // Use a non-existing ID
+
+            // Act and Assert
+            var exception = Assert.ThrowsAsync<NullReferenceException>(async () =>
+            {
+                await publicationService.DeleteLikeOnPublicationAsync(invalidLikeId);
+            });
+
+            // Optionally assert on the exception message or other details
+            Assert.That(exception!.Message, Is.EqualTo(LikeNotFound));
+        }
+
+        [Test]
+        public async Task DeleteLikeOnPublicationAsync_ThrowsAccessViolationExceptionException()
+        {
+            // Arrange
+            var likeId = dbContext.Likes.FirstOrDefault(l => l.UserId == Guid.Parse("123456ed-2e82-4f5a-a684-a9c7e3ccb52e"))!.Id;
+
+            // Act and Assert
+            var exception = Assert.ThrowsAsync<AccessViolationException>(async () =>
+            {
+                await publicationService.DeleteLikeOnPublicationAsync(likeId);
+            });
+
+            // Optionally assert on the exception message or other details
+            Assert.That(exception!.Message, Is.EqualTo(NotAuthorizedToDeleteLike));
+        }
+
+        [Test]
+        public async Task GetLikesOnPublicationAsync_ValidPublicationId_ReturnsLikes()
+        {
+            // Arrange
+            var publicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b");
+
+            // Act
+            var result = await publicationService.GetLikesOnPublicationAsync(publicationId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<IEnumerable<LikeDto>>(result);
+
+            // Assuming some likes were seeded during setup
+            Assert.IsTrue(result.Any());
+        }
+
+        //Share Tests
+        [Test]
+        public async Task SharePublicationAsync_ValidPublicationId_SharesPublication()
+        {
+            // Arrange
+            var publicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b");
+            var countBefore = dbContext.Shares.Count(l => l.PublicationId == publicationId);
+
+            // Act
+            await publicationService.CreateSharesOnPublicationAsync(publicationId);
+
+            // Assert
+            Assert.That(dbContext.Shares.Count(l => l.PublicationId == publicationId), Is.EqualTo(countBefore + 1));
+        }
+
+        [Test]
+        public async Task SharePublicationAsync_InvalidPublicationId_ThrowsNullReferenceException()
+        {
+            // Arrange
+            var invalidPublicationId = Guid.NewGuid(); // Use a non-existing ID
+
+            // Act and Assert
+            var exception = Assert.ThrowsAsync<NullReferenceException>(async () =>
+            {
+                await publicationService.CreateSharesOnPublicationAsync(invalidPublicationId);
+            });
+
+            // Optionally assert on the exception message or other details
+            Assert.That(exception!.Message, Is.EqualTo(PublicationNotFound));
+        }
+
+        [Test]
+        public async Task SharePublicationAsync_ValidPublicationIdAndUserId_SharesPublication()
+        {
+            // Arrange
+            var publicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b");
+            var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            var countBefore = dbContext.Shares.Count(l => l.PublicationId == publicationId);
+
+            // Act
+            await publicationService.CreateSharesOnPublicationAsync(publicationId);
+
+            // Assert
+            Assert.That(dbContext.Shares.Count(l => l.PublicationId == publicationId), Is.EqualTo(countBefore + 1));
+            Assert.That(dbContext.Shares.Last().UserId.ToString(), Is.EqualTo(userId));
+        }
+
+        [Test]
+        public async Task DeleteShareOnPublicationAsync_ValidShareId_DeletesShare()
+        {
+            // Arrange
+            var shareId = dbContext.Shares.FirstOrDefault(l => l.UserId == Guid.Parse("123400ce-d726-4fc8-83d9-d6b3ac1f591e"))!.Id;
+            var countBefore = dbContext.Shares.Count();
+
+            // Act
+            await publicationService.DeleteShareOnPublicationAsync(shareId);
+
+            // Assert
+            Assert.That(dbContext.Shares.Count(), Is.EqualTo(countBefore - 1));
+        }
+
+        [Test]
+        public async Task DeleteShareOnPublicationAsync_ThrowsNullReferenceException()
+        {
+            // Arrange
+            var invalidShareId = Guid.NewGuid(); // Use a non-existing ID
+
+            // Act and Assert
+            var exception = Assert.ThrowsAsync<NullReferenceException>(async () =>
+            {
+                await publicationService.DeleteShareOnPublicationAsync(invalidShareId);
+            });
+
+            // Optionally assert on the exception message or other details
+            Assert.That(exception!.Message, Is.EqualTo(ShareNotFound));
+        }
+
+        [Test]
+        public async Task DeleteShareOnPublicationAsync_ThrowsAccessViolationExceptionException()
+        {
+            // Arrange
+            var shareId = dbContext.Shares.FirstOrDefault(l => l.UserId == Guid.Parse("123456ed-2e82-4f5a-a684-a9c7e3ccb52e"))!.Id;
+
+            // Act and Assert
+            var exception = Assert.ThrowsAsync<AccessViolationException>(async () =>
+            {
+                await publicationService.DeleteShareOnPublicationAsync(shareId);
+            });
+
+            // Optionally assert on the exception message or other details
+            Assert.That(exception!.Message, Is.EqualTo(NotAuthorizedToDeleteShare));
+        }
+
+        [Test]
+        public async Task GetSharesOnPublicationAsync_ValidPublicationId_ReturnsShares()
+        {
+            // Arrange
+            var publicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b");
+
+            // Act
+            var result = await publicationService.GetSharesOnPublicationAsync(publicationId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<IEnumerable<ShareDto>>(result);
+
+            // Assuming some shares were seeded during setup
+            Assert.IsTrue(result.Any());
+            Assert.IsTrue(result.All(s => s.PublicationId == publicationId));
+        }
+}
 }

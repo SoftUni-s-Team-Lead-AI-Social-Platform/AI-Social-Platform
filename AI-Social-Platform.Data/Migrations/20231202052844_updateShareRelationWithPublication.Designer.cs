@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AI_Social_Platform.Data.Migrations
 {
     [DbContext(typeof(ASPDbContext))]
-    [Migration("20231202012720_changeUserToAuthorIdOnPublication")]
-    partial class changeUserToAuthorIdOnPublication
+    [Migration("20231202052844_updateShareRelationWithPublication")]
+    partial class updateShareRelationWithPublication
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -113,7 +113,7 @@ namespace AI_Social_Platform.Data.Migrations
                         {
                             Id = new Guid("6d5800ce-d726-4fc8-83d9-d6b3ac1f591e"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9788a5ff-cd54-4cbc-866b-97893d901c7b",
+                            ConcurrencyStamp = "7379b240-22d6-4813-901b-59fed7bd7884",
                             Email = "user@user.com",
                             EmailConfirmed = false,
                             FirstName = "Georgi",
@@ -121,9 +121,9 @@ namespace AI_Social_Platform.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "user@user.com",
                             NormalizedUserName = "USER@USER.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMyfaJ0qpwZOAcRD7Uq8rdUgIre1AdvjhqUHq7XY6E9B6Vrcz1gs2TxxNmAflNUhow==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEM2XYvGz8xx3ybRJJszczgz9P5DyVweBLAPZKYNudRhgsfNxSeN8y9xXFjBr8FL/Wg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cf9a03b9-fe49-4ec5-b36e-20e5bc4a8bd3",
+                            SecurityStamp = "29841d63-34b3-4df8-b2b0-d8d2724dd541",
                             TwoFactorEnabled = false,
                             UserName = "user@user.com"
                         },
@@ -131,7 +131,7 @@ namespace AI_Social_Platform.Data.Migrations
                         {
                             Id = new Guid("949a14ed-2e82-4f5a-a684-a9c7e3ccb52e"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "eb90ed0e-d852-40ed-bb38-cba016742bb7",
+                            ConcurrencyStamp = "dbb4c8a9-8075-4d3d-a62b-3a7b1fd3a0f7",
                             Email = "admin@admin.com",
                             EmailConfirmed = false,
                             FirstName = "Ivan",
@@ -139,9 +139,9 @@ namespace AI_Social_Platform.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.com",
                             NormalizedUserName = "ADMIN@ADMIN.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEbIxcC8x1vIq7ts0KrCP8pDd0cfgY3FEVjaMBGdS1/BCqwL23sM2yfJLSFg90mJWQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJ/9sq0sjf2aTaitiaBXydGQMm5HnT4VqxHUfMBfQWoyRjEJck0Yy/JTIyawiTK8VQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0d1035f0-81fc-4ad7-b3ef-5ca631f54e89",
+                            SecurityStamp = "0561d8cf-6588-4626-9952-ae8d767a9031",
                             TwoFactorEnabled = false,
                             UserName = "admin@admin.com"
                         });
@@ -258,17 +258,17 @@ namespace AI_Social_Platform.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("4721fd66-6de2-4f83-b363-9ac1896d3d48"),
+                            Id = new Guid("16d55b18-b0fb-4cb0-9de5-4b31abb950f1"),
                             AuthorId = new Guid("949a14ed-2e82-4f5a-a684-a9c7e3ccb52e"),
                             Content = "This is the first seeded publication Content from Ivan",
-                            DateCreated = new DateTime(2023, 12, 2, 1, 27, 19, 925, DateTimeKind.Utc).AddTicks(1571)
+                            DateCreated = new DateTime(2023, 12, 2, 5, 28, 43, 853, DateTimeKind.Utc).AddTicks(1453)
                         },
                         new
                         {
-                            Id = new Guid("c4976cf2-7320-44a5-bf0b-c7868862499e"),
+                            Id = new Guid("ac1ec86e-ec94-48bf-9630-44c09fd6b21d"),
                             AuthorId = new Guid("6d5800ce-d726-4fc8-83d9-d6b3ac1f591e"),
                             Content = "This is the second seeded publication Content from Georgi",
-                            DateCreated = new DateTime(2023, 12, 2, 1, 27, 19, 925, DateTimeKind.Utc).AddTicks(1591)
+                            DateCreated = new DateTime(2023, 12, 2, 5, 28, 43, 853, DateTimeKind.Utc).AddTicks(1482)
                         });
                 });
 
@@ -505,7 +505,7 @@ namespace AI_Social_Platform.Data.Migrations
                     b.HasOne("AI_Social_Platform.Data.Models.Publication.Publication", "Publication")
                         .WithMany("Shares")
                         .HasForeignKey("PublicationId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AI_Social_Platform.Data.Models.ApplicationUser", "User")

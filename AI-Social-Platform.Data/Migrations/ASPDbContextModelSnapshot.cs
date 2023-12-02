@@ -111,7 +111,7 @@ namespace AI_Social_Platform.Data.Migrations
                         {
                             Id = new Guid("6d5800ce-d726-4fc8-83d9-d6b3ac1f591e"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2f870b1d-f6b4-4533-b557-54163c041b54",
+                            ConcurrencyStamp = "7379b240-22d6-4813-901b-59fed7bd7884",
                             Email = "user@user.com",
                             EmailConfirmed = false,
                             FirstName = "Georgi",
@@ -119,9 +119,9 @@ namespace AI_Social_Platform.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "user@user.com",
                             NormalizedUserName = "USER@USER.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOiPf5PEmsHvUV+pmjdA/AgbY9bwoFKB6LlagiCZzu1CWfdOpd51y25fAhh6M8Rffw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEM2XYvGz8xx3ybRJJszczgz9P5DyVweBLAPZKYNudRhgsfNxSeN8y9xXFjBr8FL/Wg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5ae03fe2-94e4-4501-bf6e-ca04eafff18a",
+                            SecurityStamp = "29841d63-34b3-4df8-b2b0-d8d2724dd541",
                             TwoFactorEnabled = false,
                             UserName = "user@user.com"
                         },
@@ -129,7 +129,7 @@ namespace AI_Social_Platform.Data.Migrations
                         {
                             Id = new Guid("949a14ed-2e82-4f5a-a684-a9c7e3ccb52e"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1f42b186-bbf8-4db4-a8d9-1ce53140ee9e",
+                            ConcurrencyStamp = "dbb4c8a9-8075-4d3d-a62b-3a7b1fd3a0f7",
                             Email = "admin@admin.com",
                             EmailConfirmed = false,
                             FirstName = "Ivan",
@@ -137,9 +137,9 @@ namespace AI_Social_Platform.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.com",
                             NormalizedUserName = "ADMIN@ADMIN.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIY3VQU7YV+vPkFe5btG31QKza27DuKLISkenbYqXxHg7StqbhetamhNEjjvax8OQQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJ/9sq0sjf2aTaitiaBXydGQMm5HnT4VqxHUfMBfQWoyRjEJck0Yy/JTIyawiTK8VQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2063e480-0d27-4468-8581-272b7ea920d2",
+                            SecurityStamp = "0561d8cf-6588-4626-9952-ae8d767a9031",
                             TwoFactorEnabled = false,
                             UserName = "admin@admin.com"
                         });
@@ -256,44 +256,18 @@ namespace AI_Social_Platform.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d529d306-afb9-4922-8899-ae34490d1e40"),
+                            Id = new Guid("16d55b18-b0fb-4cb0-9de5-4b31abb950f1"),
                             AuthorId = new Guid("949a14ed-2e82-4f5a-a684-a9c7e3ccb52e"),
                             Content = "This is the first seeded publication Content from Ivan",
-                            DateCreated = new DateTime(2023, 11, 30, 17, 31, 56, 169, DateTimeKind.Utc).AddTicks(4086)
+                            DateCreated = new DateTime(2023, 12, 2, 5, 28, 43, 853, DateTimeKind.Utc).AddTicks(1453)
                         },
                         new
                         {
-                            Id = new Guid("4c6f2908-ee71-495e-b855-ff2eb4fe8d63"),
+                            Id = new Guid("ac1ec86e-ec94-48bf-9630-44c09fd6b21d"),
                             AuthorId = new Guid("6d5800ce-d726-4fc8-83d9-d6b3ac1f591e"),
                             Content = "This is the second seeded publication Content from Georgi",
-                            DateCreated = new DateTime(2023, 11, 30, 17, 31, 56, 169, DateTimeKind.Utc).AddTicks(4114)
+                            DateCreated = new DateTime(2023, 12, 2, 5, 28, 43, 853, DateTimeKind.Utc).AddTicks(1482)
                         });
-                            DateCreated = new DateTime(2023, 11, 29, 8, 28, 56, 282, DateTimeKind.Utc).AddTicks(2880)
-                        });
-                });
-
-            modelBuilder.Entity("AI_Social_Platform.Data.Models.Publication.Share", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("PublicationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PublicationId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Shares");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -505,7 +479,7 @@ namespace AI_Social_Platform.Data.Migrations
                     b.HasOne("AI_Social_Platform.Data.Models.Publication.Publication", "Publication")
                         .WithMany("Shares")
                         .HasForeignKey("PublicationId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AI_Social_Platform.Data.Models.ApplicationUser", "User")
@@ -587,9 +561,9 @@ namespace AI_Social_Platform.Data.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("MediaFiles");
-
                     b.Navigation("Likes");
+
+                    b.Navigation("MediaFiles");
 
                     b.Navigation("Shares");
                 });

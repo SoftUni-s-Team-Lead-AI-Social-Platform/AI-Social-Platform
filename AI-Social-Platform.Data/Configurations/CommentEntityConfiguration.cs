@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using AI_Social_Platform.Data.Models.Publication;
+﻿using AI_Social_Platform.Data.Models.Publication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
