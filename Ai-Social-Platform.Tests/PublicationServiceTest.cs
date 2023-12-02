@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using AI_Social_Platform.Data;
 using AI_Social_Platform.Services.Data;
 using AI_Social_Platform.Services.Data.Models.PublicationDtos;
-
+using AutoMapper;
 using static AI_Social_Platform.Common.ExceptionMessages.PublicationExceptionMessages;
 
 namespace Ai_Social_Platform.Tests
@@ -17,6 +17,7 @@ namespace Ai_Social_Platform.Tests
         private ASPDbContext dbContext;
         private PublicationService publicationService;
         private HttpContextAccessor httpContextAccessor;
+        private IMapper mapper;
 
         [SetUp]
         public void Setup()
@@ -49,7 +50,7 @@ namespace Ai_Social_Platform.Tests
                 HttpContext = httpContext
             };
 
-            publicationService = new PublicationService(dbContext, httpContextAccessor);
+            publicationService = new PublicationService(dbContext, httpContextAccessor, mapper);
         }
 
         [TearDown]
@@ -298,13 +299,14 @@ namespace Ai_Social_Platform.Tests
             // Arrange
             var dto = new CommentFormDto()
             {
-                Content = "This is a test comment"
+                Content = "This is a test comment",
+                PublicationId = dbContext.Publications.First().Id
             };
             var publicationId = dbContext.Publications.First().Id;
             var countBefore = dbContext.Comments.Count(c => c.PublicationId == publicationId);
 
             // Act
-            await publicationService.CreateCommentAsync(dto, publicationId);
+            await publicationService.CreateCommentAsync(dto);
 
             // Assert
             Assert.That(dbContext.Comments.Count(c => c.PublicationId == publicationId), Is.EqualTo(countBefore + 1));
@@ -321,7 +323,7 @@ namespace Ai_Social_Platform.Tests
             var publicationId = dbContext.Publications.First().Id;
 
             // Act
-            await publicationService.CreateCommentAsync(dto, publicationId);
+            await publicationService.CreateCommentAsync(dto);
 
             // Assert
             Assert.That(dbContext.Comments.Last().Content, Is.EqualTo(dto.Content));
@@ -340,7 +342,7 @@ namespace Ai_Social_Platform.Tests
             // Act and Assert
             var exception = Assert.ThrowsAsync<NullReferenceException>(async () =>
             {
-                await publicationService.CreateCommentAsync(dto, invalidPublicationId);
+                await publicationService.CreateCommentAsync(dto);
             });
 
             // Optionally assert on the exception message or other details

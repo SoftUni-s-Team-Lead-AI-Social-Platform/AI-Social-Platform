@@ -123,12 +123,12 @@ public class PublicationController : ControllerBase
         }
     }
 
-    [HttpPost("comment/{publicationId}", Name = "createComment")]
-    public async Task<IActionResult> CreateComment(CommentFormDto dto, Guid publicationId)
+    [HttpPost("comment", Name = "createComment")]
+    public async Task<IActionResult> CreateComment(CommentFormDto dto)
     {
         try
         {
-            await publicationService.CreateCommentAsync(dto, publicationId);
+            await publicationService.CreateCommentAsync(dto);
             return CreatedAtAction(nameof(CreateComment), new { message = CommentSuccessfullyCreated});
         }
         catch (NullReferenceException ex)
