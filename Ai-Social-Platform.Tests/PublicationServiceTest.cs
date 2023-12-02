@@ -7,6 +7,7 @@ using AI_Social_Platform.Services.Data;
 using AI_Social_Platform.Services.Data.Models.PublicationDtos;
 using AutoMapper;
 using static AI_Social_Platform.Common.ExceptionMessages.PublicationExceptionMessages;
+using AI_Social_Platform.Data.Models.Publication;
 
 namespace Ai_Social_Platform.Tests
 {
@@ -49,6 +50,17 @@ namespace Ai_Social_Platform.Tests
             {
                 HttpContext = httpContext
             };
+
+            var config = new MapperConfiguration(x =>
+            {
+                x.CreateMap<LikeDto, Like>().ReverseMap();
+                x.CreateMap<CommentDto, Comment>().ReverseMap();
+                x.CreateMap<CommentFormDto, Comment>().ReverseMap();
+                x.CreateMap<ShareDto, Share>().ReverseMap();
+                x.CreateMap<PublicationDto, Publication>().ReverseMap();
+                x.CreateMap<PublicationFormDto, Publication>().ReverseMap();
+            });
+            mapper = config.CreateMapper();
 
             publicationService = new PublicationService(dbContext, httpContextAccessor, mapper);
         }
@@ -300,16 +312,15 @@ namespace Ai_Social_Platform.Tests
             var dto = new CommentFormDto()
             {
                 Content = "This is a test comment",
-                PublicationId = dbContext.Publications.First().Id
+                PublicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b")
             };
-            var publicationId = dbContext.Publications.First().Id;
-            var countBefore = dbContext.Comments.Count(c => c.PublicationId == publicationId);
+            var countBefore = dbContext.Comments.Count(c => c.PublicationId == dto.PublicationId);
 
             // Act
             await publicationService.CreateCommentAsync(dto);
 
             // Assert
-            Assert.That(dbContext.Comments.Count(c => c.PublicationId == publicationId), Is.EqualTo(countBefore + 1));
+            Assert.That(dbContext.Comments.Count(c => c.PublicationId == dto.PublicationId), Is.EqualTo(countBefore + 1));
         }
 
         [Test]
@@ -318,9 +329,9 @@ namespace Ai_Social_Platform.Tests
             // Arrange
             var dto = new CommentFormDto()
             {
-                Content = "This is a test comment"
+                Content = "This is a test comment",
+                PublicationId = dbContext.Publications.First().Id
             };
-            var publicationId = dbContext.Publications.First().Id;
 
             // Act
             await publicationService.CreateCommentAsync(dto);
