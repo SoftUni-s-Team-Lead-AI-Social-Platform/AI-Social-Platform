@@ -23,10 +23,17 @@ public class PublicationService : IPublicationService
         this.dbContext = dbContext;
         httpContext = accessor.HttpContext!;
     }
-    public async Task<IEnumerable<PublicationDto>> GetPublicationsAsync()
+    public async Task<IEnumerable<PublicationDto>> GetPublicationsAsync(int pageNum)
     {
+        int pageSize = 10;
+        int skip = (pageNum - 1) * pageSize;
+        int take = pageSize;
+
        return await mapper.ProjectTo<PublicationDto>(dbContext.Publications.AsQueryable())
-           .OrderByDescending(p => p.DateCreated).ToListAsync();
+           .OrderByDescending(p => p.DateCreated)
+           .Skip(skip)
+           .Take(take)
+           .ToListAsync();
     }
 
     public async Task<PublicationDto> GetPublicationAsync(Guid id)
