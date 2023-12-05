@@ -9,9 +9,11 @@ namespace AI_Social_Platform.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Comment> builder)
         {
-            builder.HasOne(x => x.Publication)
+            builder
+                .HasOne(x => x.Publication)
                 .WithMany(x => x.Comments)
-                .HasForeignKey(x => x.PublicationId).OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(x => x.PublicationId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

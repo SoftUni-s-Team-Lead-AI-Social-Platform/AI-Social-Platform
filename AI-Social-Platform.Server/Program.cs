@@ -61,9 +61,9 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AISocialPlatform", builder =>
+    options.AddPolicy("AISocialPlatform", configuration =>
     {
-        builder.WithOrigins("https://localhost:5173")
+        configuration.WithOrigins("https://localhost:5173")
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
