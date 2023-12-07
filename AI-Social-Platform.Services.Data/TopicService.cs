@@ -18,8 +18,37 @@
         {
                 this.dbContext = dbContext;
         }
-        public async Task FollowTopicAsync(string userId, string topicId)
+        public async Task<string> FollowTopicAsync(string userId, string topicId)
         {
+            ApplicationUser? user = await dbContext.Users
+                .FirstOrDefaultAsync(u => u.Id.ToString() == userId);
+            Topic? topic = await dbContext.Topics
+                .FirstOrDefaultAsync(t => t.Id.ToString() == topicId);
+
+            var recordExist = dbContext.UsersTopics
+                        .Any(ut => ut.UserId.ToString().ToLower() == userId && ut.TopicId.ToString() == topicId.ToLower());
+            if (user == null || topic == null)
+            {
+                return "User or topic not found";
+            }
+            if (!recordExist)
+            {
+                UserTopic ut = new UserTopic()
+                {
+                    User = user!,
+                    TopicId = Guid.Parse(topicId)
+                };
+
+                user!.FollowedTopics.Add(ut);
+                await dbContext.SaveChangesAsync();
+
+                return $"Successfully follow topic: {topic.Title}";
+            }
+
+            else
+            {
+                return "You alredy follow this topic";
+            }
             
         }
     }

@@ -4,6 +4,6 @@
 
     public interface ITopicService
     {
-        Task FollowTopicAsync(string userId, string topicId);
+        Task<string> FollowTopicAsync(string userId, string topicId);
     }
 }

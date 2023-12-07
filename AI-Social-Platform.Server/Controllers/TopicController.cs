@@ -20,7 +20,9 @@
         [HttpPost]
         public async Task<IActionResult> FollowTopic(string topicId)
         {
-            return Ok();
+            var userId = HttpContext.User.GetUserId();
+            var result = await topicService.FollowTopicAsync(userId, topicId);
+            return Ok(result);
         }
     }
 }
