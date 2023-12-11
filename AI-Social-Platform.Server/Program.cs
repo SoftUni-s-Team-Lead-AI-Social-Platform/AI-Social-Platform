@@ -44,8 +44,8 @@ builder.Services.AddAuthentication(options =>
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
-    });
-
+    })
+    .AddCertificate();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
