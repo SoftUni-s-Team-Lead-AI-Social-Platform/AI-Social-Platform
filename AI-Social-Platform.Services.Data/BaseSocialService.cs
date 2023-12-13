@@ -25,8 +25,10 @@ namespace AI_Social_Platform.Services.Data
 
         public async Task CreateNotificationAsync(Guid receivingUserId, Guid creatingUserId, NotificationType notificationType, Guid? returningId)
         {
-            var user = await dbContext.Users.Where(u => u.Id == creatingUserId)
-                .Select(u => u.FirstName + " " + u.LastName).FirstOrDefaultAsync();
+            var user = await dbContext.Users
+                .Where(u => u.Id == creatingUserId)
+                .Select(u => u.FirstName + " " + u.LastName)
+                .FirstOrDefaultAsync();
             
             var notification = new Notification()
             {
@@ -47,7 +49,7 @@ namespace AI_Social_Platform.Services.Data
                     break;
                 case NotificationType.Follow:
                     notification.Content = $"{user} followed you";
-                    notification.RedirectUrl = $"/User/userDetails/{creatingUserId}";
+                    notification.RedirectUrl = $"/User/{creatingUserId}";
                     break;
                 case NotificationType.Share: 
                     notification.Content = $"{user} shared your publication";

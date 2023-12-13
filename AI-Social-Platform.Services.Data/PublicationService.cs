@@ -256,6 +256,12 @@ public class PublicationService : IPublicationService
             UserId = userId
         };
 
+        await baseSocialService.CreateNotificationAsync(
+                       publication.AuthorId, 
+                                  userId, 
+                                  NotificationType.Share,
+                                  publicationId);
+
         await dbContext.Shares.AddAsync(share);
         await dbContext.SaveChangesAsync();
     }
