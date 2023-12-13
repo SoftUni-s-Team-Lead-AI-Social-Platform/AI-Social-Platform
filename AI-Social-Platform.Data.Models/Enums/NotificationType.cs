@@ -1,10 +1,11 @@
 ﻿namespace AI_Social_Platform.Data.Models.Enums
 {
-    public enum NotificationTypes
+    public enum NotificationType
     {
         Follow,
         Like,
         Comment,
         Share,
+
     }
 }
