@@ -38,7 +38,9 @@ namespace AI_Social_Platform.Data.Models
         public bool IsRead { get; set; } = false;
 
         [Required]
-        public NotificationTypes NotificationType { get; set; }
+        public NotificationType NotificationType { get; set; }
 
+        [Required]
+        public string RedirectUrl { get; set; } = null!;
     }
 }
