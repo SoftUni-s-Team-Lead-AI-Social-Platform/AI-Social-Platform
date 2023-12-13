@@ -36,7 +36,7 @@ const api = async (method, url, data) => {
 
     if (!response.ok) {
         if (response.status === 403) {
-            localStorage.removeItem(tokenName);
+            localStorage.removeItem('accessToken');
         }
 
         throw result;
