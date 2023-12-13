@@ -1,5 +1,4 @@
-﻿
-using AI_Social_Platform.Data.Models.Publication;
+﻿using AI_Social_Platform.Data.Models.Publication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,9 +8,16 @@ namespace AI_Social_Platform.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Comment> builder)
         {
-            builder.HasOne(x => x.Publication)
+            builder
+                .HasOne(x => x.Publication)
                 .WithMany(x => x.Comments)
-                .HasForeignKey(x => x.PublicationId).OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(x => x.PublicationId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(x => x.User)
+                .WithMany(x => x.Comments)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

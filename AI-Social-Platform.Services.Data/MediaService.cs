@@ -6,6 +6,7 @@
     using AI_Social_Platform.Services.Data.Interfaces;
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
+    using System.Collections.Generic;
 
     public class MediaService : IMediaService
     {
@@ -15,23 +16,26 @@
             this.dbContext = dbContext;
         }
 
-        public async Task UploadMediaAsync(IFormFile file, string userId)
+        public async Task UploadMediaAsync(IFormFileCollection files, string userId)
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            foreach (var file in files)
             {
-                await file.CopyToAsync(memoryStream);
-
-                byte[] fileBytes = memoryStream.ToArray();
-
-                Media fileToUpload = new Media()
+                using (MemoryStream memoryStream = new MemoryStream())
                 {
-                    UserId = Guid.Parse(userId),
-                    DataFile = fileBytes
-                };
+                    await file.CopyToAsync(memoryStream);
 
-                await dbContext.MediaFiles.AddAsync(fileToUpload);
-                await dbContext.SaveChangesAsync();
+                    byte[] fileBytes = memoryStream.ToArray();
+
+                    Media fileToUpload = new Media()
+                    {
+                        UserId = Guid.Parse(userId),
+                        DataFile = fileBytes
+                    };
+
+                    await dbContext.MediaFiles.AddAsync(fileToUpload);
+                }
             }
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<Media> ReplaceOrEditMediaAsync(string id, MediaFormModel updatedMedia)
@@ -91,10 +95,47 @@
 
             return false;
         }
+
+        public async Task<Media> GetMediaAync(string mediaId)
+        {
+            Media? mediaToRerutn = await dbContext.MediaFiles
+                .FirstOrDefaultAsync(m => m.Id.ToString() == mediaId);
+
+            if (mediaToRerutn == null)
+            {
+                return null;
+            }
+
+            return mediaToRerutn;
+        }
+
+        public async Task<ICollection<Media>> GetAllMediaFilesByUserIdAsync(string userId)
+        {
+            List<Media> mediaFiles = await dbContext.MediaFiles
+                .Where(m => m.UserId.ToString() == userId && m.IsDeleted == false)
+                .ToListAsync();
+
+            return mediaFiles;
+        }
+
+        public async Task<ICollection<Media>> GetAllMediaByPublicationIdAsync(string publicationId)
+        {
+            var publicationIdGuid = Guid.Parse(publicationId);
+            List<Media> mediaFiles = await dbContext.MediaFiles
+                .Where(m => m.PublicationId == publicationIdGuid && m.IsDeleted == false)
+                .ToListAsync();
+
+            return mediaFiles;
+        }
+
+        public async Task<ICollection<Media>> GetAllMediaByUserIdAsync(string userId)
+        {
+            var userIdGuid = Guid.Parse(userId);
+            var mediaFiles = await dbContext.MediaFiles
+                .Where(m => m.UserId == userIdGuid)
+                .ToArrayAsync();
+
+            return mediaFiles;
+        }
     }
 }
-
-
-
-
-

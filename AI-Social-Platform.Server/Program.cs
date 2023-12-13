@@ -10,9 +10,11 @@ using AI_Social_Platform.Data.Models;
 using AI_Social_Platform.Extensions;
 using AI_Social_Platform.Services.Data;
 using AI_Social_Platform.Services.Data.Interfaces;
+using AI_Social_Platform.Services.Data.MappingProfiles;
 using AI_Social_Platform.Services.Data.Models;
-
+using Microsoft.OpenApi.Models;
 using static AI_Social_Platform.Common.GeneralApplicationConstants;
+using Microsoft.AspNetCore.Authentication.Certificate;
 
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -43,8 +45,8 @@ builder.Services.AddAuthentication(options =>
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
-    });
-
+    })
+    .AddCertificate(CertificateAuthenticationDefaults.AuthenticationScheme);
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
@@ -71,18 +73,52 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(typeof(MapperProfiles));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPublicationService, PublicationService>();
 builder.Services.AddScoped<IMediaService, MediaService>();
+builder.Services.AddScoped<ITopicService, TopicService>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(swagger =>
+{
+    //This is to generate the Default UI of Swagger Documentation
+    swagger.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "AISocialPlatform API",
+        Description = "An API for posting publications improved by ai"
+    });
+    // To Enable authorization using Swagger (JWT)
+    swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer' [space] and then your valid token in the text input below.Example:\r\n\r\nExample:\"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
+    });
+    swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 builder.Services.AddHttpContextAccessor();
-
 
 var app = builder.Build();
 
