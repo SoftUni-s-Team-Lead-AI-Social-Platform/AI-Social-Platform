@@ -2,17 +2,25 @@
 using AI_Social_Platform.Data.Models;
 using AI_Social_Platform.Data.Models.Enums;
 using AI_Social_Platform.Services.Data.Interfaces;
+using AI_Social_Platform.Services.Data.Models.SocialFeature;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using AutoMapper;
 
 namespace AI_Social_Platform.Services.Data
 {
     public class BaseSocialService : IBaseSocialService
     {
         private readonly ASPDbContext dbContext;
+        private readonly HttpContext httpContext;
+        private readonly IMapper mapper;
 
-        public BaseSocialService(ASPDbContext dbContext)
+        public BaseSocialService(ASPDbContext dbContext, IHttpContextAccessor accessor, IMapper mapper)
         {
             this.dbContext = dbContext;
+            httpContext = accessor.HttpContext!;
+            this.mapper = mapper;
         }
 
         public async Task CreateNotificationAsync(Guid receivingUserId, Guid creatingUserId, NotificationType notificationType, Guid? returningId)
@@ -49,6 +57,31 @@ namespace AI_Social_Platform.Services.Data
 
             await dbContext.Notifications.AddAsync(notification);
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<NotificationDto>> GetLatestNotificationsAsync()
+        {
+            int notificationListSize = 20;
+
+            return await mapper.ProjectTo<NotificationDto>
+            (dbContext.Notifications
+                .AsQueryable()
+                .Where(n => n.ReceivingUserId == GetUserId())
+                .OrderByDescending(n => n.DateCreated)
+                .Take(notificationListSize))
+                .ToArrayAsync();
+        }
+
+        private Guid GetUserId()
+        {
+            var userId = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value!;
+
+            if (userId == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            return Guid.Parse(userId);
         }
     }
 }
