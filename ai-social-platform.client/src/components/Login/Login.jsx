@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 
-import { LoginFormKeys } from '../../core/environments/costants';
+import { LoginFormKeys, PATH } from '../../core/environments/costants';
 import styles from './Login.module.css';
 import AuthContext from '../../contexts/authContext';
 import loginValidation from './loginValidation';
@@ -104,7 +104,7 @@ export default function Login() {
                     </form>
                     <section className={styles['create-account']}>
                         <p>Don't have an account?</p>
-                        <Link to={'/register'}>Create an account</Link>
+                        <Link to={PATH.register}>Create an account</Link>
                     </section>
                 </div>
                 <div className={styles['media-content']}>
