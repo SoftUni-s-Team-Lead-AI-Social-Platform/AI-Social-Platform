@@ -116,14 +116,14 @@ namespace AI_Social_Platform.Services.Data
         private async Task<IEnumerable> SearchTopicsAsync(string query, int take)
         {
             return 
-                await mapper.ProjectTo<SearchTopicDto>
-                    (dbContext.Topics
+                await mapper.ProjectTo<SearchTopicDto>(dbContext.Topics
                         .Include(t => t.Followers)
                         .Include(t => t.Publications)
-                    .AsQueryable()
-                    .Where(t => t.Title.Contains(query))
-                    .Take(take))
-                    .ToArrayAsync();
+                        .AsQueryable()
+                        .Where(t => t.Title.Contains(query))
+                        .OrderByDescending(t => t.Followers.Count)
+                        .Take(take))
+                        .ToArrayAsync();
         }
 
         private Guid GetUserId()
