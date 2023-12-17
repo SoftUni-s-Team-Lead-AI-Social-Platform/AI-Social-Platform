@@ -1,0 +1,134 @@
+import { useEffect, useState } from "react";
+import styles from "./Userprofile.css";
+import * as userService from "../../core/services/userService";
+import { Link } from "react-router-dom";
+import { useFormik } from "formik";
+import { RegisterFormKeys } from "../../core/environments/costants";
+import registerValidation from "./registerValidation";
+export default function Userprofileedit() {
+  const [userData, setUserData] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    userService
+      .getUserData()
+      .then((result) => {
+        console.log(result);
+        setUserData(result);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!userData) {
+    return <div>Loading...</div>;
+  }
+
+  const initialValues = {
+    [RegisterFormKeys.FirstName]: userData.firstName,
+    [RegisterFormKeys.LastName]: userData.lastName,
+    [RegisterFormKeys.Email]: userData.email,
+  };
+  const {
+    values,
+    errors,
+    isSubmitting,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+  } = useFormik({
+    initialValues,
+    onSubmit,
+    validationSchema: registerValidation,
+  });
+
+  function onSubmit(values) {
+    console.log(values);
+  }
+
+  return (
+    <div className="user-profile">
+      <article className="post-item">
+        <img
+          className="user-cover"
+          src="../../../public/images/pexels-aviv-perets-3274903.jpg"
+          alt="User cover photo"
+        />
+        <div className="user-info-wrapper">
+          <img
+            className="user-img"
+            src="../../../public/images/mamut.jpg"
+            alt="User profile pic"
+          />
+          <div className="user-info-text">
+            <p className="username-profile">
+              <form>
+                <label htmlFor="fname">First name:</label>
+                <br></br>
+                <input
+                  type="text"
+                  id="fname"
+                  name="fname"
+                  defaultValue={userData.FirstName}
+                />
+                <br></br>
+                <label htmlFor="lname">Last name:</label>
+                <br></br>
+                <input
+                  type="text"
+                  id="lname"
+                  name="lname"
+                  defaultValue={userData.LastName}
+                />
+              </form>
+            </p>
+            <p className="posted-user">
+              <label htmlFor="memail">E-mail:</label>
+              <br></br>
+
+              <input
+                type="email"
+                id="memail"
+                name="memail"
+                defaultValue={userData.Email}
+              />
+            </p>
+          </div>
+        </div>
+        <section className="content-description">
+          <p>
+            <label htmlFor="state">City: </label>
+            <input
+              type="number"
+              id="state"
+              name="state"
+              defaultValue={userData.StateId}
+            />
+            <label htmlFor="state">Country: </label>
+            <input
+              type="number"
+              id="country"
+              name="country"
+              defaultValue={userData.CountryId}
+            />
+          </p>
+          <p>Gender: {userData.Gender}</p>
+          <p>Birthday: {userData.Birthday}</p>
+          <p>Relationship Status:{userData.Relationship}</p>
+
+          <p>
+            <a href="#">Publications</a>
+          </p>
+          <p>
+            <a href="#">Friends</a>
+          </p>
+          <p>{userAll}</p>
+        </section>
+      </article>
+    </div>
+  );
+}
