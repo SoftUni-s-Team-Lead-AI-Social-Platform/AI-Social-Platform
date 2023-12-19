@@ -38,6 +38,7 @@ export const RegisterFormKeys = {
 export const ProfileFormKeys = {
     FirstName: 'firstName',
     LastName: 'lastName',
+    CoverPhoto: 'coverPhoto',
     Email: 'email',
     PhoneNumber: 'phoneNumber',
     Password: 'password',

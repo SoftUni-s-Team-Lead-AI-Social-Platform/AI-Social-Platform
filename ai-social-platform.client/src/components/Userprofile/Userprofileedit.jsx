@@ -15,6 +15,7 @@ export default function Userprofileedit() {
     userService
       .getUserData(userId)
       .then((result) => {
+        console.log(result);
         setUserData(result);
       })
       .catch((error) => console.log(error));
@@ -22,10 +23,11 @@ export default function Userprofileedit() {
   if (!userData) {
     return <div>Loading...</div>;
   }
-
+  console.log(userData.firstName);
   const initialValues = {
     [ProfileFormKeys.FirstName]: userData.firstName,
     [ProfileFormKeys.LastName]: userData.lastName,
+    [ProfileFormKeys.CoverPhoto]: userData.coverPhotoBase64,
     [ProfileFormKeys.Email]: "test@test.com",
     [ProfileFormKeys.PhoneNumber]: "12345678",
     [ProfileFormKeys.Country]: "bgbg",
@@ -60,6 +62,7 @@ export default function Userprofileedit() {
   const updateSubmitHandler = async ({
     firstName,
     lastName,
+    coverPhoto,
     phoneNumber,
     country,
     state,
@@ -72,6 +75,7 @@ export default function Userprofileedit() {
     await userService.update({
       firstName,
       lastName,
+      coverPhoto,
       phoneNumber,
       country,
       state,
@@ -103,7 +107,10 @@ export default function Userprofileedit() {
         <form onSubmit={handleSubmit}>
           <img
             className="user-cover"
-            src="../../../public/images/iceage.png"
+            src={
+              values[ProfileFormKeys.CoverPhoto] ||
+              "../../../public/images/Logo.png"
+            }
             alt="User cover photo"
           />
           <div className="user-info-wrapper">
@@ -112,6 +119,7 @@ export default function Userprofileedit() {
               src="../../../public/images/mamut.jpg"
               alt="User profile pic"
             />
+
             <div className="user-info-text">
               <div className="username-profile">
                 <label htmlFor={ProfileFormKeys.FirstName}></label>
@@ -215,6 +223,17 @@ export default function Userprofileedit() {
                 )}
             </section>
           </div>
+          <label htmlFor={ProfileFormKeys.CoverPhoto}>CoverPhoto:</label>
+
+          <input
+            type="text"
+            id={ProfileFormKeys.CoverPhoto}
+            name={ProfileFormKeys.CoverPhoto}
+            placeholder="Upload a photo..."
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values[ProfileFormKeys.CoverPhoto]}
+          />
           <button
             type="submit"
             className={styles["register-button"]}
