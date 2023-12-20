@@ -119,7 +119,6 @@ export default function Userprofileedit() {
               src="../../../public/images/mamut.jpg"
               alt="User profile pic"
             />
-
             <div className="user-info-text">
               <div className="username-profile">
                 <label htmlFor={ProfileFormKeys.FirstName}></label>
