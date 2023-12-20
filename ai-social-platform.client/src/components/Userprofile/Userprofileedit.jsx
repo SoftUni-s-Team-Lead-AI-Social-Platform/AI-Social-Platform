@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./Userprofile.css";
 import * as userService from "../../core/services/userService";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useFormik } from "formik";
+import { useFormik, Field } from "formik";
 import { PATH, ProfileFormKeys } from "../../core/environments/costants";
 import userProfileValidation from "./userProfileValidation";
 
@@ -27,21 +27,15 @@ export default function Userprofileedit() {
   const initialValues = {
     [ProfileFormKeys.FirstName]: userData.firstName,
     [ProfileFormKeys.LastName]: userData.lastName,
+    [ProfileFormKeys.PhoneNumber]: userData.phoneNumber,
+    [ProfileFormKeys.ProfilePicture]: userData.profilePictureBase64,
     [ProfileFormKeys.CoverPhoto]: userData.coverPhotoBase64,
-    [ProfileFormKeys.Email]: "test@test.com",
-    [ProfileFormKeys.PhoneNumber]: "12345678",
-    [ProfileFormKeys.Country]: "bgbg",
-    [ProfileFormKeys.State]: "sfsf",
-    [ProfileFormKeys.Gender]: 1,
-    [ProfileFormKeys.School]: "abc",
-    [ProfileFormKeys.Birthday]: "2023-12-17T16:29:38.153Z",
-    [ProfileFormKeys.Relationship]: 1,
-    [ProfileFormKeys.Schools]: [
-      {
-        name: "string",
-        state: "string",
-      },
-    ],
+    [ProfileFormKeys.Country]: userData.country,
+    [ProfileFormKeys.State]: userData.state,
+    [ProfileFormKeys.Gender]: userData.gender,
+    [ProfileFormKeys.School]: userData.school,
+    [ProfileFormKeys.Birthday]: userData.birthday,
+    [ProfileFormKeys.Relationship]: userData.relationship,
   };
 
   const {
@@ -62,8 +56,9 @@ export default function Userprofileedit() {
   const updateSubmitHandler = async ({
     firstName,
     lastName,
-    coverPhoto,
     phoneNumber,
+    profilePicture,
+    coverPhoto,
     country,
     state,
     gender,
@@ -75,8 +70,9 @@ export default function Userprofileedit() {
     await userService.update({
       firstName,
       lastName,
-      coverPhoto,
       phoneNumber,
+      profilePicture,
+      coverPhoto,
       country,
       state,
       gender,
@@ -121,7 +117,35 @@ export default function Userprofileedit() {
             />
             <div className="user-info-text">
               <div className="username-profile">
-                <label htmlFor={ProfileFormKeys.FirstName}></label>
+                <label htmlFor={ProfileFormKeys.ProfilePicture}>
+                  Change the ProfilePicture:
+                </label>
+
+                <input
+                  type="text"
+                  id={ProfileFormKeys.ProfilePicture}
+                  name={ProfileFormKeys.ProfilePicture}
+                  placeholder="Upload a photo..."
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values[ProfileFormKeys.ProfilePicture]}
+                />
+                <div>
+                  <label htmlFor={ProfileFormKeys.CoverPhoto}>
+                    Change the CoverPhoto:
+                  </label>
+
+                  <input
+                    type="text"
+                    id={ProfileFormKeys.CoverPhoto}
+                    name={ProfileFormKeys.CoverPhoto}
+                    placeholder="Upload a photo..."
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values[ProfileFormKeys.CoverPhoto]}
+                  />
+                </div>
+                <label htmlFor={ProfileFormKeys.FirstName}>First Name </label>
                 <input
                   className={
                     errors[ProfileFormKeys.FirstName] &&
@@ -146,7 +170,7 @@ export default function Userprofileedit() {
                   )}
 
                 <div className={styles["last-name"]}>
-                  <label htmlFor={ProfileFormKeys.LastName}></label>
+                  <label htmlFor={ProfileFormKeys.LastName}>Last Name </label>
                   <input
                     className={
                       errors[ProfileFormKeys.LastName] &&
@@ -169,70 +193,212 @@ export default function Userprofileedit() {
                       </p>
                     )}
                 </div>
+
+                <section className={styles["phone-number-wrapper"]}>
+                  <label htmlFor={ProfileFormKeys.PhoneNumber}>
+                    Phone Number
+                  </label>
+                  <input
+                    className={
+                      errors[ProfileFormKeys.PhoneNumber] &&
+                      touched[ProfileFormKeys.PhoneNumber]
+                        ? styles["input-field-error"]
+                        : styles["input-field"]
+                    }
+                    type="text"
+                    name={ProfileFormKeys.PhoneNumber}
+                    id={ProfileFormKeys.PhoneNumber}
+                    placeholder="Phone number"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values[ProfileFormKeys.PhoneNumber]}
+                  />
+
+                  {errors[ProfileFormKeys.PhoneNumber] &&
+                    touched[ProfileFormKeys.PhoneNumber] && (
+                      <p className={styles["error-message"]}>
+                        {errors[ProfileFormKeys.PhoneNumber]}
+                      </p>
+                    )}
+                </section>
+
+                <section className={styles["phone-number-wrapper"]}>
+                  <label htmlFor={ProfileFormKeys.Country}>Country </label>
+                  <input
+                    className={
+                      errors[ProfileFormKeys.Country] &&
+                      touched[ProfileFormKeys.Country]
+                        ? styles["input-field-error"]
+                        : styles["input-field"]
+                    }
+                    type="text"
+                    name={ProfileFormKeys.Country}
+                    id={ProfileFormKeys.Country}
+                    placeholder="Country"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values[ProfileFormKeys.Country]}
+                  />
+
+                  {errors[ProfileFormKeys.Country] &&
+                    touched[ProfileFormKeys.Country] && (
+                      <p className={styles["error-message"]}>
+                        {errors[ProfileFormKeys.Country]}
+                      </p>
+                    )}
+                </section>
+
+                <section className={styles["phone-number-wrapper"]}>
+                  <label htmlFor={ProfileFormKeys.State}>State </label>
+                  <input
+                    className={
+                      errors[ProfileFormKeys.State] &&
+                      touched[ProfileFormKeys.State]
+                        ? styles["input-field-error"]
+                        : styles["input-field"]
+                    }
+                    type="text"
+                    name={ProfileFormKeys.State}
+                    id={ProfileFormKeys.State}
+                    placeholder="State"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values[ProfileFormKeys.State]}
+                  />
+
+                  {errors[ProfileFormKeys.State] &&
+                    touched[ProfileFormKeys.State] && (
+                      <p className={styles["error-message"]}>
+                        {errors[ProfileFormKeys.State]}
+                      </p>
+                    )}
+                </section>
+
+                <section className={styles["phone-number-wrapper"]}>
+                  <label htmlFor={ProfileFormKeys.Gender}>Gender </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name={ProfileFormKeys.Gender}
+                      id={ProfileFormKeys.Gender}
+                      value="Man"
+                      checked={values[ProfileFormKeys.Gender] === "Man"}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    Man
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name={ProfileFormKeys.Gender}
+                      id={ProfileFormKeys.Gender}
+                      value="Woman"
+                      checked={values[ProfileFormKeys.Gender] === "Woman"}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    Woman
+                  </label>
+                </section>
+
+                <section className={styles["phone-number-wrapper"]}>
+                  <label htmlFor={ProfileFormKeys.School}>School </label>
+                  <input
+                    className={
+                      errors[ProfileFormKeys.School] &&
+                      touched[ProfileFormKeys.School]
+                        ? styles["input-field-error"]
+                        : styles["input-field"]
+                    }
+                    type="text"
+                    name={ProfileFormKeys.School}
+                    id={ProfileFormKeys.School}
+                    placeholder="School"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values[ProfileFormKeys.School]}
+                  />
+
+                  {errors[ProfileFormKeys.School] &&
+                    touched[ProfileFormKeys.School] && (
+                      <p className={styles["error-message"]}>
+                        {errors[ProfileFormKeys.School]}
+                      </p>
+                    )}
+                </section>
+
+                <section className={styles["phone-number-wrapper"]}>
+                  <label htmlFor={ProfileFormKeys.Birthday}>Birthday </label>
+                  <input
+                    className={
+                      errors[ProfileFormKeys.Birthday] &&
+                      touched[ProfileFormKeys.Birthday]
+                        ? styles["input-field-error"]
+                        : styles["input-field"]
+                    }
+                    type="text"
+                    name={ProfileFormKeys.Birthday}
+                    id={ProfileFormKeys.Birthday}
+                    placeholder="Birthday"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values[ProfileFormKeys.Birthday]}
+                  />
+
+                  {errors[ProfileFormKeys.Birthday] &&
+                    touched[ProfileFormKeys.Birthday] && (
+                      <p className={styles["error-message"]}>
+                        {errors[ProfileFormKeys.Birthday]}
+                      </p>
+                    )}
+                </section>
+
+                <section className={styles["phone-number-wrapper"]}>
+                  <label htmlFor={ProfileFormKeys.Relationship}>
+                    Relationship
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name={ProfileFormKeys.Relationship}
+                      id={ProfileFormKeys.Relationship}
+                      value="0"
+                      checked={values[ProfileFormKeys.Relationship] === 0}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    0
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name={ProfileFormKeys.Relationship}
+                      id={ProfileFormKeys.Relationship}
+                      value="1"
+                      checked={values[ProfileFormKeys.Relationship] === 1}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    1
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name={ProfileFormKeys.Relationship}
+                      id={ProfileFormKeys.Relationship}
+                      value="2"
+                      checked={values[ProfileFormKeys.Relationship] === 2}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    2
+                  </label>
+                </section>
               </div>
             </div>
-            <section className={styles["phone-number-wrapper"]}>
-              <label htmlFor={ProfileFormKeys.PhoneNumber}></label>
-              <input
-                className={
-                  errors[ProfileFormKeys.PhoneNumber] &&
-                  touched[ProfileFormKeys.PhoneNumber]
-                    ? styles["input-field-error"]
-                    : styles["input-field"]
-                }
-                type="text"
-                name={ProfileFormKeys.PhoneNumber}
-                id={ProfileFormKeys.PhoneNumber}
-                placeholder="Phone number"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values[ProfileFormKeys.PhoneNumber]}
-              />
-
-              {errors[ProfileFormKeys.Email] &&
-                touched[ProfileFormKeys.Email] && (
-                  <p className={styles["error-message"]}>
-                    {errors[ProfileFormKeys.Email]}
-                  </p>
-                )}
-            </section>
-            <section className={styles["phone-number-wrapper"]}>
-              <label htmlFor={ProfileFormKeys.Country}></label>
-              <input
-                className={
-                  errors[ProfileFormKeys.Country] &&
-                  touched[ProfileFormKeys.Country]
-                    ? styles["input-field-error"]
-                    : styles["input-field"]
-                }
-                type="text"
-                name={ProfileFormKeys.Country}
-                id={ProfileFormKeys.Country}
-                placeholder="Country"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values[ProfileFormKeys.Country]}
-              />
-
-              {errors[ProfileFormKeys.Country] &&
-                touched[ProfileFormKeys.Country] && (
-                  <p className={styles["error-message"]}>
-                    {errors[ProfileFormKeys.Country]}
-                  </p>
-                )}
-            </section>
           </div>
-          <label htmlFor={ProfileFormKeys.CoverPhoto}>CoverPhoto:</label>
 
-          <input
-            type="text"
-            id={ProfileFormKeys.CoverPhoto}
-            name={ProfileFormKeys.CoverPhoto}
-            placeholder="Upload a photo..."
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values[ProfileFormKeys.CoverPhoto]}
-          />
           <button
             type="submit"
             className={styles["register-button"]}
