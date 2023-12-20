@@ -7,7 +7,6 @@ export const PATH = {
     logout: '/users/logout',
     profile: '/profile/:userId',
     profileedit: '/profileedit/:userId',
-
 };
 
 export const endpoints = {
@@ -40,7 +39,7 @@ export const ProfileFormKeys = {
     FirstName: 'firstName',
     LastName: 'lastName',
     Email: 'email',
-    PhoneNumber: 'phone',
+    PhoneNumber: 'phoneNumber',
     Password: 'password',
     ConfirmPassword: 'confirmPassword',
     Country: 'country',
@@ -51,3 +50,4 @@ export const ProfileFormKeys = {
     Relationship: 0,
     Schools: [{}],
   };
+
