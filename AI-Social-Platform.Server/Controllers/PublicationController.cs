@@ -38,11 +38,10 @@ public class PublicationController : ControllerBase
     {
         try
         {
-            var createdPublication = await publicationService.CreatePublicationAsync(dto);
+            await publicationService.CreatePublicationAsync(dto);
             return CreatedAtAction(nameof(Create), new
             {
-                message = PublicationSuccessfullyCreated,
-                publication = createdPublication
+                message = PublicationSuccessfullyCreated
             });
         }
         catch (Exception ex)

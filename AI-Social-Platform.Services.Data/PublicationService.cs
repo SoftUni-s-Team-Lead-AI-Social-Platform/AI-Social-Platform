@@ -62,7 +62,7 @@ public class PublicationService : IPublicationService
         return mapper.Map<PublicationDto>(publication);
     }
     
-    public async Task<PublicationDto> CreatePublicationAsync(PublicationFormDto dto)
+    public async Task CreatePublicationAsync(PublicationFormDto dto)
     {
         var userId = GetUserId();
         var publication = mapper.Map<Publication>(dto);
@@ -70,19 +70,6 @@ public class PublicationService : IPublicationService
 
        await dbContext.AddAsync(publication);
        await dbContext.SaveChangesAsync();
-
-       var publicationDto = mapper.Map<PublicationDto>(publication);
-       publicationDto.Author = await dbContext.Users
-           .Where(a => a.Id == userId)
-           .Select(a => 
-               new UserDto {Id = a.Id, FirstName = a.FirstName, LastName = a.LastName, UserName = a.UserName})
-           .FirstOrDefaultAsync();
-
-       publicationDto.Topic = await dbContext.Topics.Where(t => t.Id == publication.TopicId)
-           .Select(t => new TopicDto { Id = t.Id, Title = t.Title, })
-           .FirstOrDefaultAsync();
-
-       return publicationDto;
     }
     
     public async Task UpdatePublicationAsync(PublicationFormDto dto, Guid id)
