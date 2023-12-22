@@ -281,7 +281,7 @@ export default function Userprofileedit() {
                       type="radio"
                       name={ProfileFormKeys.Gender}
                       id={ProfileFormKeys.Gender}
-                      value="Man"
+                      value="0"
                       checked={values[ProfileFormKeys.Gender] === "Man"}
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -293,8 +293,8 @@ export default function Userprofileedit() {
                       type="radio"
                       name={ProfileFormKeys.Gender}
                       id={ProfileFormKeys.Gender}
-                      value="Woman"
-                      checked={values[ProfileFormKeys.Gender] === "Woman"}
+                      value="1"
+                      checked={values[ProfileFormKeys.Gender] === "1"}
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
@@ -364,7 +364,7 @@ export default function Userprofileedit() {
                       name={ProfileFormKeys.Relationship}
                       id={ProfileFormKeys.Relationship}
                       value="0"
-                      checked={values[ProfileFormKeys.Relationship] === 0}
+                      checked={values[ProfileFormKeys.Relationship] === "0"}
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
@@ -376,7 +376,7 @@ export default function Userprofileedit() {
                       name={ProfileFormKeys.Relationship}
                       id={ProfileFormKeys.Relationship}
                       value="1"
-                      checked={values[ProfileFormKeys.Relationship] === 1}
+                      checked={values[ProfileFormKeys.Relationship] === "1"}
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
@@ -388,7 +388,7 @@ export default function Userprofileedit() {
                       name={ProfileFormKeys.Relationship}
                       id={ProfileFormKeys.Relationship}
                       value="2"
-                      checked={values[ProfileFormKeys.Relationship] === 2}
+                      checked={values[ProfileFormKeys.Relationship] === "2"}
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
