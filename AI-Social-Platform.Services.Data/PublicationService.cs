@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using AI_Social_Platform.Data;
+﻿using AI_Social_Platform.Data;
 using AI_Social_Platform.Data.Models.Publication;
 using AI_Social_Platform.Services.Data.Interfaces;
 using AI_Social_Platform.Services.Data.Models.PublicationDtos;
@@ -17,17 +16,14 @@ public class PublicationService : IPublicationService
 {
     private readonly ASPDbContext dbContext;
     private readonly HttpContext httpContext;
-    private readonly IBaseSocialService baseSocialService;
     private readonly IMapper mapper;
 
     public PublicationService(ASPDbContext dbContext, 
         IHttpContextAccessor accessor,
-        IMapper mapper,
-        IBaseSocialService baseSocialService)
+        IMapper mapper)
     {
         this.mapper = mapper;
         this.dbContext = dbContext;
-        this.baseSocialService = baseSocialService;
         httpContext = accessor.HttpContext!;
     }
     public async Task<IndexPublicationDto> GetPublicationsAsync(int pageNum)

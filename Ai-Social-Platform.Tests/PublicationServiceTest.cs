@@ -67,7 +67,7 @@ namespace Ai_Social_Platform.Tests
             });
             mapper = config.CreateMapper();
             baseSocialService = new BaseSocialService(dbContext, httpContextAccessor, mapper);
-            publicationService = new PublicationService(dbContext, httpContextAccessor, mapper, baseSocialService);
+            publicationService = new PublicationService(dbContext, httpContextAccessor, mapper);
         }
 
         [TearDown]
@@ -373,7 +373,7 @@ namespace Ai_Social_Platform.Tests
         public async Task UpdateCommentAsync_ValidDtoAndId_UpdatesComment()
         {
             // Arrange
-            var dto = new CommentFormDto()
+            var dto = new CommentEditDto()
             {
                 Content = "This is a test comment"
             };
@@ -391,7 +391,7 @@ namespace Ai_Social_Platform.Tests
         public async Task UpdateCommentAsync_ThrowsNullReferenceException()
         {
             // Arrange
-            var dto = new CommentFormDto()
+            var dto = new CommentEditDto()
             {
                 Content = "This is a test comment"
             };
@@ -411,7 +411,7 @@ namespace Ai_Social_Platform.Tests
         public async Task UpdateCommentAsync_ThrowsAccessViolationExceptionException()
         {
             // Arrange
-            var dto = new CommentFormDto()
+            var dto = new CommentEditDto()
             {
                 Content = "This is a test comment"
             };
