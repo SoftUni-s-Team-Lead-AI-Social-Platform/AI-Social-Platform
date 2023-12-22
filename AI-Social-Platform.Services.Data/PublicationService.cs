@@ -5,9 +5,7 @@ using AI_Social_Platform.Services.Data.Models.PublicationDtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using AI_Social_Platform.Data.Models.Enums;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using static AI_Social_Platform.Common.ExceptionMessages.PublicationExceptionMessages;
 
 namespace AI_Social_Platform.Services.Data;
@@ -29,20 +27,29 @@ public class PublicationService : IPublicationService
         this.baseSocialService = baseSocialService;
         httpContext = accessor.HttpContext!;
     }
-    public async Task<IEnumerable<PublicationDto>> GetPublicationsAsync(int pageNum)
+    public async Task<IndexPublicationDto> GetPublicationsAsync(int pageNum)
     {
         int pageSize = 10;
         if (pageNum <= 0) pageNum = 1;
         int skip = (pageNum - 1) * pageSize;
+        int totalPublications = await dbContext.Publications.CountAsync();
+        int publicationsLeft = totalPublications - (pageNum * pageSize) < 0 ? 0 : totalPublications - (pageNum * pageSize);
 
-        return await mapper.ProjectTo<PublicationDto>
+        var indexPublicationDto = new IndexPublicationDto
+        {
+            Publications = await mapper.ProjectTo<PublicationDto>
             (dbContext.Publications
                 .AsQueryable()
                 .OrderByDescending(p => p.LatestActivity)
                 .Skip(skip)
                 .Take(pageSize)
-            )
-            .ToArrayAsync();
+                .Include(p => p.Author)
+            ).ToArrayAsync(),
+            CurrentPage = pageNum,
+            TotalPages = (int)Math.Ceiling((double)totalPublications / pageSize),
+            PublicationsLeft = publicationsLeft
+    };
+        return indexPublicationDto;
     }
 
     public async Task<PublicationDto> GetPublicationAsync(Guid id)

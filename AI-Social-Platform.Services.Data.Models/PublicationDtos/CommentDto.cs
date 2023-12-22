@@ -3,5 +3,7 @@
     public class CommentDto : BaseSocialDto
     { 
         public string Content { get; set; } = null!;
+
+        public UserDto.UserDto User { get; set; } = null!;
     }
 }

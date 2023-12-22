@@ -16,5 +16,7 @@
 
         //Relations
         public Guid AuthorId { get; set; }
+
+        public UserDto.UserDto Author { get; set; } = null!;
     }
 }

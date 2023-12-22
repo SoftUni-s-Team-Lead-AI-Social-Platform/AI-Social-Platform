@@ -20,7 +20,7 @@ public class PublicationController : ControllerBase
     }
 
     [HttpGet(Name = "all")]
-    public async Task<IEnumerable<PublicationDto>> All(int page)
+    public async Task<IndexPublicationDto> All(int page)
     {
         try
         {
