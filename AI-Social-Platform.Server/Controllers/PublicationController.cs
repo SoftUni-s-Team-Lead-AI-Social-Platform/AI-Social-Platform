@@ -38,8 +38,12 @@ public class PublicationController : ControllerBase
     {
         try
         {
-            await publicationService.CreatePublicationAsync(dto);
-            return CreatedAtAction(nameof(Create), new { message = PublicationSuccessfullyCreated });
+            var createdPublication = await publicationService.CreatePublicationAsync(dto);
+            return CreatedAtAction(nameof(Create), new
+            {
+                message = PublicationSuccessfullyCreated,
+                publication = createdPublication
+            });
         }
         catch (Exception ex)
         {
@@ -71,7 +75,7 @@ public class PublicationController : ControllerBase
         try
         {
             await publicationService.DeletePublicationAsync(id);
-            return Ok(PublicationSuccessfullyDeleted);
+            return Ok(new {message = PublicationSuccessfullyDeleted });
         }
         catch (NullReferenceException ex)
         {
@@ -93,7 +97,7 @@ public class PublicationController : ControllerBase
         try
         {
             await publicationService.UpdatePublicationAsync(dto, id);
-            return Ok(PublicationSuccessfullyEdited);
+            return Ok(new {message = PublicationSuccessfullyEdited });
         }
         catch (NullReferenceException ex)
         {

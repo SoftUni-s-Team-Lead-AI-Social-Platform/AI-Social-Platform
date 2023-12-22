@@ -5,9 +5,8 @@ namespace AI_Social_Platform.Services.Data.Models.PublicationDtos
 {
     public class PublicationFormDto
     {
-        [Required]
-        [StringLength(PublicationContentMaxLength, MinimumLength = 1)]
-        public string Content { get; set; } = null!;
+        [StringLength(PublicationContentMaxLength, MinimumLength = 0)]
+        public string Content { get; set; } = "";
 
         public Guid? TopicId { get; set; }
     }

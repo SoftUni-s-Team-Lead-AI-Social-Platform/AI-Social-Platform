@@ -1,10 +1,13 @@
-﻿using AI_Social_Platform.Data;
+﻿using System.Runtime.InteropServices;
+using AI_Social_Platform.Data;
 using AI_Social_Platform.Data.Models.Publication;
 using AI_Social_Platform.Services.Data.Interfaces;
 using AI_Social_Platform.Services.Data.Models.PublicationDtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using AI_Social_Platform.Services.Data.Models.SocialFeature;
+using AI_Social_Platform.Services.Data.Models.UserDto;
 using AutoMapper;
 using static AI_Social_Platform.Common.ExceptionMessages.PublicationExceptionMessages;
 
@@ -63,7 +66,7 @@ public class PublicationService : IPublicationService
         return mapper.Map<PublicationDto>(publication);
     }
     
-    public async Task CreatePublicationAsync(PublicationFormDto dto)
+    public async Task<PublicationDto> CreatePublicationAsync(PublicationFormDto dto)
     {
         var userId = GetUserId();
         var publication = mapper.Map<Publication>(dto);
@@ -71,6 +74,19 @@ public class PublicationService : IPublicationService
 
        await dbContext.AddAsync(publication);
        await dbContext.SaveChangesAsync();
+
+       var publicationDto = mapper.Map<PublicationDto>(publication);
+       publicationDto.Author = await dbContext.Users
+           .Where(a => a.Id == userId)
+           .Select(a => 
+               new UserDto {Id = a.Id, FirstName = a.FirstName, LastName = a.LastName, UserName = a.UserName})
+           .FirstOrDefaultAsync();
+
+       publicationDto.Topic = await dbContext.Topics.Where(t => t.Id == publication.TopicId)
+           .Select(t => new TopicDto { Id = t.Id, Title = t.Title, })
+           .FirstOrDefaultAsync();
+
+       return publicationDto;
     }
     
     public async Task UpdatePublicationAsync(PublicationFormDto dto, Guid id)

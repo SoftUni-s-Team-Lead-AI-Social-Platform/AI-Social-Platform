@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AI_Social_Platform.Services.Data.Models.SocialFeature
+﻿namespace AI_Social_Platform.Services.Data.Models.SocialFeature
 {
     public class TopicDto
     {
