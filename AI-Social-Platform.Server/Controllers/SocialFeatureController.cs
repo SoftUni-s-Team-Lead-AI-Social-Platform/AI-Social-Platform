@@ -1,6 +1,5 @@
 ﻿using AI_Social_Platform.Services.Data;
 using AI_Social_Platform.Services.Data.Interfaces;
-using AI_Social_Platform.Services.Data.Models.PublicationDtos;
 using AI_Social_Platform.Services.Data.Models.SocialFeature;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

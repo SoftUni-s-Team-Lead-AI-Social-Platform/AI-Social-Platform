@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using AI_Social_Platform.Data.Models.Enums;
-using AI_Social_Platform.Services.Data.Models.PublicationDtos;
 using AI_Social_Platform.Services.Data.Models.SocialFeature;
 
 namespace AI_Social_Platform.Services.Data.Interfaces
