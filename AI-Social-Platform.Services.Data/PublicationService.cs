@@ -43,7 +43,6 @@ public class PublicationService : IPublicationService
                 .OrderByDescending(p => p.LatestActivity)
                 .Skip(skip)
                 .Take(pageSize)
-                .Include(p => p.Author)
             ).ToArrayAsync(),
             CurrentPage = pageNum,
             TotalPages = (int)Math.Ceiling((double)totalPublications / pageSize),
