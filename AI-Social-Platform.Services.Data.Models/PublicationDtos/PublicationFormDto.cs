@@ -8,5 +8,7 @@ namespace AI_Social_Platform.Services.Data.Models.PublicationDtos
         [Required]
         [StringLength(PublicationContentMaxLength, MinimumLength = 1)]
         public string Content { get; set; } = null!;
+
+        public Guid? TopicId { get; set; }
     }
 }

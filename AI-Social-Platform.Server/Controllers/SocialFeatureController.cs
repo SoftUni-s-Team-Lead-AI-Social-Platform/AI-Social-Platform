@@ -104,7 +104,7 @@ namespace AI_Social_Platform.Server.Controllers
 
 
         [HttpPut("comment/{commentId}", Name = "updateComment")]
-        public async Task<IActionResult> UpdateComment(CommentFormDto dto, Guid commentId)
+        public async Task<IActionResult> UpdateComment(CommentEditDto dto, Guid commentId)
         {
             try
             {

@@ -89,6 +89,7 @@ public class PublicationService : IPublicationService
         }
 
         publication.Content = dto.Content;
+        publication.TopicId = dto.TopicId;
         publication.DateModified = DateTime.UtcNow;
         publication.LatestActivity = DateTime.UtcNow;
         await dbContext.SaveChangesAsync();

@@ -153,7 +153,7 @@ namespace AI_Social_Platform.Services.Data
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateCommentAsync(CommentFormDto dto, Guid id)
+        public async Task UpdateCommentAsync(CommentEditDto dto, Guid id)
         {
             var comment = await dbContext.Comments.FindAsync(id);
             var userId = GetUserId();
