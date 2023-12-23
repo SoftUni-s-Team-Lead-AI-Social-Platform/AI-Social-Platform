@@ -15,8 +15,8 @@ namespace AI_Social_Platform.Services.Data.Interfaces
         public Task<IEnumerable> SearchAsync(string type, string query);
 
         //Comments
-        public Task<IEnumerable<CommentDto>> GetCommentsOnPublicationAsync(Guid publicationId);
-        public Task CreateCommentAsync(CommentFormDto dto);
+        public Task<IndexCommentDto> GetCommentsOnPublicationAsync(Guid publicationId, int page);
+        public Task<CommentDto> CreateCommentAsync(CommentFormDto dto);
         public Task UpdateCommentAsync(CommentEditDto dto, Guid id);
         public Task DeleteCommentAsync(Guid id);
 

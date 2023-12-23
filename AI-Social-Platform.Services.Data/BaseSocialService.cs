@@ -13,7 +13,9 @@ using AI_Social_Platform.Services.Data.Models.SocialFeature;
 using AI_Social_Platform.Data.Models.Publication;
 using AI_Social_Platform.Services.Data.Models.PublicationDtos;
 using AI_Social_Platform.Services.Data.Models.UserDto;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using static AI_Social_Platform.Common.ExceptionMessages.PublicationExceptionMessages;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace AI_Social_Platform.Services.Data
 {
@@ -131,7 +133,7 @@ namespace AI_Social_Platform.Services.Data
         }
 
         //Comment
-        public async Task CreateCommentAsync(CommentFormDto dto)
+        public async Task<CommentDto> CreateCommentAsync(CommentFormDto dto)
         {
             var publication = await dbContext.Publications
                 .FirstOrDefaultAsync(p => p.Id == dto.PublicationId);
@@ -151,6 +153,22 @@ namespace AI_Social_Platform.Services.Data
 
             await dbContext.Comments.AddAsync(comment);
             await dbContext.SaveChangesAsync();
+
+            var user = await dbContext.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new UserDto()
+                {
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    ProfilePictureBase64 = null,
+                })
+                .FirstOrDefaultAsync();
+            var dtoReturn = mapper.Map<CommentDto>(comment);
+            dtoReturn.User = user!;
+
+            return dtoReturn;
         }
 
         public async Task UpdateCommentAsync(CommentEditDto dto, Guid id)
@@ -189,13 +207,35 @@ namespace AI_Social_Platform.Services.Data
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<CommentDto>> GetCommentsOnPublicationAsync(Guid publicationId)
+        public async Task<IndexCommentDto> GetCommentsOnPublicationAsync(Guid publicationId, int pageNum)
         {
-            return await dbContext.Comments
+            int pageSize = 5;
+            int take = pageNum == 1 ? 2 : 5;
+            int skip = (pageNum - 1) * pageSize;
+            int totalComments = await dbContext.Comments.Where(p => p.PublicationId == publicationId).CountAsync();
+            int commentsLeft = totalComments - skip - take < 0 ? 0 : totalComments - skip - take;
+            switch (take)
+            {
+                case 2: skip = 0; break;
+                case 5 when pageNum == 2: skip = 2; break;
+                case 5 when pageNum > 2: skip += 2; break;
+            }
+
+            var comments = await dbContext.Comments
                 .Where(c => c.PublicationId == publicationId)
                 .ProjectTo<CommentDto>(mapper.ConfigurationProvider)
                 .OrderByDescending(c => c.DateCreated)
+                .Skip(skip)
+                .Take(take)
                 .ToListAsync();
+
+            return new IndexCommentDto()
+            {
+                Comments = comments,
+                CurrentPage = pageNum,
+                TotalPages = (int)Math.Ceiling((double)totalComments / pageSize),
+                CommentsLeft = commentsLeft
+            };
         }
 
         //Like

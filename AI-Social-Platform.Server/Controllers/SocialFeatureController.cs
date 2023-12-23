@@ -49,11 +49,11 @@ namespace AI_Social_Platform.Server.Controllers
         }
 
         [HttpGet("comment/{publicationId}", Name = "getComment")]
-        public async Task<IEnumerable<CommentDto>> GetComments(Guid publicationId)
+        public async Task<IndexCommentDto> GetComments(Guid publicationId, int page)
         {
             try
             {
-                var comments = await baseSocialService.GetCommentsOnPublicationAsync(publicationId);
+                var comments = await baseSocialService.GetCommentsOnPublicationAsync(publicationId, page);
                 return comments;
             }
             catch (Exception ex)
@@ -67,8 +67,12 @@ namespace AI_Social_Platform.Server.Controllers
         {
             try
             {
-                await baseSocialService.CreateCommentAsync(dto);
-                return CreatedAtAction(nameof(CreateComment), new { Message = CommentSuccessfullyCreated });
+                var comment = await baseSocialService.CreateCommentAsync(dto);
+                return CreatedAtAction(nameof(CreateComment), new
+                {
+                    Message = CommentSuccessfullyCreated,
+                    Comment = comment
+                });
             }
             catch (NullReferenceException ex)
             {
