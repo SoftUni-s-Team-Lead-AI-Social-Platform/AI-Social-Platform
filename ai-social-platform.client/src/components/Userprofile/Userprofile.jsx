@@ -29,6 +29,16 @@ export default function Userprofile() {
     return <div>Loading...</div>;
   }
 
+  const date = new Date(userData.birthday);
+
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Тъй като месеците са от 0 до 11
+  const year = date.getFullYear();
+
+  const formattedBirthday = `${day < 10 ? "0" : ""}${day}/${
+    month < 10 ? "0" : ""
+  }${month}/${year}`;
+
   return (
     <div className="user-profile">
       <article className="post-item">
@@ -44,14 +54,27 @@ export default function Userprofile() {
             alt="User profile pic"
           />
           <div className="user-info-text">
+            <p className="cover-profile">User Profile</p>
+
             <p className="username-profile">
               {userData.firstName} {userData.lastName}
             </p>
             <p className="posted-user">
               E-mail:
-              <a href="mailto: {userData?.email}"> {userData?.email}</a>
+              <a href="mailto: {userData?.userName}"> {userData?.userName}</a>
             </p>
-            <p>GSM: {userData.phoneNumber}</p>
+            <p className="posted-user">GSM: {userData.phoneNumber}</p>
+            <p className="posted-user">Country: {userData.country}</p>
+            <p className="posted-user">State: {userData.state}</p>
+            <p className="posted-user">Gender: {userData.gender}</p>
+            <p className="posted-user">School: {userData.school}</p>
+            <p className="posted-user">Birthday: {formattedBirthday}</p>
+            <p className="posted-user">
+              Relationship Status: {userData.relationship}
+            </p>
+            <p className="posted-user">
+              <a href="#">Friends</a>
+            </p>
           </div>
 
           <div className="edit">
@@ -64,23 +87,6 @@ export default function Userprofile() {
             </Link>
           </div>
         </div>
-        <section className="content-description">
-          <p>
-            City, Country: {userData.state}, {userData.country}
-          </p>
-          <p>Schools: {userData.userSchools}</p>
-          <p>
-            Birthday: {userData.birthday}, Gender: {userData.gender}
-          </p>
-          <p>Relationship Status: {userData.relationship}</p>
-
-          <p>
-            <a href="#">Publications</a>
-          </p>
-          <p>
-            <a href="#">Friends</a>
-          </p>
-        </section>
       </article>
     </div>
   );

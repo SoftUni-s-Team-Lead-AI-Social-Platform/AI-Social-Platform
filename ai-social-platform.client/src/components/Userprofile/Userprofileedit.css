@@ -1,0 +1,27 @@
+a:visited {
+    color: #004aad;
+}
+
+
+.error-message {
+    color: #a10000;
+    font-size: 0.9em;
+    text-align: left;
+    padding-left: 0.2em;
+    margin-top: 0.2em;
+}
+
+.name-input {
+    font-size: 1em;
+    padding: 0em 0 0em 0em;
+    border: 1px solid #aaa;
+    width: 89%;
+}
+
+.name-input-error {
+    font-size: 1em;
+    padding: 0em 0 0em 0em;
+    border: 1px solid #a10000;
+    border-radius: 0.3em;
+    width: 89%;
+}

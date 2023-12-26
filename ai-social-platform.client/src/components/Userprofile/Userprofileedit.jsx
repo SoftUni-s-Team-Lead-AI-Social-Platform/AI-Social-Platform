@@ -23,7 +23,15 @@ export default function Userprofileedit() {
   if (!userData) {
     return <div>Loading...</div>;
   }
-  console.log(userData.firstName);
+
+  const date = new Date(userData.birthday);
+
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  const year = date.getFullYear();
+
+  const formattedDate = `${year}-${month}-${day}`;
+
   const initialValues = {
     [ProfileFormKeys.FirstName]: userData.firstName,
     [ProfileFormKeys.LastName]: userData.lastName,
@@ -32,10 +40,22 @@ export default function Userprofileedit() {
     [ProfileFormKeys.CoverPhoto]: userData.coverPhotoBase64,
     [ProfileFormKeys.Country]: userData.country,
     [ProfileFormKeys.State]: userData.state,
-    [ProfileFormKeys.Gender]: userData.gender,
+    [ProfileFormKeys.Gender]:
+      userData.gender === "Man"
+        ? "0"
+        : userData.gender === "Woman"
+        ? "1"
+        : userData.gender,
     [ProfileFormKeys.School]: userData.school,
-    [ProfileFormKeys.Birthday]: userData.birthday,
-    [ProfileFormKeys.Relationship]: userData.relationship,
+    [ProfileFormKeys.Birthday]: formattedDate,
+    [ProfileFormKeys.Relationship]:
+      userData.relationship === "Single"
+        ? "0"
+        : userData.relationship === "InARelationship"
+        ? "1"
+        : userData.relationship === "Married"
+        ? "2"
+        : userData.relationship,
   };
 
   const {
@@ -49,8 +69,18 @@ export default function Userprofileedit() {
   } = useFormik({
     initialValues,
     enableReinitialize: true,
-    onSubmit,
     validationSchema: userProfileValidation,
+    onSubmit: (values) => {
+      const updatedValues = {
+        ...values,
+        [ProfileFormKeys.Gender]: parseInt(values[ProfileFormKeys.Gender], 10),
+        [ProfileFormKeys.Relationship]: parseInt(
+          values[ProfileFormKeys.Relationship],
+          10
+        ),
+      };
+      onSubmit(updatedValues);
+    },
   });
 
   const updateSubmitHandler = async ({
@@ -81,22 +111,16 @@ export default function Userprofileedit() {
       relationship,
       schools,
     });
-
-    // setAuth(result);
-
-    // localStorage.setItem('accessToken', result.token);
-
-    useNavigate(PATH.home);
   };
 
   async function onSubmit(values) {
-    debugger;
     try {
       await updateSubmitHandler(values);
     } catch (error) {
       console.log("Error:", error);
     }
   }
+  useNavigate(PATH.home);
   return (
     <div className="user-profile">
       <article className="post-item">
@@ -118,7 +142,7 @@ export default function Userprofileedit() {
             <div className="user-info-text">
               <div className="username-profile">
                 <label htmlFor={ProfileFormKeys.ProfilePicture}>
-                  Change the ProfilePicture:
+                  Change the ProfilePicture
                 </label>
 
                 <input
@@ -132,7 +156,7 @@ export default function Userprofileedit() {
                 />
                 <div>
                   <label htmlFor={ProfileFormKeys.CoverPhoto}>
-                    Change the CoverPhoto:
+                    Change the CoverPhoto
                   </label>
 
                   <input
@@ -150,8 +174,8 @@ export default function Userprofileedit() {
                   className={
                     errors[ProfileFormKeys.FirstName] &&
                     touched[ProfileFormKeys.FirstName]
-                      ? styles["name-input-error"]
-                      : styles["name-input"]
+                      ? "name-input-error"
+                      : "name-input"
                   }
                   type="text"
                   name={ProfileFormKeys.FirstName}
@@ -164,8 +188,8 @@ export default function Userprofileedit() {
 
                 {errors[ProfileFormKeys.FirstName] &&
                   touched[ProfileFormKeys.FirstName] && (
-                    <p className={styles["error-message"]}>
-                      {errors[RegisterFormKeys.FirstName]}
+                    <p className="error-message">
+                      {errors[ProfileFormKeys.FirstName]}
                     </p>
                   )}
 
@@ -188,7 +212,7 @@ export default function Userprofileedit() {
 
                   {errors[ProfileFormKeys.LastName] &&
                     touched[ProfileFormKeys.LastName] && (
-                      <p className={styles["error-message"]}>
+                      <p className="error-message">
                         {errors[ProfileFormKeys.LastName]}
                       </p>
                     )}
@@ -196,14 +220,14 @@ export default function Userprofileedit() {
 
                 <section className={styles["phone-number-wrapper"]}>
                   <label htmlFor={ProfileFormKeys.PhoneNumber}>
-                    Phone Number
+                    Phone Number{" "}
                   </label>
                   <input
                     className={
                       errors[ProfileFormKeys.PhoneNumber] &&
                       touched[ProfileFormKeys.PhoneNumber]
-                        ? styles["input-field-error"]
-                        : styles["input-field"]
+                        ? "name-input-error"
+                        : "name-input"
                     }
                     type="text"
                     name={ProfileFormKeys.PhoneNumber}
@@ -216,7 +240,7 @@ export default function Userprofileedit() {
 
                   {errors[ProfileFormKeys.PhoneNumber] &&
                     touched[ProfileFormKeys.PhoneNumber] && (
-                      <p className={styles["error-message"]}>
+                      <p className="error-message">
                         {errors[ProfileFormKeys.PhoneNumber]}
                       </p>
                     )}
@@ -228,8 +252,8 @@ export default function Userprofileedit() {
                     className={
                       errors[ProfileFormKeys.Country] &&
                       touched[ProfileFormKeys.Country]
-                        ? styles["input-field-error"]
-                        : styles["input-field"]
+                        ? "name-input-error"
+                        : "name-input"
                     }
                     type="text"
                     name={ProfileFormKeys.Country}
@@ -242,7 +266,7 @@ export default function Userprofileedit() {
 
                   {errors[ProfileFormKeys.Country] &&
                     touched[ProfileFormKeys.Country] && (
-                      <p className={styles["error-message"]}>
+                      <p className="error-message">
                         {errors[ProfileFormKeys.Country]}
                       </p>
                     )}
@@ -254,8 +278,8 @@ export default function Userprofileedit() {
                     className={
                       errors[ProfileFormKeys.State] &&
                       touched[ProfileFormKeys.State]
-                        ? styles["input-field-error"]
-                        : styles["input-field"]
+                        ? "name-input-error"
+                        : "name-input"
                     }
                     type="text"
                     name={ProfileFormKeys.State}
@@ -268,7 +292,7 @@ export default function Userprofileedit() {
 
                   {errors[ProfileFormKeys.State] &&
                     touched[ProfileFormKeys.State] && (
-                      <p className={styles["error-message"]}>
+                      <p className="error-message">
                         {errors[ProfileFormKeys.State]}
                       </p>
                     )}
@@ -282,11 +306,11 @@ export default function Userprofileedit() {
                       name={ProfileFormKeys.Gender}
                       id={ProfileFormKeys.Gender}
                       value="0"
-                      checked={values[ProfileFormKeys.Gender] === "Man"}
+                      checked={values[ProfileFormKeys.Gender] === "0"}
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
-                    Man
+                    Man{" "}
                   </label>
                   <label>
                     <input
@@ -308,8 +332,8 @@ export default function Userprofileedit() {
                     className={
                       errors[ProfileFormKeys.School] &&
                       touched[ProfileFormKeys.School]
-                        ? styles["input-field-error"]
-                        : styles["input-field"]
+                        ? "name-input-error"
+                        : "name-input"
                     }
                     type="text"
                     name={ProfileFormKeys.School}
@@ -322,7 +346,7 @@ export default function Userprofileedit() {
 
                   {errors[ProfileFormKeys.School] &&
                     touched[ProfileFormKeys.School] && (
-                      <p className={styles["error-message"]}>
+                      <p className="error-message">
                         {errors[ProfileFormKeys.School]}
                       </p>
                     )}
@@ -334,10 +358,10 @@ export default function Userprofileedit() {
                     className={
                       errors[ProfileFormKeys.Birthday] &&
                       touched[ProfileFormKeys.Birthday]
-                        ? styles["input-field-error"]
-                        : styles["input-field"]
+                        ? "name-input-error"
+                        : "name-input"
                     }
-                    type="text"
+                    type="date"
                     name={ProfileFormKeys.Birthday}
                     id={ProfileFormKeys.Birthday}
                     placeholder="Birthday"
@@ -348,7 +372,7 @@ export default function Userprofileedit() {
 
                   {errors[ProfileFormKeys.Birthday] &&
                     touched[ProfileFormKeys.Birthday] && (
-                      <p className={styles["error-message"]}>
+                      <p className="error-message">
                         {errors[ProfileFormKeys.Birthday]}
                       </p>
                     )}
@@ -356,56 +380,61 @@ export default function Userprofileedit() {
 
                 <section className={styles["phone-number-wrapper"]}>
                   <label htmlFor={ProfileFormKeys.Relationship}>
-                    Relationship
+                    Relationship{" "}
                   </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name={ProfileFormKeys.Relationship}
-                      id={ProfileFormKeys.Relationship}
-                      value="0"
-                      checked={values[ProfileFormKeys.Relationship] === "0"}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                    0
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name={ProfileFormKeys.Relationship}
-                      id={ProfileFormKeys.Relationship}
-                      value="1"
-                      checked={values[ProfileFormKeys.Relationship] === "1"}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                    1
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name={ProfileFormKeys.Relationship}
-                      id={ProfileFormKeys.Relationship}
-                      value="2"
-                      checked={values[ProfileFormKeys.Relationship] === "2"}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                    2
-                  </label>
+                  <li>
+                    <label>
+                      <input
+                        type="radio"
+                        name={ProfileFormKeys.Relationship}
+                        id={ProfileFormKeys.Relationship}
+                        value="0"
+                        checked={values[ProfileFormKeys.Relationship] === "0"}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                      Single
+                    </label>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        type="radio"
+                        name={ProfileFormKeys.Relationship}
+                        id={ProfileFormKeys.Relationship}
+                        value="1"
+                        checked={values[ProfileFormKeys.Relationship] === "1"}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                      InARelationship
+                    </label>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        type="radio"
+                        name={ProfileFormKeys.Relationship}
+                        id={ProfileFormKeys.Relationship}
+                        value="2"
+                        checked={values[ProfileFormKeys.Relationship] === "2"}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                      Married
+                    </label>
+                  </li>
                 </section>
+                <button
+                  type="submit"
+                  className={styles["register-button"]}
+                  disabled={isSubmitting}
+                >
+                  Submit
+                </button>
               </div>
             </div>
           </div>
-
-          <button
-            type="submit"
-            className={styles["register-button"]}
-            disabled={isSubmitting}
-          >
-            Update
-          </button>
         </form>
       </article>
     </div>

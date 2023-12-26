@@ -14,5 +14,7 @@ export const getUserData = async (userId) => {
     return result;
 };
 
-export const update = async (values) =>
+export const update = async (values) =>{
+   
     await api.put(endpoints.updateUser, values);
+};
