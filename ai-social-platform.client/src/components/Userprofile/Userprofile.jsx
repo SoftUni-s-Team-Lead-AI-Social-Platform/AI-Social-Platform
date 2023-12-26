@@ -13,12 +13,11 @@ export default function Userprofile() {
 
   useEffect(() => {
     userService
-      .getUserData(userId)
+      .getUserDetails(userId)
       .then((result) => {
-        console.log(result);
         setUserData(result);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => setError(error));
   }, []);
 
   if (error) {
