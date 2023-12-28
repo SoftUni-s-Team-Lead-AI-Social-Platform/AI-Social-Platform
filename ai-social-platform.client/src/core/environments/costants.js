@@ -19,9 +19,10 @@ export const endpoints = {
 
     // USER
     getLoggedUserDetails: 'User/userDetails',
-    userDetails: 'User/userDetails',
+    userDetails: 'User/userDetails', 
     updateUser: 'User/updateUser',
     userDetails: (userId) => `User/userDetails/${userId}`,
+    addFriend: (userId) => `User/addFriend/${userId}`,
 
     // POSTS
     createPost: 'Publication',

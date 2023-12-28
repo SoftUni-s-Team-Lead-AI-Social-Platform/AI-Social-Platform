@@ -1,4 +1,4 @@
-import { endpoints } from '../environments/costants';
+import { ContentType, endpoints } from '../environments/costants';
 import * as api from './api';
 
 export const getLoggedUserDetails = async () => {
@@ -14,7 +14,10 @@ export const getUserData = async (userId) => {
 };
 
 export const update = async (values) =>
-    await api.put(endpoints.updateUser, values);
+    await api.put(endpoints.updateUser, values, ContentType.ApplicationJSON);
 
 export const getUserDetails = async (userId) =>
     await api.get(endpoints.userDetails(userId));
+
+export const addFriend = async (userId) =>
+    await api.post(endpoints.addFriend(userId));

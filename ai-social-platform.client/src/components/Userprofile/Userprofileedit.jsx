@@ -13,7 +13,7 @@ export default function Userprofileedit() {
 
   useEffect(() => {
     userService
-      .getUserData(userId)
+      .getUserDetails(userId)
       .then((result) => {
         console.log(result);
         setUserData(result);
@@ -70,52 +70,22 @@ export default function Userprofileedit() {
     initialValues,
     enableReinitialize: true,
     validationSchema: userProfileValidation,
-    onSubmit: (values) => {
-      const updatedValues = {
-        ...values,
-        [ProfileFormKeys.Gender]: parseInt(values[ProfileFormKeys.Gender], 10),
-        [ProfileFormKeys.Relationship]: parseInt(
-          values[ProfileFormKeys.Relationship],
-          10
-        ),
-      };
-      onSubmit(updatedValues);
-    },
+    onSubmit,
   });
 
-  const updateSubmitHandler = async ({
-    firstName,
-    lastName,
-    phoneNumber,
-    profilePicture,
-    coverPhoto,
-    country,
-    state,
-    gender,
-    school,
-    birthday,
-    relationship,
-    schools,
-  }) => {
-    await userService.update({
-      firstName,
-      lastName,
-      phoneNumber,
-      profilePicture,
-      coverPhoto,
-      country,
-      state,
-      gender,
-      school,
-      birthday,
-      relationship,
-      schools,
-    });
-  };
-
   async function onSubmit(values) {
+    values = {
+      ...values,
+      [ProfileFormKeys.Gender]: parseInt(values[ProfileFormKeys.Gender], 10),
+      [ProfileFormKeys.Relationship]: parseInt(
+        values[ProfileFormKeys.Relationship],
+        10
+      ),
+    };
     try {
-      await updateSubmitHandler(values);
+      console.log("values", values);
+      //await updateSubmitHandler(values);
+      await userService.update(values);
     } catch (error) {
       console.log("Error:", error);
     }

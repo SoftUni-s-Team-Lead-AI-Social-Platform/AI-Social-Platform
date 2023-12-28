@@ -7,25 +7,36 @@ const passwordRulse = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}/;
 
 const userProfileValidation = Yup.object({
     [ProfileFormKeys.FirstName]: Yup.string()
-    .required('First name is required.')
-    .min(1, 'First name must be at least 1 characters.')
-    .max(15, 'First name must be at most 15 characters.'),
+    .required('First name is required. test'),
+    
     [ProfileFormKeys.LastName]: Yup.string()
-    .required('Last name is required.')
-    .min(1, 'Last name must be at least 1 characters.')
-    .max(15, 'Last name must be at most 15 characters.'),
-    [ProfileFormKeys.PhoneNumber]: Yup.string()
-    .min(8, 'Last name must be at least 8 characters.')
-    .max(10, 'Last name must be at most 10 characters.'),
-    [ProfileFormKeys.Country]: Yup.string()
-    .min(3, 'Last name must be at least 3 characters.')
-    .max(50, 'Last name must be at most 50 characters.'),
-    [ProfileFormKeys.State]: Yup.string()
-    .min(3, 'Last name must be at least 3 characters.')
-    .max(50, 'Last name must be at most 50 characters.'),
-    [ProfileFormKeys.School]: Yup.string()
-    .min(3, 'Last name must be at least 3 characters.')
-    .max(50, 'Last name must be at most 50 characters.'),
+    .required('Last name is required.'),
+    
+    // [ProfileFormKeys.FirstName]: Yup.string()
+    // .required('First name is required.')
+    // .min(1, 'First name must be at least 1 characters.')
+    // .max(15, 'First name must be at most 15 characters.'),
+    
+    // [ProfileFormKeys.LastName]: Yup.string()
+    // .required('Last name is required.')
+    // .min(1, 'Last name must be at least 1 characters.')
+    // .max(15, 'Last name must be at most 15 characters.'),
+    
+    // [ProfileFormKeys.PhoneNumber]: Yup.string()
+    // .min(8, 'Last name must be at least 8 characters.')
+    // .max(10, 'Last name must be at most 10 characters.'),
+    
+    // [ProfileFormKeys.Country]: Yup.string()
+    // .min(3, 'Last name must be at least 3 characters.')
+    // .max(50, 'Last name must be at most 50 characters.'),
+    
+    // [ProfileFormKeys.State]: Yup.string()
+    // .min(3, 'Last name must be at least 3 characters.')
+    // .max(50, 'Last name must be at most 50 characters.'),
+    
+    // [ProfileFormKeys.School]: Yup.string()
+    // .min(3, 'Last name must be at least 3 characters.')
+    // .max(50, 'Last name must be at most 50 characters.'),
 });
 
 export default userProfileValidation;
