@@ -158,7 +158,7 @@ namespace AI_Social_Platform.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "user@user.com",
                             NormalizedUserName = "USER@USER.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEE8uyY1oSBUUN9JezWy/SgYWKWR941ien4lHSEBelPXSG5WgT3QY94CP61FfiDzgiw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFwaDDcjzewOCSQ/d9U8lx5tlotMAvLoliVhfbFw7CMp6/DqBVw38KVVH2QO1eSRJg==",
                             PhoneNumber = "0888555666",
                             PhoneNumberConfirmed = false,
                             Relationship = 1,
@@ -183,7 +183,7 @@ namespace AI_Social_Platform.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.com",
                             NormalizedUserName = "ADMIN@ADMIN.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMKTXNrIwm7Whm0k6spR5+yUdfPlmhA7krwZNwybbT6jOsuh1FFMmqMMnbal98GUJA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBXUlfHEXGDgs1Sq6pvf3IXI+1hqtc+3Zop45jzSDMVzo8dxZGx8InIPN3rR4BORqg==",
                             PhoneNumberConfirmed = false,
                             Relationship = 0,
                             SecurityStamp = "cfb5501d-596e-4bd5-b3e0-763e303fe980",
@@ -508,15 +508,22 @@ namespace AI_Social_Platform.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("topicUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("Topics");
                 });
@@ -814,6 +821,17 @@ namespace AI_Social_Platform.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("State");
+                });
+
+            modelBuilder.Entity("AI_Social_Platform.Data.Models.Topic.Topic", b =>
+                {
+                    b.HasOne("AI_Social_Platform.Data.Models.ApplicationUser", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("AI_Social_Platform.Data.Models.Topic.UserTopic", b =>

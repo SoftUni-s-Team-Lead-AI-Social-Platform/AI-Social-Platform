@@ -2,12 +2,15 @@
 using AI_Social_Platform.Data.Models.Publication;
 using AI_Social_Platform.Services.Data;
 using AI_Social_Platform.Services.Data.Models.PublicationDtos;
-
+using AI_Social_Platform.Services.Data.Models.SocialFeature;
 using AutoMapper;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using AI_Social_Platform.Data.Models;
+using AI_Social_Platform.Data.Models.Topic;
+using AI_Social_Platform.Services.Data.Models.UserDto;
 using static AI_Social_Platform.Common.ExceptionMessages.PublicationExceptionMessages;
 
 namespace Ai_Social_Platform.Tests
@@ -61,10 +64,27 @@ namespace Ai_Social_Platform.Tests
                 x.CreateMap<ShareDto, Share>().ReverseMap();
                 x.CreateMap<PublicationDto, Publication>().ReverseMap();
                 x.CreateMap<PublicationFormDto, Publication>().ReverseMap();
+                x.CreateMap<Notification, NotificationDto>().ReverseMap()
+                    .ForMember(n => n.NotificationType,
+                        opt =>
+                        {
+                            opt.MapFrom(n => n.NotificationType.ToString());
+                        });
+
+                x.CreateMap<SearchTopicDto, Topic>().ReverseMap()
+                    .ForMember(n => n.FollowersCount, opt => { opt.MapFrom(n => n.Followers.Count); })
+                    .ForMember(p => p.PublicationsCount, opt => { opt.MapFrom(p => p.Publications.Count); })
+                    .ForMember(t => t.Followers, opt =>
+                    {
+                        opt.MapFrom(t => t.Followers.Select(f => f.UserId).ToArray());
+                    });
+
+                x.CreateMap<UserDto, ApplicationUser>().ReverseMap();
+                x.CreateMap<TopicDto, Topic>().ReverseMap();
             });
             mapper = config.CreateMapper();
             baseSocialService = new BaseSocialService(dbContext, httpContextAccessor, mapper);
-            publicationService = new PublicationService(dbContext, httpContextAccessor, mapper, baseSocialService);
+            publicationService = new PublicationService(dbContext, httpContextAccessor, mapper);
         }
 
         [TearDown]
@@ -81,10 +101,10 @@ namespace Ai_Social_Platform.Tests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<IEnumerable<PublicationDto>>(result);
+            Assert.IsInstanceOf<IndexPublicationDto>(result);
 
             // Assuming some publications were seeded during setup
-            Assert.IsTrue(result.Any());
+            Assert.IsTrue(result.Publications.Any());
         }
 
         [Test]
@@ -322,7 +342,7 @@ namespace Ai_Social_Platform.Tests
             var countBefore = dbContext.Comments.Count(c => c.PublicationId == dto.PublicationId);
 
             // Act
-            await publicationService.CreateCommentAsync(dto);
+            await baseSocialService.CreateCommentAsync(dto);
 
             // Assert
             Assert.That(dbContext.Comments.Count(c => c.PublicationId == dto.PublicationId),
@@ -340,7 +360,7 @@ namespace Ai_Social_Platform.Tests
             };
 
             // Act
-            await publicationService.CreateCommentAsync(dto);
+            await baseSocialService.CreateCommentAsync(dto);
 
             // Assert
             Assert.That(dbContext.Comments.Last().Content, Is.EqualTo(dto.Content));
@@ -359,7 +379,7 @@ namespace Ai_Social_Platform.Tests
             // Act and Assert
             var exception = Assert.ThrowsAsync<NullReferenceException>(async () =>
             {
-                await publicationService.CreateCommentAsync(dto);
+                await baseSocialService.CreateCommentAsync(dto);
             });
 
             // Optionally assert on the exception message or other details
@@ -370,7 +390,7 @@ namespace Ai_Social_Platform.Tests
         public async Task UpdateCommentAsync_ValidDtoAndId_UpdatesComment()
         {
             // Arrange
-            var dto = new CommentFormDto()
+            var dto = new CommentEditDto()
             {
                 Content = "This is a test comment"
             };
@@ -378,7 +398,7 @@ namespace Ai_Social_Platform.Tests
                 dbContext.Comments.First(c => c.UserId.ToString() == "123400ce-d726-4fc8-83d9-d6b3ac1f591e");
 
             // Act
-            await publicationService.UpdateCommentAsync(dto, comment.Id);
+            await baseSocialService.UpdateCommentAsync(dto, comment.Id);
 
             // Assert
             Assert.That(comment.Content, Is.EqualTo(dto.Content));
@@ -388,7 +408,7 @@ namespace Ai_Social_Platform.Tests
         public async Task UpdateCommentAsync_ThrowsNullReferenceException()
         {
             // Arrange
-            var dto = new CommentFormDto()
+            var dto = new CommentEditDto()
             {
                 Content = "This is a test comment"
             };
@@ -397,7 +417,7 @@ namespace Ai_Social_Platform.Tests
             // Act and Assert
             var exception = Assert.ThrowsAsync<NullReferenceException>(async () =>
             {
-                await publicationService.UpdateCommentAsync(dto, invalidCommentId);
+                await baseSocialService.UpdateCommentAsync(dto, invalidCommentId);
             });
 
             // Optionally assert on the exception message or other details
@@ -408,7 +428,7 @@ namespace Ai_Social_Platform.Tests
         public async Task UpdateCommentAsync_ThrowsAccessViolationExceptionException()
         {
             // Arrange
-            var dto = new CommentFormDto()
+            var dto = new CommentEditDto()
             {
                 Content = "This is a test comment"
             };
@@ -418,7 +438,7 @@ namespace Ai_Social_Platform.Tests
             // Act and Assert
             var exception = Assert.ThrowsAsync<AccessViolationException>(async () =>
             {
-                await publicationService.UpdateCommentAsync(dto, comment.Id);
+                await baseSocialService.UpdateCommentAsync(dto, comment.Id);
             });
 
             // Optionally assert on the exception message or other details
@@ -434,7 +454,7 @@ namespace Ai_Social_Platform.Tests
             var countBefore = dbContext.Comments.Count();
 
             // Act
-            await publicationService.DeleteCommentAsync(comment.Id);
+            await baseSocialService.DeleteCommentAsync(comment.Id);
 
             // Assert
             Assert.That(dbContext.Comments.Count(), Is.EqualTo(countBefore - 1));
@@ -449,7 +469,7 @@ namespace Ai_Social_Platform.Tests
             // Act and Assert
             var exception = Assert.ThrowsAsync<NullReferenceException>(async () =>
             {
-                await publicationService.DeleteCommentAsync(invalidCommentId);
+                await baseSocialService.DeleteCommentAsync(invalidCommentId);
             });
 
             // Optionally assert on the exception message or other details
@@ -466,7 +486,7 @@ namespace Ai_Social_Platform.Tests
             // Act and Assert
             var exception = Assert.ThrowsAsync<AccessViolationException>(async () =>
             {
-                await publicationService.DeleteCommentAsync(comment.Id);
+                await baseSocialService.DeleteCommentAsync(comment.Id);
             });
 
             // Optionally assert on the exception message or other details
@@ -480,14 +500,14 @@ namespace Ai_Social_Platform.Tests
             var publicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b");
 
             // Act
-            var result = await publicationService.GetCommentsOnPublicationAsync(publicationId);
+            var result = await baseSocialService.GetCommentsOnPublicationAsync(publicationId, 1);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<IEnumerable<CommentDto>>(result);
+            Assert.IsInstanceOf<IndexCommentDto>(result);
 
             // Assuming some comments were seeded during setup
-            Assert.IsTrue(result.Any());
+            Assert.IsTrue(result.Comments.Any());
         }
 
         //Like Tests
@@ -499,7 +519,7 @@ namespace Ai_Social_Platform.Tests
             var countBefore = dbContext.Likes.Count(l => l.PublicationId == publicationId);
 
             // Act
-            await publicationService.CreateLikesOnPublicationAsync(publicationId);
+            await baseSocialService.CreateLikesOnPublicationAsync(publicationId);
 
             // Assert
             Assert.That(dbContext.Likes.Count(l => l.PublicationId == publicationId), Is.EqualTo(countBefore + 1));
@@ -514,7 +534,7 @@ namespace Ai_Social_Platform.Tests
             // Act and Assert
             var exception = Assert.ThrowsAsync<NullReferenceException>(async () =>
             {
-                await publicationService.CreateLikesOnPublicationAsync(invalidPublicationId);
+                await baseSocialService.CreateLikesOnPublicationAsync(invalidPublicationId);
             });
 
             // Optionally assert on the exception message or other details
@@ -530,7 +550,7 @@ namespace Ai_Social_Platform.Tests
             var countBefore = dbContext.Likes.Count(l => l.PublicationId == publicationId);
 
             // Act
-            await publicationService.CreateLikesOnPublicationAsync(publicationId);
+            await baseSocialService.CreateLikesOnPublicationAsync(publicationId);
 
             // Assert
             Assert.That(dbContext.Likes.Count(l => l.PublicationId == publicationId), Is.EqualTo(countBefore + 1));
@@ -545,7 +565,7 @@ namespace Ai_Social_Platform.Tests
             var countBefore = dbContext.Likes.Count();
 
             // Act
-            await publicationService.DeleteLikeOnPublicationAsync(likeId);
+            await baseSocialService.DeleteLikeOnPublicationAsync(likeId);
 
             // Assert
             Assert.That(dbContext.Likes.Count(), Is.EqualTo(countBefore - 1));
@@ -560,7 +580,7 @@ namespace Ai_Social_Platform.Tests
             // Act and Assert
             var exception = Assert.ThrowsAsync<NullReferenceException>(async () =>
             {
-                await publicationService.DeleteLikeOnPublicationAsync(invalidLikeId);
+                await baseSocialService.DeleteLikeOnPublicationAsync(invalidLikeId);
             });
 
             // Optionally assert on the exception message or other details
@@ -576,7 +596,7 @@ namespace Ai_Social_Platform.Tests
             // Act and Assert
             var exception = Assert.ThrowsAsync<AccessViolationException>(async () =>
             {
-                await publicationService.DeleteLikeOnPublicationAsync(likeId);
+                await baseSocialService.DeleteLikeOnPublicationAsync(likeId);
             });
 
             // Optionally assert on the exception message or other details
@@ -590,7 +610,7 @@ namespace Ai_Social_Platform.Tests
             var publicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b");
 
             // Act
-            var result = await publicationService.GetLikesOnPublicationAsync(publicationId);
+            var result = await baseSocialService.GetLikesOnPublicationAsync(publicationId);
 
             // Assert
             Assert.IsNotNull(result);
@@ -609,7 +629,7 @@ namespace Ai_Social_Platform.Tests
             var countBefore = dbContext.Shares.Count(l => l.PublicationId == publicationId);
 
             // Act
-            await publicationService.CreateSharesOnPublicationAsync(publicationId);
+            await baseSocialService.CreateSharesOnPublicationAsync(publicationId);
 
             // Assert
             Assert.That(dbContext.Shares.Count(l => l.PublicationId == publicationId), Is.EqualTo(countBefore + 1));
@@ -624,7 +644,7 @@ namespace Ai_Social_Platform.Tests
             // Act and Assert
             var exception = Assert.ThrowsAsync<NullReferenceException>(async () =>
             {
-                await publicationService.CreateSharesOnPublicationAsync(invalidPublicationId);
+                await baseSocialService.CreateSharesOnPublicationAsync(invalidPublicationId);
             });
 
             // Optionally assert on the exception message or other details
@@ -640,7 +660,7 @@ namespace Ai_Social_Platform.Tests
             var countBefore = dbContext.Shares.Count(l => l.PublicationId == publicationId);
 
             // Act
-            await publicationService.CreateSharesOnPublicationAsync(publicationId);
+            await baseSocialService.CreateSharesOnPublicationAsync(publicationId);
 
             // Assert
             Assert.That(dbContext.Shares.Count(l => l.PublicationId == publicationId), Is.EqualTo(countBefore + 1));
@@ -655,7 +675,7 @@ namespace Ai_Social_Platform.Tests
             var countBefore = dbContext.Shares.Count();
 
             // Act
-            await publicationService.DeleteShareOnPublicationAsync(shareId);
+            await baseSocialService.DeleteShareOnPublicationAsync(shareId);
 
             // Assert
             Assert.That(dbContext.Shares.Count(), Is.EqualTo(countBefore - 1));
@@ -670,7 +690,7 @@ namespace Ai_Social_Platform.Tests
             // Act and Assert
             var exception = Assert.ThrowsAsync<NullReferenceException>(async () =>
             {
-                await publicationService.DeleteShareOnPublicationAsync(invalidShareId);
+                await baseSocialService.DeleteShareOnPublicationAsync(invalidShareId);
             });
 
             // Optionally assert on the exception message or other details
@@ -686,7 +706,7 @@ namespace Ai_Social_Platform.Tests
             // Act and Assert
             var exception = Assert.ThrowsAsync<AccessViolationException>(async () =>
             {
-                await publicationService.DeleteShareOnPublicationAsync(shareId);
+                await baseSocialService.DeleteShareOnPublicationAsync(shareId);
             });
 
             // Optionally assert on the exception message or other details
@@ -700,7 +720,7 @@ namespace Ai_Social_Platform.Tests
             var publicationId = Guid.Parse("a0a0a6a0-0b1e-4b9e-9b0a-0b9b9b9b9b9b");
 
             // Act
-            var result = await publicationService.GetSharesOnPublicationAsync(publicationId);
+            var result = await baseSocialService.GetSharesOnPublicationAsync(publicationId);
 
             // Assert
             Assert.IsNotNull(result);
