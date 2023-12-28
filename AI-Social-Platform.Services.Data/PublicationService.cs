@@ -5,9 +5,8 @@ using AI_Social_Platform.Services.Data.Models.PublicationDtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using AI_Social_Platform.Services.Data.Models.SocialFeature;
-using AI_Social_Platform.Services.Data.Models.UserDto;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using static AI_Social_Platform.Common.ExceptionMessages.PublicationExceptionMessages;
 
 namespace AI_Social_Platform.Services.Data;
@@ -34,6 +33,16 @@ public class PublicationService : IPublicationService
         int totalPublications = await dbContext.Publications.CountAsync();
         int publicationsLeft = totalPublications - (pageNum * pageSize) < 0 ? 0 : totalPublications - (pageNum * pageSize);
 
+        //var publications = await dbContext.Users
+        //    .Include(u => u.Friends)
+        //    .ThenInclude(f => f.Publications)
+        //    .Where(u => u.Id == GetUserId())
+        //    .ProjectTo<PublicationDto>(mapper.ConfigurationProvider)
+        //    .OrderByDescending(p => p.LatestActivity)
+        //    .Skip(skip)
+        //    .Take(pageSize)
+        //    .ToArrayAsync();
+        
         var indexPublicationDto = new IndexPublicationDto
         {
             Publications = await mapper.ProjectTo<PublicationDto>
@@ -43,6 +52,7 @@ public class PublicationService : IPublicationService
                 .Skip(skip)
                 .Take(pageSize)
             ).ToArrayAsync(),
+            //Publications = publications,
             CurrentPage = pageNum,
             TotalPages = (int)Math.Ceiling((double)totalPublications / pageSize),
             PublicationsLeft = publicationsLeft
