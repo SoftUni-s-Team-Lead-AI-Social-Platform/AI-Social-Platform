@@ -34,12 +34,13 @@
     flex-direction: column;
     align-items: flex-start;
     align-self: flex-start;
-    padding: 12ex 0;
+    padding: 0 0;
 }
 
 .user-img {
     width: 13em;
     height: 15em;
+    border-radius: 25px;
 }
 
 .user-cover {
@@ -51,9 +52,15 @@
     font-weight: 700;
 }
 
+.cover-profile {
+    font-size: 1.0em;
+    font-weight: 700;
+}
+
+
 .posted-user {
-    font-size: 0.7em;
-    color: rgb(99, 99, 99);
+    font-size: 0.8em;
+   
 }
 
 .edit {
@@ -76,3 +83,41 @@
     text-indent: 2em;
 }
 
+label {
+    font-size: 0.8em;
+    font-weight: 700;
+}
+
+input {
+    font-size: 0.8em;
+    font-weight: 600;
+    border: 1px solid #aaa;
+   
+}
+
+.name-input {
+    font-size: 0.8em;
+    font-weight: 600;
+    border: 1px solid #aaa;
+    width: 70%;
+}
+
+.name-input-error {
+    font-size: 0.8em;
+    font-weight: 600;
+    border: 1px solid #a10000;
+    width: 70%;
+}
+
+.error-message {
+    color: #a10000;
+    font-size: 0.9em;
+    text-align: left;
+    padding-left: 0.2em;
+    margin-top: 0.2em;
+}
+ li {
+    list-style-type:none;
+    padding: 0em 1em 0em 1em;
+
+ }
