@@ -25,36 +25,47 @@ public class PublicationService : IPublicationService
         this.dbContext = dbContext;
         httpContext = accessor.HttpContext!;
     }
+
     public async Task<IndexPublicationDto> GetPublicationsAsync(int pageNum)
     {
         int pageSize = 10;
         if (pageNum <= 0) pageNum = 1;
         int skip = (pageNum - 1) * pageSize;
-        int totalPublications = await dbContext.Publications.CountAsync();
+
+        var userFriends = dbContext.Users
+            .Where(u => u.Id == GetUserId())
+            .Include(u => u.Friends)
+            .ThenInclude(f => f.Publications);
+
+        var publications = await userFriends
+            .SelectMany(u => u.Friends.SelectMany(f => f.Publications))
+            .OrderByDescending(p => p.LatestActivity)
+            .Skip(skip)
+            .Take(pageSize)
+            .ProjectTo<PublicationDto>(mapper.ConfigurationProvider)
+            .ToListAsync();
+
+        var userPublications = await dbContext.Publications
+            .Where(p => p.AuthorId == GetUserId())
+            .OrderByDescending(p => p.LatestActivity)
+            .Skip(skip)
+            .Take(pageSize)
+            .ProjectTo<PublicationDto>(mapper.ConfigurationProvider)
+            .ToListAsync();
+        
+         publications.AddRange(userPublications);
+
+
+        int totalPublications = publications.Count;
         int publicationsLeft = totalPublications - (pageNum * pageSize) < 0 ? 0 : totalPublications - (pageNum * pageSize);
 
-        //var publications = await dbContext.Users
-        //    .Include(u => u.Friends)
-        //    .ThenInclude(f => f.Publications)
-        //    .Where(u => u.Id == GetUserId())
-        //    .ProjectTo<PublicationDto>(mapper.ConfigurationProvider)
-        //    .OrderByDescending(p => p.LatestActivity)
-        //    .Skip(skip)
-        //    .Take(pageSize)
-        //    .ToArrayAsync();
-        
+
         var indexPublicationDto = new IndexPublicationDto
         {
-            Publications = await mapper.ProjectTo<PublicationDto>
-            (dbContext.Publications
-                .AsQueryable()
-                .OrderByDescending(p => p.LatestActivity)
-                .Skip(skip)
-                .Take(pageSize)
-            ).ToArrayAsync(),
-            //Publications = publications,
+            Publications = publications.OrderByDescending(p => p.LatestActivity),
             CurrentPage = pageNum,
             TotalPages = (int)Math.Ceiling((double)totalPublications / pageSize),
+            TotalPublications = totalPublications,
             PublicationsLeft = publicationsLeft
     };
         return indexPublicationDto;
