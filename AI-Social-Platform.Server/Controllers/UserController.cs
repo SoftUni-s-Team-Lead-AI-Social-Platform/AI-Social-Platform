@@ -99,7 +99,7 @@ namespace AI_Social_Platform.Server.Controllers
                 Username = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                ProfilePicture = user.ProfilePicture,
+                ProfilePicture = GetProfilImageUrl(user.Id),
                 Token = userService.BuildToken(userId)
             });
 
@@ -144,7 +144,7 @@ namespace AI_Social_Platform.Server.Controllers
                 Username = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                ProfilePicture = user.ProfilePicture,
+                ProfilePicture = GetProfilImageUrl(user.Id),
                 Token = userService.BuildToken(userId)
             });
         }
@@ -159,6 +159,31 @@ namespace AI_Social_Platform.Server.Controllers
         }
 
 
+        [HttpGet("ProfilPicture/{userId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUserProfilPicture(string userId)
+        {
+            var user = await userService.GetUserDetailsByIdAsync(userId);
+            if (user.ProfilePictureData != null)
+            {
+                return File(user.ProfilePictureData, "image/png");
+            }
+            return BadRequest("No profil picture found!");
+        }
+
+        [HttpGet("CoverPicture/{userId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUserCoverPicture(string userId)
+        {
+            var user = await userService.GetUserDetailsByIdAsync(userId);
+            if (user.CoverPhotoData != null)
+            {
+                return File(user.CoverPhotoData, "image/png");
+            }
+
+            return BadRequest("No cover photo found!");
+        }
+
         [HttpGet("userDetails/{userId}")]
         public async Task<IActionResult> GetUserDetails(string userId)
         {
@@ -168,14 +193,26 @@ namespace AI_Social_Platform.Server.Controllers
                 var user = await userService.GetUserDetailsByIdAsync(userId);
                 if (user == null)
                 {
-                    return NotFound("Current user not found!");
+                    return NotFound(new { message = "Current user not found!"});
                 }
+
+                if (user.ProfilePictureData != null)
+                {
+                    user.ProfilPictureUrl = GetProfilImageUrl(user.Id);
+                    user.ProfilePictureData = null;
+                }
+                if (user.CoverPhotoData != null)
+                {
+                    user.CoverPhotoUrl = GetCoverImageUrl(user.Id);
+                    user.CoverPhotoData = null;
+                }
+
                 return Ok(user);
 
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                return StatusCode(500, new { message = $"An error occurred: {ex.Message}"});
             }
         }
         
@@ -192,16 +229,16 @@ namespace AI_Social_Platform.Server.Controllers
 
                 if (success)
                 {
-                    return Ok("User data updated successfully");
+                    return Ok(new { message = "User data updated successfully"});
                 }
                 else
                 {
-                    return NotFound("User not found or not active");
+                    return NotFound(new { message = "User not found or not active"});
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}"});
             }
         }
 
@@ -214,26 +251,26 @@ namespace AI_Social_Platform.Server.Controllers
 
                 if (currentUser == null)
                 {
-                    return NotFound("Current user not found!");
+                    return NotFound(new { message = "Current user not found!"});
                 }
 
                 if (currentUser.Id.ToString() == friendId)
                 {
-                    return BadRequest("Cannot add yourself as a friends list!");
+                    return BadRequest(new { message = "Cannot add yourself as a friends list!"});
                 }
 
                 var success = await userService.AddFriend(currentUser!, friendId!);
 
                 if (success)
                 {
-                    return Ok("Friend added successfully.");
+                    return Ok(new { message = "Friend added successfully."});
                 }
 
-                return BadRequest("Failed to add friend.");
+                return BadRequest(new { message = "Failed to add friend."});
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                return StatusCode(500, new { message = $"An error occurred: {ex.Message}"});
             }
         }
 
@@ -245,18 +282,18 @@ namespace AI_Social_Platform.Server.Controllers
                 var currentUser = await userManager.GetUserAsync(User);
                 if (currentUser == null)
                 {
-                    return NotFound("Current user not found!");
+                    return NotFound(new { message = "Current user not found!"});
                 }
                 var success = await userService.AddUserSchool(currentUser, model);
                 if (success)
                 {
-                    return Ok("School added successfully.");
+                    return Ok(new { message = "School added successfully."});
                 }
-                return BadRequest("Failed to added school.");
+                return BadRequest(new { message = "Failed to added school."});
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                return StatusCode(500, new { message = $"An error occurred: {ex.Message}"});
             }
         }
 
@@ -270,21 +307,21 @@ namespace AI_Social_Platform.Server.Controllers
 
                 if (currentUser == null)
                 {
-                    return NotFound("Current user not found!");
+                    return NotFound(new { message = "Current user not found!"});
                 }
 
                 var success = await userService.RemoveFriend(currentUser!, friendId!);
 
                 if (success)
                 {
-                    return Ok("Friend removed successfully.");
+                    return Ok(new { message = "Friend removed successfully."});
                 }
 
-                return BadRequest("Failed to remove friend.");
+                return BadRequest(new { message = "Failed to remove friend."});
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                return StatusCode(500, new { message = $"An error occurred: {ex.Message}"});
             }
         }
 
@@ -298,7 +335,7 @@ namespace AI_Social_Platform.Server.Controllers
 
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return BadRequest("User not found.");
+                    return BadRequest(new { message = "User not found."});
                 }
 
                 var friends = await userService.GetFriendsAsync(userId);
@@ -307,11 +344,24 @@ namespace AI_Social_Platform.Server.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                return StatusCode(500, new { message = $"An error occurred: {ex.Message}"});
             }
         }
 
+        private string GetProfilImageUrl(Guid userId)
+        {
+            var request = HttpContext.Request;
+            var baseUrl = $"{request.Scheme}://{request.Host}{request.PathBase}";
 
+            return $"{baseUrl}/api/User/ProfilPicture/{userId}";
+        }
+        private string GetCoverImageUrl(Guid userId)
+        {
+            var request = HttpContext.Request;
+            var baseUrl = $"{request.Scheme}://{request.Host}{request.PathBase}";
+
+            return $"{baseUrl}/api/User/CoverPicture/{userId}";
+        }
     }
 
 }
