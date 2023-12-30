@@ -18,3 +18,7 @@ export const update = async (values) =>
 
 export const getUserDetails = async (userId) =>
     await api.get(endpoints.userDetails(userId));
+
+export const addFriend = async (userId) =>
+    await api.post(endpoints.addFriend(userId));
+

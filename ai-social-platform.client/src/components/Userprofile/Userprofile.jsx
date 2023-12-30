@@ -15,16 +15,14 @@ export default function Userprofile() {
   const authContext = useContext(AuthContext);
 
   useEffect(() => {
-    userService
-      .getUserDetails(userId)
-      .then((result) => {
-        setUserData(result);
-      })
-      .catch((error) => setError(error));
-    userService
-      .getUserDetails(authContext.userId)
-      .then((result) => {
-        setAuthUserData(result);
+    // Използваме Promise.all за изчакване на завършването на двете заявки
+    Promise.all([
+      userService.getUserDetails(userId),
+      userService.getUserDetails(authContext.userId),
+    ])
+      .then(([userResult, authUserResult]) => {
+        setUserData(userResult);
+        setAuthUserData(authUserResult);
       })
       .catch((error) => setError(error));
   }, [userId, authContext.userId]);
@@ -56,8 +54,9 @@ export default function Userprofile() {
       (friend) => friend.id === userData.userId
     );
   }
-  isCurrentUserProfile = false;
-  isUserFriend = false;
+  //isCurrentUserProfile = true;
+  //isUserFriend = false;
+  console.log("isCurrentUserProfileis", isCurrentUserProfile);
   console.log("isUserFriend", isUserFriend);
   const handleAddFriend = async () => {
     try {
@@ -95,39 +94,19 @@ export default function Userprofile() {
             src="../../../public/images/mamut.jpg"
             alt="User profile pic"
           />
-          <div className="user-info-text">
-            <p className="cover-profile">User Profile</p>
 
+          <fieldset>
+            <legend>Contact information</legend>
             <p className="username-profile">
               {userData.firstName} {userData.lastName}
             </p>
+
             <p className="posted-user">
               E-mail:
               <a href="mailto: {userData?.userName}"> {userData?.userName}</a>
             </p>
             <p className="posted-user">GSM: {userData.phoneNumber}</p>
-            <p className="posted-user">Country: {userData.country}</p>
-            <p className="posted-user">State: {userData.state}</p>
-            <p className="posted-user">Gender: {userData.gender}</p>
-            <p className="posted-user">School: {userData.school}</p>
-            <p className="posted-user">Birthday: {formattedBirthday}</p>
-            <p className="posted-user">
-              Relationship Status: {userData.relationship}
-            </p>
-            <div>
-              <p className="posted-user">Friends</p>
-              <ul>
-                {userData.friends.map((friend) => (
-                  <li key={friend.id}>
-                    <Link to={PATH.userProfile(friend.id)}>
-                      {friend.firstName} {friend.lastName}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
+          </fieldset>
           <div className="edit">
             {isCurrentUserProfile && (
               <Link to={pathToUrl(PATH.profileedit, { userId: userId })}>
@@ -151,6 +130,33 @@ export default function Userprofile() {
             )}
           </div>
         </div>
+
+        <fieldset>
+          <legend>Personal data</legend>
+
+          <p className="posted-user">Country: {userData.country}</p>
+          <p className="posted-user">State: {userData.state}</p>
+          <p className="posted-user">Gender: {userData.gender}</p>
+          <p className="posted-user">School: {userData.school}</p>
+          <p className="posted-user">Birthday: {formattedBirthday}</p>
+          <p className="posted-user">
+            Relationship Status: {userData.relationship}
+          </p>
+        </fieldset>
+        <fieldset>
+          <legend>Friends</legend>
+          <div>
+            <ul>
+              {userData.friends.map((friend) => (
+                <li key={friend.id}>
+                  <Link to={PATH.userProfile(friend.id)}>
+                    {friend.firstName} {friend.lastName}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </fieldset>
       </article>
     </div>
   );

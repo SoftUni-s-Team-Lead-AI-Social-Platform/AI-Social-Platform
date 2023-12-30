@@ -22,6 +22,7 @@ export const endpoints = {
     userDetails: 'User/userDetails',
     updateUser: 'User/updateUser',
     userDetails: (userId) => `User/userDetails/${userId}`,
+    addFriend: (userId) => `User/addFriend/${userId}`,
 
     // POSTS
     createPost: 'Publication',
@@ -61,10 +62,10 @@ export const ProfileFormKeys = {
     ConfirmPassword: 'confirmPassword',
     Country: 'country',
     State: 'state',
-    Gender: 0,
+    Gender: 'gender',
     School: 'school',
     Birthday: 'birthday',
-    Relationship: 0,
+    Relationship: 'relationship',
     Schools: [{}],
 };
 

@@ -18,29 +18,21 @@
     border-radius: 0.5em;
     box-shadow: 0 0 0.2em 0.1em #ddd;
     justify-content: space-between;
-    
+       
 }
 
 .user-info-wrapper {
     display: flex;
     gap: 1em;
     padding: 0.5em 1em 0.5em 1em;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
 }
 
-.user-info-text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    align-self: flex-start;
-    padding: 0 0;
-}
-
 .user-img {
-    width: 13em;
-    height: 15em;
-    border-radius: 25px;
+    width: 7em;
+    height:7em;
+    border-radius: 40px;
 }
 
 .user-cover {
@@ -121,3 +113,32 @@ input {
     padding: 0em 1em 0em 1em;
 
  }
+
+ fieldset {
+    width: 90%;
+    padding: 0.5em 1em 0.5em 1em;
+    border: 2px solid #004aad;
+    border-radius: 10px;
+    margin-top: auto;
+    margin-bottom: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.profile-button {
+    background-color: #004aad;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    padding: 10px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer; 
+  }
+
+  .parent-button{
+    text-align: center;
+  }
