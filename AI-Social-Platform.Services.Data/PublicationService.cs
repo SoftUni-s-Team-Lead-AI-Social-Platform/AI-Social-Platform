@@ -75,6 +75,7 @@ public class PublicationService : IPublicationService
 
         publicationDto.Author = mapper.Map<UserDto>
             (await dbContext.Users.FirstOrDefaultAsync(u => u.Id == publication.AuthorId));
+
         publicationDto.Topic = mapper.Map<TopicDto>
             (await dbContext.Topics.FirstOrDefaultAsync(t => t.Id == publication.TopicId));
 
@@ -84,6 +85,13 @@ public class PublicationService : IPublicationService
             .Take(5)
             .ProjectTo<CommentDto>(mapper.ConfigurationProvider)
             .ToListAsync();
+
+        publicationDto.CommentsCount = await dbContext.Comments
+            .Where(c => c.PublicationId == publication.Id)
+            .CountAsync();
+
+        publicationDto.LikesCount = await dbContext.Likes.Where(l => l.PublicationId == publication.Id).CountAsync();
+
         return publicationDto;
     }
     
