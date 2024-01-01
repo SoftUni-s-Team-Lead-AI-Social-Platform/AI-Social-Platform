@@ -35,6 +35,10 @@
     border-radius: 40px;
 }
 
+.user-img:hover {
+    border-radius: 0px;
+  transform: scale(1.4); 
+}
 .user-cover {
     width: 30em;
     height: 8em;

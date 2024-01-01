@@ -22,3 +22,10 @@ export const getUserDetails = async (userId) =>
 export const addFriend = async (userId) =>
     await api.post(endpoints.addFriend(userId));
 
+export const removeFriend = async (userId) =>
+    await api.post(endpoints.removeFriend(userId));
+
+export const getFriendsData = async () =>
+    await api.get(endpoints.allFriends);
+    
+

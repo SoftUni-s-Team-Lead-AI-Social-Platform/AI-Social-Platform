@@ -11,21 +11,25 @@ export default function Userprofile() {
 
   const [userData, setUserData] = useState(null);
   const [authUserData, setAuthUserData] = useState(null);
+  const [friendsData, setFriendsData] = useState(null);
   const [error, setError] = useState(null);
   const authContext = useContext(AuthContext);
+  let isUserFriend;
 
   useEffect(() => {
     // Използваме Promise.all за изчакване на завършването на двете заявки
     Promise.all([
       userService.getUserDetails(userId),
       userService.getUserDetails(authContext.userId),
+      userService.getFriendsData(),
     ])
-      .then(([userResult, authUserResult]) => {
+      .then(([userResult, authUserResult, friendsResult]) => {
         setUserData(userResult);
         setAuthUserData(authUserResult);
+        setFriendsData(friendsResult);
       })
       .catch((error) => setError(error));
-  }, [userId, authContext.userId]);
+  }, [userId, authContext.userId, isUserFriend]);
 
   if (error) {
     return <div>{error}</div>;
@@ -43,42 +47,43 @@ export default function Userprofile() {
     month < 10 ? "0" : ""
   }${month}/${year}`;
 
-  console.log("userData", userData);
-  console.log("authUserData", authUserData);
-  let isCurrentUserProfile = userId === authContext.userId;
-  let isUserFriend = true;
-  if (isCurrentUserProfile) {
-    isUserFriend = true;
-  } else {
-    isUserFriend = authUserData.friends.some(
-      (friend) => friend.id === userData.userId
-    );
-  }
-  //isCurrentUserProfile = true;
-  //isUserFriend = false;
-  console.log("isCurrentUserProfileis", isCurrentUserProfile);
-  console.log("isUserFriend", isUserFriend);
+  const isCurrentUserProfile = userId === authContext.userId;
+  isUserFriend = friendsData.some((friend) => friend.id === userData.id);
+
   const handleAddFriend = async () => {
     try {
       await userService.addFriend(userId);
       // Промени състоянието, че сега потребителят е приятел
-      // setIsFriend(true);
+      isUserFriend = true;
       // Извикване на нова заявка, за да актуализира информацията за приятелите
-      // const authUserResult = await userService.getUserDetails(authContext.userId);
-      // setAuthUserData(authUserResult);
+      const friendsResult = await userService.getFriendsData();
+      setFriendsData(friendsResult);
     } catch (error) {
       setError(error);
     }
   };
 
-  const handleRemoveFriend = async () => {};
-  //const isCurrentUserProfile = false;
+  const handleRemoveFriend = async () => {
+    try {
+      //debugger;
+      await userService.removeFriend(userId);
+      // Промени състоянието, че сега потребителят не е приятел
+      isUserFriend = false;
+      // Извикване на нова заявка, за да актуализира информацията за приятелите
+      const friendsResult = await userService.getFriendsData();
+      setFriendsData(friendsResult);
+      //console.log("remove", friendsData);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   console.log("userData", userData);
   console.log("authUserData", authUserData);
-  //console.log("authContext", authContext);
+  console.log("friendsData", friendsData);
   console.log(userId, authContext.userId);
-  console.log(isCurrentUserProfile);
+  console.log("isCurrentUserProfileis", isCurrentUserProfile);
+  console.log("isUserFriend", isUserFriend);
 
   return (
     <div className="user-profile">
@@ -120,11 +125,16 @@ export default function Userprofile() {
             {!isCurrentUserProfile && (
               <>
                 {isUserFriend ? (
-                  <button onClick={handleRemoveFriend}>
+                  <button
+                    className="profile-button"
+                    onClick={handleRemoveFriend}
+                  >
                     Remove from Friends
                   </button>
                 ) : (
-                  <button onClick={handleAddFriend}>Add as Friend</button>
+                  <button className="profile-button" onClick={handleAddFriend}>
+                    Add as Friend
+                  </button>
                 )}
               </>
             )}
@@ -147,7 +157,7 @@ export default function Userprofile() {
           <legend>Friends</legend>
           <div>
             <ul>
-              {userData.friends.map((friend) => (
+              {friendsData.map((friend) => (
                 <li key={friend.id}>
                   <Link to={PATH.userProfile(friend.id)}>
                     {friend.firstName} {friend.lastName}

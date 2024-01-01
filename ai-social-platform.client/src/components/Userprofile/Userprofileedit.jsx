@@ -292,7 +292,9 @@ export default function Userprofileedit() {
             </section>
 
             <section>
-              <label htmlFor={ProfileFormKeys.Birthday}>Birthday </label>
+              <label htmlFor={ProfileFormKeys.Birthday}>
+                Birthday (mm/dd/yyyy){" "}
+              </label>
               <input
                 type="date"
                 name={ProfileFormKeys.Birthday}
