@@ -8,7 +8,9 @@ export const PATH = {
     create: '/create-post',
     profile: '/profile/:userId',
     profileedit: '/profileedit/:userId',
+    successfully: '/successfuly',
     userProfile: (userId) => `/profile/${userId}`,
+    notFound: '*',
 };
 
 export const endpoints = {
@@ -29,11 +31,13 @@ export const endpoints = {
     // POSTS
     createPost: 'Publication',
     getAllPosts: 'Publication',
+    deletePost: (postId) => `Publication/${postId}`,
 
     // MEDIA
     addMedia: 'Media/upload?isItPublication=true',
     getPostMedia: (postId) => `Media/${postId}`,
     getMediaById: (mediaId) => `Media/serve/${mediaId}`,
+    deleteMedia: (mediaId) => `Media/delete/${mediaId}`,
 
     // COMMENTS
     createComment: 'SocialFeature/comment',
