@@ -65,7 +65,6 @@ export default function Userprofile() {
 
   const handleRemoveFriend = async () => {
     try {
-      //debugger;
       await userService.removeFriend(userId);
       // Промени състоянието, че сега потребителят не е приятел
       isUserFriend = false;
@@ -90,13 +89,16 @@ export default function Userprofile() {
       <article className="post-item">
         <img
           className="user-cover"
-          src="../../../public/images/iceage.png"
+          src={userData.coverPhotoUrl || "../../../public/images/Logo.png"}
           alt="User cover photo"
         />
         <div className="user-info-wrapper">
           <img
             className="user-img"
-            src="../../../public/images/mamut.jpg"
+            src={
+              userData.profilPictureUrl ||
+              "../../../public/images/default-profile-pic.png"
+            }
             alt="User profile pic"
           />
 

@@ -64,6 +64,8 @@ export const ProfileFormKeys = {
     LastName: 'lastName',
     Email: 'email',
     PhoneNumber: 'phoneNumber',
+    ProfilePicture: 'profilPictureUrl',
+    CoverPhoto: 'coverPhotoUrl',
     Password: 'password',
     ConfirmPassword: 'confirmPassword',
     Country: 'country',

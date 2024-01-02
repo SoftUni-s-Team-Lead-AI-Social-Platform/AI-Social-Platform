@@ -34,8 +34,8 @@ export default function Userprofileedit() {
     [ProfileFormKeys.FirstName]: userData.firstName,
     [ProfileFormKeys.LastName]: userData.lastName,
     [ProfileFormKeys.PhoneNumber]: userData.phoneNumber,
-    [ProfileFormKeys.ProfilePicture]: userData.profilePictureBase64,
-    [ProfileFormKeys.CoverPhoto]: userData.coverPhotoBase64,
+    [ProfileFormKeys.ProfilePicture]: userData.profilPictureUrl,
+    [ProfileFormKeys.CoverPhoto]: userData.coverPhotoUrl,
     [ProfileFormKeys.Country]: userData.country,
     [ProfileFormKeys.State]: userData.state,
     [ProfileFormKeys.Gender]:
@@ -72,6 +72,7 @@ export default function Userprofileedit() {
   });
 
   async function onSubmit(values) {
+    console.log("onSubmit");
     values = {
       ...values,
       [ProfileFormKeys.Gender]: parseInt(values[ProfileFormKeys.Gender], 10),
@@ -104,7 +105,10 @@ export default function Userprofileedit() {
           <div className="user-info-wrapper">
             <img
               className="user-img"
-              src="../../../public/images/mamut.jpg"
+              src={
+                values[ProfileFormKeys.ProfilePicture] ||
+                "../../../public/images/default-profile-pic.png"
+              }
               alt="User profile pic"
             />
 
@@ -122,7 +126,7 @@ export default function Userprofileedit() {
                   placeholder="Upload a photo..."
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values[ProfileFormKeys.ProfilePicture]}
+                  //value={values[ProfileFormKeys.ProfilePicture]}
                 />
                 <div>
                   <label htmlFor={ProfileFormKeys.CoverPhoto}>
@@ -136,7 +140,7 @@ export default function Userprofileedit() {
                     placeholder="Upload a photo..."
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values[ProfileFormKeys.CoverPhoto]}
+                    //value={values[ProfileFormKeys.CoverPhoto]}
                   />
                 </div>
               </fieldset>
