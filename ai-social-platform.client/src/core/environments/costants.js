@@ -66,8 +66,6 @@ export const ProfileFormKeys = {
     PhoneNumber: 'phoneNumber',
     ProfilePicture: 'profilPictureUrl',
     CoverPhoto: 'coverPhotoUrl',
-    Password: 'password',
-    ConfirmPassword: 'confirmPassword',
     Country: 'country',
     State: 'state',
     Gender: 'gender',
