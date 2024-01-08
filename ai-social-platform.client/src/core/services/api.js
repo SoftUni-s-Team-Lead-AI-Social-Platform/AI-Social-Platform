@@ -8,6 +8,7 @@ const buildOptions = (data, requestType) => {
         options.headers = {
             'Content-Type': ContentType.ApplicationJSON,
         };
+        
     } else if (requestType === ContentType.MulitpartFormData) {
         options.body = data;
     }

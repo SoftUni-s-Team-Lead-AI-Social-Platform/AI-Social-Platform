@@ -1,5 +1,6 @@
 import { endpoints } from '../environments/costants';
 import * as api from './api';
+import { ContentType } from '../environments/costants';
 
 export const getLoggedUserDetails = async () => {
     const result = await api.get(endpoints.getLoggedUserDetails);
@@ -14,7 +15,7 @@ export const getUserData = async (userId) => {
 };
 
 export const update = async (values) =>
-    await api.put(endpoints.updateUser, values);
+    await api.put(endpoints.updateUser, values, ContentType.MulitpartFormData);
 
 export const getUserDetails = async (userId) =>
     await api.get(endpoints.userDetails(userId));

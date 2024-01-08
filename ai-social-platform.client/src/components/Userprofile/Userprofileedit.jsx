@@ -73,6 +73,7 @@ export default function Userprofileedit() {
 
   async function onSubmit(values) {
     console.log("onSubmit");
+    debugger;
     values = {
       ...values,
       [ProfileFormKeys.Gender]: parseInt(values[ProfileFormKeys.Gender], 10),
@@ -81,15 +82,17 @@ export default function Userprofileedit() {
         10
       ),
     };
-    try {
-      console.log("values", values);
-      //await updateSubmitHandler(values);
-      await userService.update(values);
-    } catch (error) {
-      console.log("Error:", error);
-    }
+
+    //try {
+    console.log("values", values);
+
+    ////await updateSubmitHandler(values);
+    await userService.update(values);
+    //} catch (error) {
+    //console.log("Error:", error);
+    //}
   }
-  useNavigate(PATH.home);
+  //useNavigate(PATH.home);
   return (
     <div className="user-profile">
       <article className="post-item">
@@ -253,7 +256,7 @@ export default function Userprofileedit() {
                 <input
                   type="radio"
                   name={ProfileFormKeys.Gender}
-                  id={ProfileFormKeys.Gender}
+                  id={ProfileFormKeys.Gender + "0"}
                   value="0"
                   checked={values[ProfileFormKeys.Gender] === "0"}
                   onChange={handleChange}
@@ -265,7 +268,7 @@ export default function Userprofileedit() {
                 <input
                   type="radio"
                   name={ProfileFormKeys.Gender}
-                  id={ProfileFormKeys.Gender}
+                  id={ProfileFormKeys.Gender + "1"}
                   value="1"
                   checked={values[ProfileFormKeys.Gender] === "1"}
                   onChange={handleChange}
@@ -326,7 +329,7 @@ export default function Userprofileedit() {
                 <input
                   type="radio"
                   name={ProfileFormKeys.Relationship}
-                  id={ProfileFormKeys.Relationship}
+                  id={ProfileFormKeys.Relationship + "0"}
                   value="0"
                   checked={values[ProfileFormKeys.Relationship] === "0"}
                   onChange={handleChange}
@@ -339,7 +342,7 @@ export default function Userprofileedit() {
                 <input
                   type="radio"
                   name={ProfileFormKeys.Relationship}
-                  id={ProfileFormKeys.Relationship}
+                  id={ProfileFormKeys.Relationship + "1"}
                   value="1"
                   checked={values[ProfileFormKeys.Relationship] === "1"}
                   onChange={handleChange}
@@ -352,7 +355,7 @@ export default function Userprofileedit() {
                 <input
                   type="radio"
                   name={ProfileFormKeys.Relationship}
-                  id={ProfileFormKeys.Relationship}
+                  id={ProfileFormKeys.Relationship + "3"}
                   value="2"
                   checked={values[ProfileFormKeys.Relationship] === "2"}
                   onChange={handleChange}

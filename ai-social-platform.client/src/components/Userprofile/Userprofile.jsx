@@ -162,6 +162,14 @@ export default function Userprofile() {
               {friendsData.map((friend) => (
                 <li key={friend.id}>
                   <Link to={PATH.userProfile(friend.id)}>
+                    <img
+                      className="friend-img"
+                      src={
+                        friend.profilPictureUr ||
+                        "../../../public/images/default-profile-pic.png"
+                      }
+                      alt="User profile pic"
+                    />{" "}
                     {friend.firstName} {friend.lastName}
                   </Link>
                 </li>
