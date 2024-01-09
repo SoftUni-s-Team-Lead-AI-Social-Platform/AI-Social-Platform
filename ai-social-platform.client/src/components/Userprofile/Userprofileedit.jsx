@@ -28,14 +28,14 @@ export default function Userprofileedit() {
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const day = date.getDate().toString().padStart(2, "0");
   const year = date.getFullYear();
-  const formattedDate = `${year}-${month}-${day}`;
+  const formattedDate = `${day}-${month}-${year}`;
 
   const initialValues = {
     [ProfileFormKeys.FirstName]: userData.firstName,
     [ProfileFormKeys.LastName]: userData.lastName,
     [ProfileFormKeys.PhoneNumber]: userData.phoneNumber,
-    [ProfileFormKeys.ProfilePicture]: userData.profilPictureUrl,
-    [ProfileFormKeys.CoverPhoto]: userData.coverPhotoUrl,
+    [ProfileFormKeys.ProfilePicture]: userData.profilePictureData,
+    [ProfileFormKeys.CoverPhoto]: userData.coverPhotoData,
     [ProfileFormKeys.Country]: userData.country,
     [ProfileFormKeys.State]: userData.state,
     [ProfileFormKeys.Gender]:
@@ -44,7 +44,7 @@ export default function Userprofileedit() {
         : userData.gender === "Woman"
         ? "1"
         : userData.gender,
-    [ProfileFormKeys.School]: userData.school,
+    // [ProfileFormKeys.School]: userData.school,
     [ProfileFormKeys.Birthday]: formattedDate,
     [ProfileFormKeys.Relationship]:
       userData.relationship === "Single"
@@ -72,44 +72,70 @@ export default function Userprofileedit() {
   });
 
   async function onSubmit(values) {
-    console.log("onSubmit");
-    debugger;
+    console.log("values1", values);
     values = {
       ...values,
-      [ProfileFormKeys.Gender]: parseInt(values[ProfileFormKeys.Gender], 10),
-      [ProfileFormKeys.Relationship]: parseInt(
-        values[ProfileFormKeys.Relationship],
-        10
-      ),
+      [ProfileFormKeys.Gender]: isNaN(Number(values[ProfileFormKeys.Gender]))
+        ? ""
+        : Number(values[ProfileFormKeys.Gender]),
+      [ProfileFormKeys.Relationship]: isNaN(
+        Number(values[ProfileFormKeys.Relationship])
+      )
+        ? ""
+        : Number(values[ProfileFormKeys.Relationship]),
     };
+    console.log("values2", values);
+    Object.keys(values).forEach((key) => {
+      if (
+        key !== ProfileFormKeys.FirstName &&
+        key !== ProfileFormKeys.LastName
+      ) {
+        if (values[key] === null) {
+          values[key] = "";
+        }
+      }
+    });
+    const formData = new FormData();
 
-    //try {
-    console.log("values", values);
+    // Добавете полетата от values към formData
+    formData.append("FirstName", values.FirstName);
+    formData.append("LastName", values.LastName);
+    formData.append("PhoneNumber", values.PhoneNumber);
+    formData.append("ProfilePicture", values.ProfilePicture);
+    formData.append("CoverPhoto", values.CoverPhoto);
+    formData.append("Country", values.Country);
+    formData.append("State", values.State);
+    formData.append("Gender", values.Gender);
+    formData.append("Birthday", values.Birthday);
+    formData.append("Relationship", values.Relationship);
 
-    ////await updateSubmitHandler(values);
-    await userService.update(values);
-    //} catch (error) {
-    //console.log("Error:", error);
-    //}
+    try {
+      console.log("values3", values);
+
+      //debugger;
+      await userService.update(formData);
+
+      //await userService.update(values);
+    } catch (error) {
+      console.log("Error:", error);
+    }
+
+    //useNavigate(PATH.home);
   }
-  //useNavigate(PATH.home);
   return (
     <div className="user-profile">
       <article className="post-item">
         <form onSubmit={handleSubmit}>
           <img
             className="user-cover"
-            src={
-              values[ProfileFormKeys.CoverPhoto] ||
-              "../../../public/images/Logo.png"
-            }
+            src={userData.coverPhotoUrl || "../../../public/images/Logo.png"}
             alt="User cover photo"
           />
           <div className="user-info-wrapper">
             <img
               className="user-img"
               src={
-                values[ProfileFormKeys.ProfilePicture] ||
+                userData.profilPictureUrl ||
                 "../../../public/images/default-profile-pic.png"
               }
               alt="User profile pic"
@@ -123,7 +149,7 @@ export default function Userprofileedit() {
                 </label>
 
                 <input
-                  type="file"
+                  type="text"
                   id={ProfileFormKeys.ProfilePicture}
                   name={ProfileFormKeys.ProfilePicture}
                   placeholder="Upload a photo..."
@@ -137,7 +163,7 @@ export default function Userprofileedit() {
                   </label>
 
                   <input
-                    type="file"
+                    type="text"
                     id={ProfileFormKeys.CoverPhoto}
                     name={ProfileFormKeys.CoverPhoto}
                     placeholder="Upload a photo..."
@@ -256,7 +282,7 @@ export default function Userprofileedit() {
                 <input
                   type="radio"
                   name={ProfileFormKeys.Gender}
-                  id={ProfileFormKeys.Gender + "0"}
+                  id={ProfileFormKeys.Gender}
                   value="0"
                   checked={values[ProfileFormKeys.Gender] === "0"}
                   onChange={handleChange}
@@ -268,7 +294,7 @@ export default function Userprofileedit() {
                 <input
                   type="radio"
                   name={ProfileFormKeys.Gender}
-                  id={ProfileFormKeys.Gender + "1"}
+                  id={ProfileFormKeys.Gender}
                   value="1"
                   checked={values[ProfileFormKeys.Gender] === "1"}
                   onChange={handleChange}

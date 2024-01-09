@@ -60,19 +60,19 @@ export const RegisterFormKeys = {
 };
 
 export const ProfileFormKeys = {
-    FirstName: 'firstName',
-    LastName: 'lastName',
-    Email: 'email',
-    PhoneNumber: 'phoneNumber',
-    ProfilePicture: 'profilPictureUrl',
-    CoverPhoto: 'coverPhotoUrl',
-    Country: 'country',
-    State: 'state',
-    Gender: 'gender',
-    School: 'school',
-    Birthday: 'birthday',
-    Relationship: 'relationship',
-    Schools: [{}],
+    FirstName: 'FirstName',
+    LastName: 'LastName',
+    //Email: 'email',
+    PhoneNumber: 'PhoneNumber',
+    ProfilePicture: 'ProfilPicture',
+    CoverPhoto: 'CoverPhoto',
+    Country: 'Country',
+    State: 'State',
+    Gender: 'Gender',
+    //School: 'school',
+    Birthday: 'Birthday',
+    Relationship: 'Relationship',
+    //Schools: [{}],
 };
 
 export const CreateFormKeys = {

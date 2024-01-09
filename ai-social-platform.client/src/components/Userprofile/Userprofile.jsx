@@ -112,7 +112,7 @@ export default function Userprofile() {
               E-mail:
               <a href="mailto: {userData?.userName}"> {userData?.userName}</a>
             </p>
-            <p className="posted-user">GSM: {userData.phoneNumber}</p>
+            <p className="posted-user">Phone Number: {userData.phoneNumber}</p>
           </fieldset>
           <div className="edit">
             {isCurrentUserProfile && (

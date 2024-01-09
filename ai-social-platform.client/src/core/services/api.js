@@ -21,23 +21,27 @@ const buildOptions = (data, requestType) => {
             Authorization: `Bearer ${token}`,
         };
     }
-
     return options;
 };
 
 const api = async (method, url, data, requestType) => {
+    // const options = buildOptions(data, requestType);
+    // options.method = method;
     const response = await fetch(host + url, {
         ...buildOptions(data, requestType),
         method,
     });
-
+    //const response = await fetch(host + url, options);
+    //console.log("response",response);
     if (response.status === 204) {
         return {};
     }
 
     const result = await response.json();
+    //console.log("result",result);
 
     if (!response.ok) {
+        console.error(result);
         if (response.status === 403) {
             localStorage.removeItem(tokenName);
         }
