@@ -10,6 +10,7 @@ export default function Userprofileedit() {
   const { userId } = useParams();
   const [userData, setUserData] = useState({});
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     userService
@@ -23,13 +24,14 @@ export default function Userprofileedit() {
   if (!userData) {
     return <div>Loading...</div>;
   }
-
-  const date = new Date(userData.birthday);
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const day = date.getDate().toString().padStart(2, "0");
-  const year = date.getFullYear();
-  const formattedDate = `${day}-${month}-${year}`;
-
+  let formattedBirthday = "";
+  if (userData.birthday) {
+    const date = new Date(userData.birthday);
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    const year = date.getFullYear();
+    formattedBirthday = `${year}-${month}-${day}`;
+  }
   const initialValues = {
     [ProfileFormKeys.FirstName]: userData.firstName,
     [ProfileFormKeys.LastName]: userData.lastName,
@@ -45,7 +47,7 @@ export default function Userprofileedit() {
         ? "1"
         : userData.gender,
     // [ProfileFormKeys.School]: userData.school,
-    [ProfileFormKeys.Birthday]: formattedDate,
+    [ProfileFormKeys.Birthday]: formattedBirthday,
     [ProfileFormKeys.Relationship]:
       userData.relationship === "Single"
         ? "0"
@@ -84,6 +86,11 @@ export default function Userprofileedit() {
         ? ""
         : Number(values[ProfileFormKeys.Relationship]),
     };
+    const fileInput = document.getElementById(ProfileFormKeys.ProfilePicture);
+    const selectedFile = fileInput.files[0];
+    const fileInputCover = document.getElementById(ProfileFormKeys.CoverPhoto);
+    const selectedFileCover = fileInputCover.files[0];
+
     console.log("values2", values);
     Object.keys(values).forEach((key) => {
       if (
@@ -101,8 +108,8 @@ export default function Userprofileedit() {
     formData.append("FirstName", values.FirstName);
     formData.append("LastName", values.LastName);
     formData.append("PhoneNumber", values.PhoneNumber);
-    formData.append("ProfilePicture", values.ProfilePicture);
-    formData.append("CoverPhoto", values.CoverPhoto);
+    formData.append("ProfilePicture", selectedFile);
+    formData.append("CoverPhoto", selectedFileCover);
     formData.append("Country", values.Country);
     formData.append("State", values.State);
     formData.append("Gender", values.Gender);
@@ -111,6 +118,8 @@ export default function Userprofileedit() {
 
     try {
       console.log("values3", values);
+      console.log("formData", formData.ProfilePicture);
+      console.log("formData", formData.LastName);
 
       //debugger;
       await userService.update(formData);
@@ -120,7 +129,7 @@ export default function Userprofileedit() {
       console.log("Error:", error);
     }
 
-    //useNavigate(PATH.home);
+    navigate(PATH.userProfile(userId));
   }
   return (
     <div className="user-profile">
@@ -149,13 +158,13 @@ export default function Userprofileedit() {
                 </label>
 
                 <input
-                  type="text"
+                  type="file"
                   id={ProfileFormKeys.ProfilePicture}
                   name={ProfileFormKeys.ProfilePicture}
                   placeholder="Upload a photo..."
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  //value={values[ProfileFormKeys.ProfilePicture]}
+                  value={values[ProfileFormKeys.ProfilePicture]}
                 />
                 <div>
                   <label htmlFor={ProfileFormKeys.CoverPhoto}>
@@ -163,7 +172,7 @@ export default function Userprofileedit() {
                   </label>
 
                   <input
-                    type="text"
+                    type="file"
                     id={ProfileFormKeys.CoverPhoto}
                     name={ProfileFormKeys.CoverPhoto}
                     placeholder="Upload a photo..."

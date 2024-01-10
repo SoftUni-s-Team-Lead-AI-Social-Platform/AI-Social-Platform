@@ -39,14 +39,16 @@ export default function Userprofile() {
     return <div>Loading...</div>;
   }
 
-  const date = new Date(userData.birthday);
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-  const formattedBirthday = `${day < 10 ? "0" : ""}${day}/${
-    month < 10 ? "0" : ""
-  }${month}/${year}`;
-
+  let formattedBirthday = "";
+  if (userData.birthday) {
+    const date = new Date(userData.birthday);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    formattedBirthday = `${day < 10 ? "0" : ""}${day}/${
+      month < 10 ? "0" : ""
+    }${month}/${year}`;
+  }
   const isCurrentUserProfile = userId === authContext.userId;
   isUserFriend = friendsData.some((friend) => friend.id === userData.id);
 
@@ -150,7 +152,9 @@ export default function Userprofile() {
           <p className="posted-user">State: {userData.state}</p>
           <p className="posted-user">Gender: {userData.gender}</p>
           <p className="posted-user">School: {userData.school}</p>
-          <p className="posted-user">Birthday: {formattedBirthday}</p>
+          <p className="posted-user">
+            Birthday (dd-mm-yyyy): {formattedBirthday}
+          </p>
           <p className="posted-user">
             Relationship Status: {userData.relationship}
           </p>
