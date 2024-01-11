@@ -4,6 +4,7 @@ using AI_Social_Platform.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AI_Social_Platform.Data.Migrations
 {
     [DbContext(typeof(ASPDbContext))]
-    partial class ASPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240109052246_deleteTopicFlag")]
+    partial class deleteTopicFlag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,8 +107,8 @@ namespace AI_Social_Platform.Data.Migrations
                     b.Property<int?>("Relationship")
                         .HasColumnType("int");
 
-                    b.Property<string>("School")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("SchoolId")
+                        .HasColumnType("int");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -135,6 +137,8 @@ namespace AI_Social_Platform.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("SchoolId");
+
                     b.HasIndex("StateId");
 
                     b.ToTable("AspNetUsers", (string)null);
@@ -156,11 +160,10 @@ namespace AI_Social_Platform.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "user@user.com",
                             NormalizedUserName = "USER@USER.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJPzUL9k575A6C3IyH1no/Xx4Rb8hQlxq7hDRieCfly7/1yNQ6i70wrNRVVDk2Sg4w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEP4YbXq0v40Ra2HOOBEz7ssTY6eY4Ue+ojoGaqCLud2tRnYtXWPZMNfAGmMoO5K8iA==",
                             PhoneNumber = "0888555666",
                             PhoneNumberConfirmed = false,
                             Relationship = 1,
-                            School = "Ivan Vazov",
                             SecurityStamp = "9c4f02ae-4f84-4acb-93ff-dd995539f7c6",
                             StateId = 1,
                             TwoFactorEnabled = false,
@@ -182,10 +185,9 @@ namespace AI_Social_Platform.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.com",
                             NormalizedUserName = "ADMIN@ADMIN.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJYnURFRY+vi19lyd+xMKeKzOT3w66bYM87g2Rm5wp/XPgP9jzBe20yLv6fcQ40dbA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKRT1rPmdyKtofpYb45G9pxnBxNLlSB12ol6cd9cL3s5aCytmzYLvJmDtlykzIZyNw==",
                             PhoneNumberConfirmed = false,
                             Relationship = 0,
-                            School = "Vasil Levski",
                             SecurityStamp = "cfb5501d-596e-4bd5-b3e0-763e303fe980",
                             StateId = 1,
                             TwoFactorEnabled = false,
@@ -441,6 +443,37 @@ namespace AI_Social_Platform.Data.Migrations
                     b.ToTable("Shares");
                 });
 
+            modelBuilder.Entity("AI_Social_Platform.Data.Models.School", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("StateId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StateId");
+
+                    b.ToTable("Schools");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Ivan Vazov",
+                            StateId = 1
+                        });
+                });
+
             modelBuilder.Entity("AI_Social_Platform.Data.Models.State", b =>
                 {
                     b.Property<int>("Id")
@@ -654,12 +687,19 @@ namespace AI_Social_Platform.Data.Migrations
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("AI_Social_Platform.Data.Models.School", "School")
+                        .WithMany("UserInThisSchool")
+                        .HasForeignKey("SchoolId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("AI_Social_Platform.Data.Models.State", "State")
                         .WithMany("UsersInThisState")
                         .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Country");
+
+                    b.Navigation("School");
 
                     b.Navigation("State");
                 });
@@ -772,6 +812,17 @@ namespace AI_Social_Platform.Data.Migrations
                     b.Navigation("Publication");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AI_Social_Platform.Data.Models.School", b =>
+                {
+                    b.HasOne("AI_Social_Platform.Data.Models.State", "State")
+                        .WithMany()
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("AI_Social_Platform.Data.Models.Topic.Topic", b =>
@@ -888,6 +939,11 @@ namespace AI_Social_Platform.Data.Migrations
                     b.Navigation("MediaFiles");
 
                     b.Navigation("Shares");
+                });
+
+            modelBuilder.Entity("AI_Social_Platform.Data.Models.School", b =>
+                {
+                    b.Navigation("UserInThisSchool");
                 });
 
             modelBuilder.Entity("AI_Social_Platform.Data.Models.State", b =>
