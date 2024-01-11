@@ -75,16 +75,15 @@ export default function Userprofileedit() {
 
   async function onSubmit(values) {
     console.log("values1", values);
+    console.log(Number(values[ProfileFormKeys.Gender]));
     values = {
       ...values,
-      [ProfileFormKeys.Gender]: isNaN(Number(values[ProfileFormKeys.Gender]))
-        ? ""
-        : Number(values[ProfileFormKeys.Gender]),
-      [ProfileFormKeys.Relationship]: isNaN(
-        Number(values[ProfileFormKeys.Relationship])
-      )
-        ? ""
-        : Number(values[ProfileFormKeys.Relationship]),
+      [ProfileFormKeys.Gender]: ["0", "1"].includes(values[ProfileFormKeys.Gender])
+    ? Number(values[ProfileFormKeys.Gender])
+    : "",
+  [ProfileFormKeys.Relationship]: ["0", "1", "2"].includes(values[ProfileFormKeys.Relationship])
+    ? Number(values[ProfileFormKeys.Relationship])
+    : "",
     };
     const fileInput = document.getElementById(ProfileFormKeys.ProfilePicture);
     const selectedFile = fileInput.files[0];
@@ -291,25 +290,37 @@ export default function Userprofileedit() {
                 <input
                   type="radio"
                   name={ProfileFormKeys.Gender}
-                  id={ProfileFormKeys.Gender}
+                  id={ProfileFormKeys.Gender+ "0"}
                   value="0"
                   checked={values[ProfileFormKeys.Gender] === "0"}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-                Man{" "}
+                {" "}Man{" "}
               </label>
               <label>
                 <input
                   type="radio"
                   name={ProfileFormKeys.Gender}
-                  id={ProfileFormKeys.Gender}
+                  id={ProfileFormKeys.Gender+ "1"}
                   value="1"
                   checked={values[ProfileFormKeys.Gender] === "1"}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-                Woman
+                {" "}Woman{" "}
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name={ProfileFormKeys.Gender}
+                  id={ProfileFormKeys.Gender+ "2"}
+                  value="---"
+                  checked={values[ProfileFormKeys.Gender] === "---"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {" "}Prefer not to say
               </label>
             </section>
 
@@ -370,7 +381,7 @@ export default function Userprofileedit() {
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-                Single{" "}
+                {" "}Single{" "}
               </label>
 
               <label>
@@ -383,20 +394,32 @@ export default function Userprofileedit() {
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-                InARelationship{" "}
+                {" "}InARelationship{" "}
               </label>
 
               <label>
                 <input
                   type="radio"
                   name={ProfileFormKeys.Relationship}
-                  id={ProfileFormKeys.Relationship + "3"}
+                  id={ProfileFormKeys.Relationship + "2"}
                   value="2"
                   checked={values[ProfileFormKeys.Relationship] === "2"}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-                Married
+                {" "}Married{" "}
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name={ProfileFormKeys.Relationship}
+                  id={ProfileFormKeys.Relationship + "3"}
+                  value="---"
+                  checked={values[ProfileFormKeys.Relationship] === "---"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {" "}Prefer not to say
               </label>
             </section>
           </fieldset>
