@@ -97,7 +97,7 @@
                 Username = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                ProfilePicture = GetProfilImageUrl(user.Id),
+                ProfilePicture = GetProfileImageUrl(user.Id),
                 Token = userService.BuildToken(userId)
             });
 
@@ -142,7 +142,7 @@
                 Username = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                ProfilePicture = GetProfilImageUrl(user.Id),
+                ProfilePicture = GetProfileImageUrl(user.Id),
                 Token = userService.BuildToken(userId)
             });
         }
@@ -157,7 +157,7 @@
         }
 
 
-        [HttpGet("ProfilPicture/{userId}")]
+        [HttpGet("ProfilePicture/{userId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetUserProfilPicture(string userId)
         {
@@ -166,7 +166,7 @@
             {
                 return File(user.ProfilePictureData, "image/png");
             }
-            return BadRequest("No profil picture found!");
+            return BadRequest("No profile picture found!");
         }
 
 
@@ -202,7 +202,7 @@
 
                 if (user.ProfilePictureData != null)
                 {
-                    user.ProfilePictureUrl = GetProfilImageUrl(user.Id);
+                    user.ProfilePictureUrl = GetProfileImageUrl(user.Id);
                     user.ProfilePictureData = null;
                 }
                 if (user.CoverPhotoData != null)
@@ -418,12 +418,12 @@
             }
         }
 
-        private string GetProfilImageUrl(Guid userId)
+        private string GetProfileImageUrl(Guid userId)
         {
             var request = HttpContext.Request;
             var baseUrl = $"{request.Scheme}://{request.Host}{request.PathBase}";
 
-            return $"{baseUrl}/api/User/ProfilPicture/{userId}";
+            return $"{baseUrl}/api/User/ProfilePicture/{userId}";
         }
 
 
