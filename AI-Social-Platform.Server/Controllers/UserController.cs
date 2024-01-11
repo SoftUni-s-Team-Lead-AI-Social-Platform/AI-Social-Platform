@@ -308,12 +308,10 @@
 
 
         [HttpGet("allFriends")]
-        public async Task<IActionResult> GetAllFriends()
+        public async Task<IActionResult> GetAllFriends(string userId)
         {
             try
             {
-                var userId = this.User.GetUserId();
-
                 if (string.IsNullOrEmpty(userId))
                 {
                     return BadRequest(new { message = "User not found."});
