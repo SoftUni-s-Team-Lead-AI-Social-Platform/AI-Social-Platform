@@ -80,11 +80,11 @@ export default function Userprofile() {
   };
 
   console.log("userData", userData);
-  console.log("authUserData", authUserData);
-  console.log("friendsData", friendsData);
-  console.log(userId, authContext.userId);
-  console.log("isCurrentUserProfileis", isCurrentUserProfile);
-  console.log("isUserFriend", isUserFriend);
+  // console.log("authUserData", authUserData);
+  // console.log("friendsData", friendsData);
+  // console.log(userId, authContext.userId);
+  // console.log("isCurrentUserProfileis", isCurrentUserProfile);
+  // console.log("isUserFriend", isUserFriend);
 
   return (
     <div className="user-profile">
@@ -107,7 +107,7 @@ export default function Userprofile() {
           <fieldset>
             <legend>Contact information</legend>
             <p className="username-profile">
-              {userData.firstName} {userData.lastName}
+              {userData.firstName} {"  "} {userData.lastName}
             </p>
 
             <p className="posted-user">

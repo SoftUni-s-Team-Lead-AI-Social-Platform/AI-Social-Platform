@@ -16,7 +16,7 @@ export default function Userprofileedit() {
     userService
       .getUserDetails(userId)
       .then((result) => {
-        console.log(result);
+        //console.log(result);
         setUserData(result);
       })
       .catch((error) => console.log(error));
@@ -74,23 +74,27 @@ export default function Userprofileedit() {
   });
 
   async function onSubmit(values) {
-    console.log("values1", values);
-    console.log(Number(values[ProfileFormKeys.Gender]));
+    //console.log("values1", values);
+
     values = {
       ...values,
-      [ProfileFormKeys.Gender]: ["0", "1"].includes(values[ProfileFormKeys.Gender])
-    ? Number(values[ProfileFormKeys.Gender])
-    : "",
-  [ProfileFormKeys.Relationship]: ["0", "1", "2"].includes(values[ProfileFormKeys.Relationship])
-    ? Number(values[ProfileFormKeys.Relationship])
-    : "",
+      [ProfileFormKeys.Gender]: ["0", "1"].includes(
+        values[ProfileFormKeys.Gender]
+      )
+        ? Number(values[ProfileFormKeys.Gender])
+        : "",
+      [ProfileFormKeys.Relationship]: ["0", "1", "2"].includes(
+        values[ProfileFormKeys.Relationship]
+      )
+        ? Number(values[ProfileFormKeys.Relationship])
+        : "",
     };
     const fileInput = document.getElementById(ProfileFormKeys.ProfilePicture);
     const selectedFile = fileInput.files[0];
     const fileInputCover = document.getElementById(ProfileFormKeys.CoverPhoto);
     const selectedFileCover = fileInputCover.files[0];
 
-    console.log("values2", values);
+    //console.log("values2", values);
     Object.keys(values).forEach((key) => {
       if (
         key !== ProfileFormKeys.FirstName &&
@@ -117,8 +121,8 @@ export default function Userprofileedit() {
 
     try {
       console.log("values3", values);
-      console.log("formData", formData.ProfilePicture);
-      console.log("formData", formData.LastName);
+      // console.log("formData", formData.ProfilePicture);
+      // console.log("formData", formData.LastName);
 
       //debugger;
       await userService.update(formData);
@@ -127,7 +131,7 @@ export default function Userprofileedit() {
     } catch (error) {
       console.log("Error:", error);
     }
-
+    console.log("userProfile");
     navigate(PATH.userProfile(userId));
   }
   return (
@@ -290,37 +294,37 @@ export default function Userprofileedit() {
                 <input
                   type="radio"
                   name={ProfileFormKeys.Gender}
-                  id={ProfileFormKeys.Gender+ "0"}
+                  id={ProfileFormKeys.Gender + "0"}
                   value="0"
                   checked={values[ProfileFormKeys.Gender] === "0"}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                {" "}Man{" "}
+                />{" "}
+                Man{" "}
               </label>
               <label>
                 <input
                   type="radio"
                   name={ProfileFormKeys.Gender}
-                  id={ProfileFormKeys.Gender+ "1"}
+                  id={ProfileFormKeys.Gender + "1"}
                   value="1"
                   checked={values[ProfileFormKeys.Gender] === "1"}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                {" "}Woman{" "}
+                />{" "}
+                Woman{" "}
               </label>
               <label>
                 <input
                   type="radio"
                   name={ProfileFormKeys.Gender}
-                  id={ProfileFormKeys.Gender+ "2"}
+                  id={ProfileFormKeys.Gender + "2"}
                   value="---"
                   checked={values[ProfileFormKeys.Gender] === "---"}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                {" "}Prefer not to say
+                />{" "}
+                Prefer not to say
               </label>
             </section>
 
@@ -380,8 +384,8 @@ export default function Userprofileedit() {
                   checked={values[ProfileFormKeys.Relationship] === "0"}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                {" "}Single{" "}
+                />{" "}
+                Single{" "}
               </label>
 
               <label>
@@ -393,8 +397,8 @@ export default function Userprofileedit() {
                   checked={values[ProfileFormKeys.Relationship] === "1"}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                {" "}InARelationship{" "}
+                />{" "}
+                InARelationship{" "}
               </label>
 
               <label>
@@ -406,8 +410,8 @@ export default function Userprofileedit() {
                   checked={values[ProfileFormKeys.Relationship] === "2"}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                {" "}Married{" "}
+                />{" "}
+                Married{" "}
               </label>
               <label>
                 <input
@@ -418,8 +422,8 @@ export default function Userprofileedit() {
                   checked={values[ProfileFormKeys.Relationship] === "---"}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                {" "}Prefer not to say
+                />{" "}
+                Prefer not to say
               </label>
             </section>
           </fieldset>
