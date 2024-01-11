@@ -1,4 +1,5 @@
 ﻿using AI_Social_Platform.Data.Models.Enums;
+using AutoMapper;
 
 namespace AI_Social_Platform.Services.Data.Models
 {
@@ -24,14 +25,19 @@ namespace AI_Social_Platform.Services.Data.Models
         private readonly IConfiguration configuration;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IBaseSocialService baseSocialService;
+        private readonly IMapper mapper;
 
-        public UserService(ASPDbContext dbContext, IConfiguration configuration,
-            UserManager<ApplicationUser> userManager, IBaseSocialService baseSocialService)
+        public UserService(ASPDbContext dbContext,
+            IConfiguration configuration,
+            UserManager<ApplicationUser> userManager, 
+            IBaseSocialService baseSocialService,
+            IMapper mapper)
         {
             this.dbContext = dbContext;
             this.configuration = configuration;
             this.userManager = userManager;
             this.baseSocialService = baseSocialService;
+            this.mapper = mapper;
         }
 
         public string BuildToken(string userId)
@@ -78,7 +84,7 @@ namespace AI_Social_Platform.Services.Data.Models
                 .Include(u => u.Friends)
                 .FirstAsync(u => u.IsActive && u.Id.ToString() == id);
 
-            List<FriendDetailsDto> friends = await GetUserFriendsAsync(user);
+            var friends = mapper.Map<List<UserDto.UserDto>>(user.Friends);
 
 
             UserDetailsDto userDetailModel = new()
@@ -95,10 +101,11 @@ namespace AI_Social_Platform.Services.Data.Models
                 Relationship = user.Relationship?.ToString() ?? null,
                 ProfilePictureData = user.ProfilePicture != null ? user.ProfilePicture : null,
                 CoverPhotoData = user.CoverPhoto != null ? user.CoverPhoto : null,
-                Friends = friends,
                 School = user.School?.Name ?? null,
-                ProfilPictureUrl = null,
-                CoverPhotoUrl = null
+                ProfilePictureUrl = null,
+                CoverPhotoUrl = null,
+                Email = user.Email,
+                Friends = friends,
             };
 
             return userDetailModel;
@@ -203,7 +210,7 @@ namespace AI_Social_Platform.Services.Data.Models
             return true;
         }
 
-        public async Task<ICollection<FriendDetailsDto>?> GetFriendsAsync(string userId)
+        public async Task<ICollection<UserDto.UserDto>> GetFriendsAsync(string userId)
         {
             var user = await dbContext.ApplicationUsers
                 .Include(u => u.Friends)
@@ -214,16 +221,7 @@ namespace AI_Social_Platform.Services.Data.Models
                 return null;
             }
 
-            var friends = user.Friends
-                .Select(friend => new FriendDetailsDto
-                {
-                    UserName = friend.UserName,
-                    FirstName = friend.FirstName,
-                    LastName = friend.LastName,
-                    Id = friend.Id,
-                    ProfilePictureData = friend.ProfilePicture
-                })
-                .ToArray();
+            var friends = mapper.Map<List<UserDto.UserDto>>(user.Friends);
 
             return friends;
         }
@@ -338,27 +336,6 @@ namespace AI_Social_Platform.Services.Data.Models
             }
 
             return null;
-        }
-
-        private async Task<List<FriendDetailsDto>> GetUserFriendsAsync(ApplicationUser user)
-        {
-            List<FriendDetailsDto> friends = new List<FriendDetailsDto>();
-
-            foreach (var itemFriend in user.Friends)
-            {
-                var myFriend = await this.dbContext.ApplicationUsers.FindAsync(itemFriend.Id);
-                string userName = myFriend?.UserName ?? string.Empty;
-
-                FriendDetailsDto friend = new FriendDetailsDto()
-                {
-                    FirstName = user.FirstName ?? string.Empty,
-                    LastName = user.LastName ?? string.Empty,
-                    UserName = userName
-                };
-                friends.Add(friend);
-            }
-
-            return friends;
         }
 
         private static List<PublicationDto> GetUserPublications(ApplicationUser user)

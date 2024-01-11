@@ -20,7 +20,7 @@
 
         Task<bool> RemoveFriend(ApplicationUser currentUser, string friendId);
 
-        Task<ICollection<FriendDetailsDto>?> GetFriendsAsync(string userId);
+        Task<ICollection<UserDto>> GetFriendsAsync(string userId);
 
         Task<bool> CheckIfUserExistsAsync(string userEmail);
 

@@ -202,7 +202,7 @@
 
                 if (user.ProfilePictureData != null)
                 {
-                    user.ProfilPictureUrl = GetProfilImageUrl(user.Id);
+                    user.ProfilePictureUrl = GetProfilImageUrl(user.Id);
                     user.ProfilePictureData = null;
                 }
                 if (user.CoverPhotoData != null)

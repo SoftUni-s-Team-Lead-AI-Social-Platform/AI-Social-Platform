@@ -24,8 +24,6 @@
 
         public string? School { get; set; }
         
-        public List<FriendDetailsDto> Friends { get; set; } = new List<FriendDetailsDto>();
-        
-
+        public List<UserDto> Friends { get; set; } = new List<UserDto>();
     }
 }
