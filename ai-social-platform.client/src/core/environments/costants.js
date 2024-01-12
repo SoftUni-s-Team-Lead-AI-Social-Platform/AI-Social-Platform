@@ -26,7 +26,7 @@ export const endpoints = {
     userDetails: (userId) => `User/userDetails/${userId}`,
     addFriend: (userId) => `User/addFriend/${userId}`,
     removeFriend: (userId) => `User/removeFriend/${userId}`,
-    allFriends: `User/allFriends`,
+    allFriends:(userId) => `User/allFriends?userId=${userId}`,
 
     // POSTS
     createPost: 'Publication',
@@ -72,7 +72,6 @@ export const ProfileFormKeys = {
     //School: 'school',
     Birthday: 'Birthday',
     Relationship: 'Relationship',
-    //Schools: [{}],
 };
 
 export const CreateFormKeys = {

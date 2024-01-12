@@ -21,7 +21,7 @@ export default function Userprofile() {
     Promise.all([
       userService.getUserDetails(userId),
       userService.getUserDetails(authContext.userId),
-      userService.getFriendsData(),
+      userService.getFriendsData(authContext.userId),
     ])
       .then(([userResult, authUserResult, friendsResult]) => {
         setUserData(userResult);
@@ -52,13 +52,15 @@ export default function Userprofile() {
   const isCurrentUserProfile = userId === authContext.userId;
   isUserFriend = friendsData.some((friend) => friend.id === userData.id);
 
+ 
+
   const handleAddFriend = async () => {
     try {
       await userService.addFriend(userId);
       // Промени състоянието, че сега потребителят е приятел
       isUserFriend = true;
       // Извикване на нова заявка, за да актуализира информацията за приятелите
-      const friendsResult = await userService.getFriendsData();
+      const friendsResult = await userService.getFriendsData(authContext.userId);
       setFriendsData(friendsResult);
     } catch (error) {
       setError(error);
@@ -71,7 +73,7 @@ export default function Userprofile() {
       // Промени състоянието, че сега потребителят не е приятел
       isUserFriend = false;
       // Извикване на нова заявка, за да актуализира информацията за приятелите
-      const friendsResult = await userService.getFriendsData();
+      const friendsResult = await userService.getFriendsData(authContext.userId);
       setFriendsData(friendsResult);
       //console.log("remove", friendsData);
     } catch (error) {
@@ -98,7 +100,7 @@ export default function Userprofile() {
           <img
             className="user-img"
             src={
-              userData.profilPictureUrl ||
+              userData.profilePictureUrl ||
               "../../../public/images/default-profile-pic.png"
             }
             alt="User profile pic"
@@ -168,9 +170,10 @@ export default function Userprofile() {
                   <Link to={PATH.userProfile(friend.id)}>
                     <img
                       className="friend-img"
-                      src={
-                        friend.profilPictureUr ||
-                        "../../../public/images/default-profile-pic.png"
+                      src={ friend.profilePictureData
+                        ? 
+                        `data:image/jpeg;base64,${friend.profilePictureData}` :
+                        "../../../public/images/default-profile-pic.png"    
                       }
                       alt="User profile pic"
                     />{" "}

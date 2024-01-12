@@ -26,7 +26,7 @@ export const addFriend = async (userId) =>
 export const removeFriend = async (userId) =>
     await api.post(endpoints.removeFriend(userId));
 
-export const getFriendsData = async () =>
-    await api.get(endpoints.allFriends);
+export const getFriendsData = async (userId) =>
+    await api.get(endpoints.allFriends(userId));
     
 

@@ -147,7 +147,7 @@ export default function Userprofileedit() {
             <img
               className="user-img"
               src={
-                userData.profilPictureUrl ||
+                userData.profilePictureUrl ||
                 "../../../public/images/default-profile-pic.png"
               }
               alt="User profile pic"

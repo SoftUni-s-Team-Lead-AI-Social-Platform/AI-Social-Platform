@@ -36,23 +36,6 @@ function App() {
                 <Route path={PATH.register} element={<Register />} />
               </Route>
 
-<<<<<<< HEAD
-              <Route element={<AuthGuard />}>
-                <Route path={PATH.home} element={<Home />} />
-                <Route path={PATH.logout} element={<Logout />} />
-                <Route path={PATH.create} element={<CreatePost />} />
-                //
-                <Route path={PATH.profile} element={<Userprofile />} />
-                <Route path={PATH.profileedit} element={<Userprofileedit />} />
-              </Route>
-            </Routes>
-          </main>
-          <Footer />
-        </>
-      </AuthProvider>
-    </ErrorBoundary>
-  );
-=======
                             <Route element={<AuthGuard />}>
                                 <Route path={PATH.home} element={<Home />} />
 
@@ -85,7 +68,6 @@ function App() {
             </AuthProvider>
         </ErrorBoundary>
     );
->>>>>>> main
 }
 
 export default App;
