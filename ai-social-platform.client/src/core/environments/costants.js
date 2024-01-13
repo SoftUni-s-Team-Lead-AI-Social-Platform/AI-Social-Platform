@@ -102,4 +102,11 @@ export const CommentActions = {
     DeleteComment: 'deleteComment',
 };
 
+export const PostActions = {
+    CreatePost: 'createPost',
+    GetAllPosts: 'getAllPosts',
+    EditPost: 'editPost',
+    DeletePost: 'deletePost',
+};
+
 export const tokenName = 'accessToken';
