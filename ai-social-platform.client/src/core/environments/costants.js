@@ -6,6 +6,8 @@ export const PATH = {
     register: '/users/register',
     logout: '/users/logout',
     create: '/create-post',
+    detailsPost: '/posts/:postId',
+    postDetails: (postId) => `posts/${postId}`,
     profile: '/profile/:userId',
     profileedit: '/profileedit/:userId',
     successfully: '/successfuly',
@@ -28,17 +30,20 @@ export const endpoints = {
     // POSTS
     createPost: 'Publication',
     getAllPosts: 'Publication',
+    getPostById: (postId) => `Publication/${postId}`,
     deletePost: (postId) => `Publication/${postId}`,
 
     // MEDIA
     addMedia: 'Media/upload?isItPublication=true',
     getPostMedia: (postId) => `Media/${postId}`,
     getMediaById: (mediaId) => `Media/serve/${mediaId}`,
+    getMediaByPostId: (postId) => `Media/${postId}`,
     deleteMedia: (mediaId) => `Media/delete/${mediaId}`,
 
     // COMMENTS
     createComment: 'SocialFeature/comment',
     getAllComments: (postId) => `SocialFeature/comment/${postId}`,
+    editComment: (commentId) => `SocialFeature/comment/${commentId}`,
     deleteComment: (commentId) => `SocialFeature/comment/${commentId}`,
 };
 
@@ -79,6 +84,10 @@ export const CreateFormKeys = {
 
 export const CommentFormKeys = {
     CommentText: 'commentText',
+};
+
+export const EditCommentFromKeys = {
+    EditCommentArea: 'editCommentArea',
 };
 
 export const ContentType = {
