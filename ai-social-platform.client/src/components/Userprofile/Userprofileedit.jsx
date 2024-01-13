@@ -16,14 +16,25 @@ export default function Userprofileedit() {
     userService
       .getUserDetails(userId)
       .then((result) => {
-        //console.log(result);
-        setUserData(result);
+        const updatedUserData = mapNullValuesToEmptyString(result);
+        setUserData(updatedUserData);
       })
       .catch((error) => console.log(error));
   }, []);
   if (!userData) {
     return <div>Loading...</div>;
   }
+
+  const mapNullValuesToEmptyString = (data) => {
+    const updatedData = {};
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        updatedData[key] = data[key] === null ? "" : data[key];
+      }
+    }
+    return updatedData;
+  };
+
   let formattedBirthday = "";
   if (userData.birthday) {
     const date = new Date(userData.birthday);
@@ -32,6 +43,7 @@ export default function Userprofileedit() {
     const year = date.getFullYear();
     formattedBirthday = `${year}-${month}-${day}`;
   }
+
   const initialValues = {
     [ProfileFormKeys.FirstName]: userData.firstName,
     [ProfileFormKeys.LastName]: userData.lastName,
@@ -74,8 +86,6 @@ export default function Userprofileedit() {
   });
 
   async function onSubmit(values) {
-    //console.log("values1", values);
-
     values = {
       ...values,
       [ProfileFormKeys.Gender]: ["0", "1"].includes(
@@ -94,17 +104,6 @@ export default function Userprofileedit() {
     const fileInputCover = document.getElementById(ProfileFormKeys.CoverPhoto);
     const selectedFileCover = fileInputCover.files[0];
 
-    //console.log("values2", values);
-    Object.keys(values).forEach((key) => {
-      if (
-        key !== ProfileFormKeys.FirstName &&
-        key !== ProfileFormKeys.LastName
-      ) {
-        if (values[key] === null) {
-          values[key] = "";
-        }
-      }
-    });
     const formData = new FormData();
 
     // Добавете полетата от values към formData
@@ -121,18 +120,11 @@ export default function Userprofileedit() {
     formData.append("Relationship", values.Relationship);
 
     try {
-      console.log("values3", values);
-      // console.log("formData", formData.ProfilePicture);
-      // console.log("formData", formData.LastName);
-
-      //debugger;
       await userService.update(formData);
-
-      //await userService.update(values);
     } catch (error) {
       console.log("Error:", error);
     }
-    console.log("userProfile");
+
     navigate(PATH.userProfile(userId));
   }
   return (
@@ -182,7 +174,7 @@ export default function Userprofileedit() {
                     placeholder="Upload a photo..."
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    //value={values[ProfileFormKeys.CoverPhoto]}
+                    value={values[ProfileFormKeys.CoverPhoto]}
                   />
                 </div>
               </fieldset>

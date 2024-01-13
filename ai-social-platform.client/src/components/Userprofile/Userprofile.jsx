@@ -46,9 +46,6 @@ export default function Userprofile() {
     return <div>Loading...</div>;
   }
 
-  console.log("friendsData", friendsData);
-  console.log("friendsDataFriend", friendsDataFriend);
-
   let formattedBirthday = "";
   if (userData.birthday) {
     const date = new Date(userData.birthday);
@@ -91,18 +88,10 @@ export default function Userprofile() {
       setFriendsData(friendsResult);
       const friendsResultFriend = await userService.getFriendsData(userId);
       setFriendsDataFriend(friendsResultFriend);
-      //console.log("remove", friendsData);
     } catch (error) {
       setError(error.message);
     }
   };
-
-  console.log("userData", userData);
-  // console.log("authUserData", authUserData);
-  // console.log("friendsData", friendsData);
-  // console.log(userId, authContext.userId);
-  // console.log("isCurrentUserProfileis", isCurrentUserProfile);
-  // console.log("isUserFriend", isUserFriend);
 
   return (
     <div className="user-profile">
