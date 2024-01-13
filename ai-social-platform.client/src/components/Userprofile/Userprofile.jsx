@@ -11,7 +11,10 @@ export default function Userprofile() {
 
   const [userData, setUserData] = useState(null);
   const [authUserData, setAuthUserData] = useState(null);
+  // friendsData - the logged-in user's friends
   const [friendsData, setFriendsData] = useState(null);
+  // friendsDataFriend - the friends of a non-logged-in user
+  const [friendsDataFriend, setFriendsDataFriend] = useState(null);
   const [error, setError] = useState(null);
   const authContext = useContext(AuthContext);
   let isUserFriend;
@@ -22,12 +25,16 @@ export default function Userprofile() {
       userService.getUserDetails(userId),
       userService.getUserDetails(authContext.userId),
       userService.getFriendsData(authContext.userId),
+      userService.getFriendsData(userId),
     ])
-      .then(([userResult, authUserResult, friendsResult]) => {
-        setUserData(userResult);
-        setAuthUserData(authUserResult);
-        setFriendsData(friendsResult);
-      })
+      .then(
+        ([userResult, authUserResult, friendsResult, friendsResultFriend]) => {
+          setUserData(userResult);
+          setAuthUserData(authUserResult);
+          setFriendsData(friendsResult);
+          setFriendsDataFriend(friendsResultFriend);
+        }
+      )
       .catch((error) => setError(error));
   }, [userId, authContext.userId, isUserFriend]);
 
@@ -38,6 +45,9 @@ export default function Userprofile() {
   if (!userData) {
     return <div>Loading...</div>;
   }
+
+  console.log("friendsData", friendsData);
+  console.log("friendsDataFriend", friendsDataFriend);
 
   let formattedBirthday = "";
   if (userData.birthday) {
@@ -52,16 +62,18 @@ export default function Userprofile() {
   const isCurrentUserProfile = userId === authContext.userId;
   isUserFriend = friendsData.some((friend) => friend.id === userData.id);
 
- 
-
   const handleAddFriend = async () => {
     try {
       await userService.addFriend(userId);
       // Промени състоянието, че сега потребителят е приятел
       isUserFriend = true;
-      // Извикване на нова заявка, за да актуализира информацията за приятелите
-      const friendsResult = await userService.getFriendsData(authContext.userId);
+      //Извикване на нова заявка, за да актуализира информацията за приятелите
+      const friendsResult = await userService.getFriendsData(
+        authContext.userId
+      );
       setFriendsData(friendsResult);
+      const friendsResultFriend = await userService.getFriendsData(userId);
+      setFriendsDataFriend(friendsResultFriend);
     } catch (error) {
       setError(error);
     }
@@ -73,8 +85,12 @@ export default function Userprofile() {
       // Промени състоянието, че сега потребителят не е приятел
       isUserFriend = false;
       // Извикване на нова заявка, за да актуализира информацията за приятелите
-      const friendsResult = await userService.getFriendsData(authContext.userId);
+      const friendsResult = await userService.getFriendsData(
+        authContext.userId
+      );
       setFriendsData(friendsResult);
+      const friendsResultFriend = await userService.getFriendsData(userId);
+      setFriendsDataFriend(friendsResultFriend);
       //console.log("remove", friendsData);
     } catch (error) {
       setError(error.message);
@@ -165,22 +181,39 @@ export default function Userprofile() {
           <legend>Friends</legend>
           <div>
             <ul>
-              {friendsData.map((friend) => (
-                <li key={friend.id}>
-                  <Link to={PATH.userProfile(friend.id)}>
-                    <img
-                      className="friend-img"
-                      src={ friend.profilePictureData
-                        ? 
-                        `data:image/jpeg;base64,${friend.profilePictureData}` :
-                        "../../../public/images/default-profile-pic.png"    
-                      }
-                      alt="User profile pic"
-                    />{" "}
-                    {friend.firstName} {friend.lastName}
-                  </Link>
-                </li>
-              ))}
+              {isCurrentUserProfile
+                ? friendsData.map((friend) => (
+                    <li key={friend.id}>
+                      <Link to={PATH.userProfile(friend.id)}>
+                        <img
+                          className="friend-img"
+                          src={
+                            friend.profilePictureData
+                              ? `data:image/jpeg;base64,${friend.profilePictureData}`
+                              : "../../../public/images/default-profile-pic.png"
+                          }
+                          alt="User profile pic"
+                        />{" "}
+                        {friend.firstName} {friend.lastName}
+                      </Link>
+                    </li>
+                  ))
+                : friendsDataFriend.map((friend) => (
+                    <li key={friend.id}>
+                      <Link to={PATH.userProfile(friend.id)}>
+                        <img
+                          className="friend-img"
+                          src={
+                            friend.profilePictureData
+                              ? `data:image/jpeg;base64,${friend.profilePictureData}`
+                              : "../../../public/images/default-profile-pic.png"
+                          }
+                          alt="User profile pic"
+                        />{" "}
+                        {friend.firstName} {friend.lastName}
+                      </Link>
+                    </li>
+                  ))}
             </ul>
           </div>
         </fieldset>

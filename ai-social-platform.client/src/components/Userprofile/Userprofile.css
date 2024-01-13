@@ -151,3 +151,8 @@ input {
     height:1.3em;
     border-radius: 40px;
 }
+
+.friend-img:hover {
+    border-radius: 0px;
+  transform: scale(2.3); 
+}

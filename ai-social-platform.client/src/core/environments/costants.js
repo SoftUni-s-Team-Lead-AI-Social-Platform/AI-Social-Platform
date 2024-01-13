@@ -69,7 +69,7 @@ export const ProfileFormKeys = {
     Country: 'Country',
     State: 'State',
     Gender: 'Gender',
-    //School: 'school',
+    School: 'School',
     Birthday: 'Birthday',
     Relationship: 'Relationship',
 };

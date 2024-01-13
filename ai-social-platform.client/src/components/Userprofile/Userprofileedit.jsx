@@ -46,7 +46,7 @@ export default function Userprofileedit() {
         : userData.gender === "Woman"
         ? "1"
         : userData.gender,
-    // [ProfileFormKeys.School]: userData.school,
+    [ProfileFormKeys.School]: userData.school,
     [ProfileFormKeys.Birthday]: formattedBirthday,
     [ProfileFormKeys.Relationship]:
       userData.relationship === "Single"
@@ -116,6 +116,7 @@ export default function Userprofileedit() {
     formData.append("Country", values.Country);
     formData.append("State", values.State);
     formData.append("Gender", values.Gender);
+    formData.append("School", values.School);
     formData.append("Birthday", values.Birthday);
     formData.append("Relationship", values.Relationship);
 
