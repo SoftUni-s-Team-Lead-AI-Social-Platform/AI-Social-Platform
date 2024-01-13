@@ -1,27 +1,18 @@
 .post-details-section {
     background-color: #fff;
     overflow: hidden;
-    width: 28em;
+    width: 36em;
     display: flex;
     flex-direction: column;
     border-radius: 0.5em;
     box-shadow: 0 0 0.2em 0.1em #ddd;
     position: relative;
-    margin: 3em auto;
+    margin: 5em auto 2em auto;
 }
 
 .post-description {
     padding: 0 1em 0.5em 1em;
 }
-
-/* .media {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    margin-bottom: 0.5em;
-} */
 
 .media img {
     width: 100%;
