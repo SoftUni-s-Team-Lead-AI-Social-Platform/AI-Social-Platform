@@ -22,7 +22,7 @@
 }
 
 .cancel-button:hover,
-.submit-button:hover{
+.submit-button:hover {
     filter: brightness(110%);
 }
 
