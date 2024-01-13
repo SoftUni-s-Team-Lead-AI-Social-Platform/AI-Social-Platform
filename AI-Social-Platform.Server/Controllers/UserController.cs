@@ -264,14 +264,14 @@ namespace AI_Social_Platform.Server.Controllers
                     return BadRequest(new { message = "Cannot add yourself as a friends list!" });
                 }
                 
-                bool areFriends = await userService.AreFriends(currentUser.Id, Guid.Parse(friendId));
+                bool areFriends = await userService.AreFriendsAsync(currentUser.Id, Guid.Parse(friendId));
                 
                 if (areFriends)
                 {
                     return BadRequest(new { message = "Users are already friends!" });
                 }
 
-                bool success = await userService.AddFriend(currentUser!, friendId!);
+                bool success = await userService.AddFriendAsync(currentUser!, friendId!);
 
                 if (success)
                 {
@@ -299,7 +299,7 @@ namespace AI_Social_Platform.Server.Controllers
                     return NotFound(new { message = "Current user not found!"});
                 }
 
-                var success = await userService.RemoveFriend(currentUser!, friendId!);
+                var success = await userService.RemoveFriendAsync(currentUser!, friendId!);
 
                 if (success)
                 {
