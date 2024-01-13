@@ -1,9 +1,8 @@
 import { useFormik } from 'formik';
-import styles from './EditComment.module.css';
-
-import * as commentService from '../../../../../core/services/commentService';
 
 import { EditCommentFromKeys } from '../../../../../core/environments/costants';
+import * as commentService from '../../../../../core/services/commentService';
+import styles from './EditComment.module.css';
 
 // TODO: Add validation
 
