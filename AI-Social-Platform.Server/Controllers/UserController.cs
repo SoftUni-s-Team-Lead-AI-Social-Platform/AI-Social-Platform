@@ -1,4 +1,6 @@
-﻿namespace AI_Social_Platform.Server.Controllers
+﻿using AI_Social_Platform.Services.Data.Models.UserDto;
+
+namespace AI_Social_Platform.Server.Controllers
 {
     using System.Security.Claims;
 
@@ -322,6 +324,7 @@
                 {
                     return BadRequest(new { message = "User not found."});
                 }
+
 
                 bool userExist = await userService.CheckIfUserExistsByIdAsync(userId);
 
