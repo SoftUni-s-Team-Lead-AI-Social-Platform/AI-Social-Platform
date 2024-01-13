@@ -49,7 +49,6 @@ export default function PostItem({ post }) {
         commentService
             .getAllComments(post.id, 0)
             .then((result) => {
-                console.log(result);
                 dispatchComment({
                     type: CommentActions.GetAllComments,
                     payload: result.comments,
