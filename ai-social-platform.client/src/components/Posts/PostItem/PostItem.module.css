@@ -6,60 +6,7 @@
     flex-direction: column;
     border-radius: 0.5em;
     box-shadow: 0 0 0.2em 0.1em #ddd;
-}
-
-.user-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.user-info .edit {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5em 1em 0.5em 1em;
-    cursor: pointer;
-    color: #585858;
-    height: fit-content;
-}
-
-.user-info-wrapper {
-    display: flex;
-    gap: 1em;
-    padding: 0.5em 1em 0.5em 1em;
-    align-items: center;
-}
-
-.user-img {
-    width: 2em;
-    height: 2em;
-    border-radius: 50%;
-    aspect-ratio: 1/1;
-}
-
-.user-img:hover {
-    filter: brightness(115%);
-    cursor: pointer;
-}
-
-.username-wrapper {
-    font-size: 0.9em;
-    font-weight: 600;
-}
-
-.username-wrapper .username {
-    text-decoration: none;
-    color: #000000;
-}
-
-.username-wrapper .username:hover {
-    text-decoration: underline;
-}
-
-.posted-on {
-    font-size: 0.6em;
-    color: #636363;
+    position: relative;
 }
 
 .content-description,
@@ -81,7 +28,7 @@
     position: relative;
 }
 
-.backdrop {
+.media-backdrop {
     display: flex;
     position: absolute;
     bottom: 0.4em;
@@ -95,7 +42,7 @@
     cursor: pointer;
 }
 
-.backdrop:hover {
+.media-backdrop:hover {
     background-color: rgba(0, 0, 0, 0.6);
 }
 
@@ -257,20 +204,14 @@
 }
 
 .comment-area .submit-button-error {
-    /* position: absolute; */
     border: 0;
-    /* top: 0.6em; */
-    /* right: 1em; */
     color: #aaa;
     font-size: 0.8em;
     cursor: no-drop;
 }
 
 .comment-area .submit-button {
-    /* position: absolute; */
     border: 0;
-    /* top: 0.6em; */
-    /* right: 1em; */
     color: #369;
     font-size: 0.8em;
     cursor: pointer;
