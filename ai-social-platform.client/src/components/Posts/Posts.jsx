@@ -56,16 +56,28 @@ export default function Posts() {
     return (
         <section className={styles['posts-section']}>
             <div className={styles['content-wrapper']}>
-                {posts.map((post) => (
-                    <PostItem key={post.id} post={post} />
-                ))}
+                {posts
+                    .sort(
+                        (a, b) =>
+                            new Date(b.dateCreated) - new Date(a.dateCreated)
+                    )
+                    .map((post) => (
+                        <PostItem key={post.id} post={post} />
+                    ))}
                 {hasMore && (
                     <div ref={elementRef}>
                         <PaginationSpinner />
                     </div>
                 )}
-                {posts.length > 0 && !hasMore && <div>There are no more posts</div>}
-                {posts.length === 0 && <p>Add friends or follow topics of your choice to fill your feed.</p>}
+                {posts.length > 0 && !hasMore && (
+                    <div>There are no more posts</div>
+                )}
+                {posts.length === 0 && (
+                    <p>
+                        Add friends or follow topics of your choice to fill your
+                        feed.
+                    </p>
+                )}
             </div>
         </section>
     );
