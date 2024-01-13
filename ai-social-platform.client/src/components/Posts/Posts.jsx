@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef, useState } from 'react';
 
+import { PostActions } from '../../core/environments/costants';
 import * as postService from '../../core/services/postService';
 import styles from './Posts.module.css';
 import postReducer from '../../reducers/postReducer';
@@ -45,7 +46,7 @@ export default function Posts() {
             setHasMore(false);
         } else {
             dispatchPost({
-                type: 'GET_ALL_POSTS',
+                type: PostActions.GetAllPosts,
                 payload: data.publications,
             });
 
