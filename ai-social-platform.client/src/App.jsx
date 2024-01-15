@@ -1,12 +1,12 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes } from 'react-router-dom';
 
-import { PATH } from "./core/environments/costants";
-import { AuthProvider } from "./contexts/authContext";
-import "./App.css";
+import { PATH } from './core/environments/costants';
+import { AuthProvider } from './contexts/authContext';
+import './App.css';
 
-import AuthGuard from "./guards/AuthGuard";
-import LoggedInGuard from "./guards/LoggedInGuard";
-import ErrorBoundary from "./guards/ErrorBoundary/ErrorBoundary";
+import AuthGuard from './guards/AuthGuard';
+import LoggedInGuard from './guards/LoggedInGuard';
+import ErrorBoundary from './guards/ErrorBoundary/ErrorBoundary';
 
 import Header from './components/Header/Header';
 import Login from './components/Login/Login';
@@ -19,22 +19,28 @@ import Userprofileedit from './components/Userprofile/Userprofileedit';
 import CreatePost from './components/CreatePost/CreatePost';
 // import Successfully from './components/Successfully/Successfully';
 import NotFound from './components/NotFound/NotFound';
+import PostDetails from './components/PostDetails/PostDetails';
 
 function App() {
-  return (
-    // ADD NOT FOUND PAGE
-    <ErrorBoundary>
-      <AuthProvider>
-        <>
-          <Header />
-          <main className="main-content">
-            <Routes>
-              <Route path={PATH.notFound} element={<NotFound />} />
+    return (
+        <ErrorBoundary>
+            <AuthProvider>
+                <>
+                    <Header />
+                    <main className="main-content">
+                        <Routes>
+                            <Route
+                                path={PATH.notFound}
+                                element={<NotFound />}
+                            />
 
-              <Route element={<LoggedInGuard />}>
-                <Route path={PATH.login} element={<Login />} />
-                <Route path={PATH.register} element={<Register />} />
-              </Route>
+                            <Route element={<LoggedInGuard />}>
+                                <Route path={PATH.login} element={<Login />} />
+                                <Route
+                                    path={PATH.register}
+                                    element={<Register />}
+                                />
+                            </Route>
 
                             <Route element={<AuthGuard />}>
                                 <Route path={PATH.home} element={<Home />} />
@@ -46,6 +52,10 @@ function App() {
                                 <Route
                                     path={PATH.create}
                                     element={<CreatePost />}
+                                />
+                                <Route
+                                    path={PATH.detailsPost}
+                                    element={<PostDetails />}
                                 />
                                 {/* <Route
                                     path={PATH.successfully}

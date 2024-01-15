@@ -1,19 +1,32 @@
 import { useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 
+import { PATH } from '../../../../core/environments/costants';
 import styles from './Comment.module.css';
 import AuthContext from '../../../../contexts/authContext';
 import dateFormater from '../../../../utils/dateFormatter';
 
 import DeleteComment from './DeleteComment/DeleteComment';
+import EditComment from './EditComment/EditComment';
 
-export default function Comment({ comment, deleteCommentHandler }) {
+export default function Comment({
+    comment,
+    deleteCommentHandler,
+    editCommentHandler,
+}) {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const [editCommentField, setEditCommentField] = useState(false);
 
     const { userId } = useContext(AuthContext);
 
     const onDeleteButtonClick = () => setShowDeleteModal(true);
 
     const closeDeleteModal = () => setShowDeleteModal(false);
+
+    const showEditCommentField = () => setEditCommentField(true);
+
+    const hideEditCommentField = () => setEditCommentField(false);
 
     return (
         <>
@@ -25,11 +38,19 @@ export default function Comment({ comment, deleteCommentHandler }) {
                     closeDeleteModal={closeDeleteModal}
                 />
             )}
-            <img
-                className={styles['comment-user-img']}
-                src={comment.user?.avatar || '/images/default-profile-pic.png'}
-                alt="user"
-            />
+            <Link
+                className={styles['image-wrapper']}
+                to={PATH.userProfile(comment.user.id)}
+            >
+                <img
+                    className={styles['comment-user-img']}
+                    src={
+                        comment.user?.avatar ||
+                        '/images/default-profile-pic.png'
+                    }
+                    alt="user"
+                />
+            </Link>
             <div
                 className={
                     userId === comment.user.id
@@ -39,13 +60,19 @@ export default function Comment({ comment, deleteCommentHandler }) {
             >
                 <div className={styles['comment-header']}>
                     <div className={styles['owner']}>
-                        <p className={styles['username']}>
+                        <Link
+                            to={PATH.userProfile(comment.user.id)}
+                            className={styles['username']}
+                        >
                             {comment.user.firstName} {comment.user.lastName}
-                        </p>
+                        </Link>
 
                         {userId === comment.user.id && (
                             <div className={styles['buttons']}>
-                                <p className={styles['edit-button']}>
+                                <p
+                                    onClick={showEditCommentField}
+                                    className={styles['edit-button']}
+                                >
                                     <i className="fa-solid fa-pen-to-square"></i>
                                 </p>
                                 <p className={styles['delete-button']}>
@@ -61,7 +88,15 @@ export default function Comment({ comment, deleteCommentHandler }) {
                         Posted on: {dateFormater(comment.dateCreated)}
                     </p>
                     <div className={styles['description']}>
-                        {comment.content}
+                        {editCommentField ? (
+                            <EditComment
+                                hideEditCommentField={hideEditCommentField}
+                                editCommentHandler={editCommentHandler}
+                                comment={comment}
+                            />
+                        ) : (
+                            comment.content
+                        )}
                     </div>
                 </div>
             </div>
