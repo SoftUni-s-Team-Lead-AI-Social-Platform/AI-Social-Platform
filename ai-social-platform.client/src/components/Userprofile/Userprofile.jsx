@@ -63,7 +63,9 @@ export default function Userprofile() {
     }
     const isCurrentUserProfile = userId === authContext.userId;
     isUserFriend = friendsData.some((friend) => friend.id === userData.id);
+
     let imageUrl;
+
     if (userData.profilePictureUrl) {
         imageUrl = `${userData.profilePictureUrl}?${Math.random()}`;
     } else {
@@ -74,7 +76,7 @@ export default function Userprofile() {
     if (userData.coverPhotoUrl) {
         imageUrlCover = `${userData.coverPhotoUrl}?${Math.random()}`;
     } else {
-        imageUrl = '../../../public/images/Logo.png';
+        imageUrlCover = '../../../public/images/Logo.png';
     }
 
     const handleAddFriend = async () => {
@@ -213,9 +215,8 @@ export default function Userprofile() {
                                               <img
                                                   className="friend-img"
                                                   src={
-                                                      friend.profilePictureUrl
-                                                          ? friend.profilePictureUrl
-                                                          : '../../../public/images/default-profile-pic.png'
+                                                      friend.profilePictureUrl ||
+                                                      '../../../public/images/default-profile-pic.png'
                                                   }
                                                   alt="User profile pic"
                                               />{' '}
@@ -232,9 +233,8 @@ export default function Userprofile() {
                                               <img
                                                   className="friend-img"
                                                   src={
-                                                      friend.profilePictureUrl
-                                                          ? friend.profilePictureUrl
-                                                          : '../../../public/images/default-profile-pic.png'
+                                                      friend.profilePictureUrl ||
+                                                      '../../../public/images/default-profile-pic.png'
                                                   }
                                                   alt="User profile pic"
                                               />{' '}
