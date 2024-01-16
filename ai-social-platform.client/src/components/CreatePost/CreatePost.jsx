@@ -1,9 +1,6 @@
 import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
 
 import * as postService from '../../core/services/postService';
 import * as mediaService from '../../core/services/mediaService';
@@ -11,6 +8,7 @@ import * as mediaService from '../../core/services/mediaService';
 import { CreateFormKeys, PATH } from '../../core/environments/costants';
 import styles from './CreatePost.module.css';
 import createPostValidation from './createPostValidation';
+import AuthContext from '../../contexts/authContext';
 
 const initialValues = {
     [CreateFormKeys.PostDescription]: '',
@@ -18,6 +16,8 @@ const initialValues = {
 };
 
 export default function CreatePost() {
+    const { firstName, lastName } = useContext(AuthContext);
+
     const [textareaRows, setTextareaRows] = useState(2);
 
     const navigate = useNavigate();
@@ -119,7 +119,9 @@ export default function CreatePost() {
                             alt=""
                         />
                     </Link>
-                    <p className={styles['user-names']}>First Name Last Name</p>
+                    <p className={styles['user-names']}>
+                        {firstName} {lastName}
+                    </p>
                 </div>
                 <form onSubmit={handleSubmit} className={styles['create-form']}>
                     <label htmlFor={CreateFormKeys.PostDescription}></label>
@@ -129,7 +131,7 @@ export default function CreatePost() {
                         id={CreateFormKeys.PostDescription}
                         onFocus={incrementTextareaRows}
                         rows={textareaRows}
-                        placeholder="What's on your mind, Username?"
+                        placeholder={`What's on your mind, ${firstName}?`}
                         onChange={handleChange}
                         value={values[CreateFormKeys.PostDescription]}
                     ></textarea>
