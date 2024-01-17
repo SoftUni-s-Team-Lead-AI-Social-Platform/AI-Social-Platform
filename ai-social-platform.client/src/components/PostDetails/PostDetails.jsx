@@ -126,6 +126,13 @@ export default function PostDetails() {
         }
     }
 
+    const editCommentHandler = (editedComment) => {
+        dispatchComment({
+            type: CommentActions.EditComment,
+            payload: editedComment,
+        });
+    };
+
     const deleteCommentHandler = (comment) => {
         dispatchComment({
             type: CommentActions.DeleteComment,

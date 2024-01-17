@@ -41,6 +41,10 @@ export default function PostItem({ post }) {
 
     const [likes, dispatchLike] = useReducer(likeReducer, []);
 
+    const [isPostLiked, setIsPostLiked] = useState(post.isLiked);
+
+    const [likes, dispatchLike] = useReducer(likeReducer, []);
+
     // const [deleteModal, setDeleteModal] = useState(false);
 
     const [comments, dispatchComment] = useReducer(commentReducer, []);
@@ -116,6 +120,19 @@ export default function PostItem({ post }) {
         }
     };
 
+    const onLikeButtonClickHandler = async () => {
+        if (!isPostLiked) {
+            const newLike = await likeService.addLike(post.id);
+
+            dispatchLike({
+                type: 'addLike',
+                payload: newLike,
+            });
+
+            setIsPostLiked(true);
+        }
+    };
+
     // const showDeleteModal = () => {
     //     setEditMenu(false);
     //     setDeleteModal(true);
@@ -167,6 +184,7 @@ export default function PostItem({ post }) {
             {!isLoading && (
                 <article className={styles['post-item']}>
                     {/* {editMenu && (
+
                 <div
                     onClick={closeEditMenu}
                     className={styles['backdrop']}
