@@ -195,8 +195,8 @@ namespace AI_Social_Platform.Server.Controllers
         {
             try
             {
-                await baseSocialService.DeleteLikeOnPublicationAsync(likeId);
-                return Ok(new {Message = LikeSuccessfullyDeletedFromPublication });
+               var like = await baseSocialService.DeleteLikeOnPublicationAsync(likeId);
+                return Ok(new {Message = LikeSuccessfullyDeletedFromPublication, like });
             }
             catch (NullReferenceException ex)
             {

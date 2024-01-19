@@ -293,7 +293,7 @@ namespace AI_Social_Platform.Services.Data
             return mapper.Map<LikeDto>(like);
         }
 
-        public async Task DeleteLikeOnPublicationAsync(Guid likeId)
+        public async Task<LikeDto> DeleteLikeOnPublicationAsync(Guid likeId)
         {
             var like = await dbContext.Likes.FirstOrDefaultAsync(l => l.Id == likeId);
             var userId = GetUserId();
@@ -310,6 +310,8 @@ namespace AI_Social_Platform.Services.Data
 
             dbContext.Likes.Remove(like);
             await dbContext.SaveChangesAsync();
+
+            return mapper.Map<LikeDto>(like);
         }
 
         public async Task<IEnumerable<LikeDto>> GetLikesOnPublicationAsync(Guid publicationId)
