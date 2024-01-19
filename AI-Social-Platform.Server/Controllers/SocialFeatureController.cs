@@ -34,6 +34,34 @@ namespace AI_Social_Platform.Server.Controllers
             }
         }
 
+        [HttpGet("notification/count", Name = "notifications count")]
+        public async Task<IActionResult> NotificationCount()
+        {
+            try
+            {
+                var notificationsCount = await baseSocialService.GetNotificationsCountAsync();
+                return Ok(notificationsCount);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [HttpPost("notification/read", Name = "read notification")]
+        public async Task<IActionResult> ReadNotification(Guid notificationId)
+        {
+            try
+            {
+                await baseSocialService.ReadNotificationAsync(notificationId);
+                return Ok(new { Message = NotificationSuccessfullyRead });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         [HttpGet("search", Name = "search")]
         public async Task<IActionResult> Search(string type, string query)
         {
