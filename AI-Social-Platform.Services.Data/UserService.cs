@@ -17,6 +17,7 @@
     using Interfaces;
     using UserDto;
     using PublicationDtos;
+    using System.Net.Http;
 
     public class UserService : IUserService
     {
@@ -24,14 +25,16 @@
         private readonly IConfiguration configuration;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IBaseSocialService baseSocialService;
+        private readonly HttpContext httpContext;
 
         public UserService(ASPDbContext dbContext, IConfiguration configuration,
-            UserManager<ApplicationUser> userManager, IBaseSocialService baseSocialService)
+            UserManager<ApplicationUser> userManager, IBaseSocialService baseSocialService, IHttpContextAccessor httpContext)
         {
             this.dbContext = dbContext;
             this.configuration = configuration;
             this.userManager = userManager;
             this.baseSocialService = baseSocialService;
+            this.httpContext = httpContext.HttpContext;
         }
 
         public string BuildToken(string userId)
@@ -154,24 +157,31 @@
             return false;
         }
 
-        public async Task<bool> AddFriendAsync(ApplicationUser currentUser, string friendId)
+        public async Task<bool> AddFriendAsync(Guid friendId)
         {
+            var currentUser = await dbContext.ApplicationUsers
+                .Where(u => u.Id == GetUserId())
+                .Include(u => u.Friends)
+                .FirstOrDefaultAsync();
+
             ApplicationUser? friendUser = await dbContext.ApplicationUsers
-                .FirstOrDefaultAsync(u => u.Id.ToString() == friendId);
+                .Where(u => u.Id == friendId)
+                .Include(u => u.Friends)
+                .FirstOrDefaultAsync();
 
             if (friendUser == null)
             {
                 return false;
             }
 
-            bool areFriends = currentUser.Friends.Any(f => f.Id.ToString() == friendUser.Id.ToString());
+            bool areFriends = currentUser!.Friends.Any(f => f.Id == friendUser.Id);
 
             if (areFriends)
             {
                 return false;
             }
 
-            currentUser.Friends.Add(friendUser);
+            currentUser!.Friends.Add(friendUser);
 
             friendUser.Friends.Add(currentUser);
 
@@ -180,27 +190,30 @@
             return true;
         }
 
-        public async Task<bool> RemoveFriendAsync(ApplicationUser currentUser, string friendId)
+        public async Task<bool> RemoveFriendAsync(Guid friendId)
         {
+            var currentUser = await dbContext.ApplicationUsers
+                .Where(u => u.Id == GetUserId())
+                .Include(u => u.Friends)
+                .FirstOrDefaultAsync();
+
             ApplicationUser? friendUser = await dbContext.ApplicationUsers
-                .FirstOrDefaultAsync(f => f.Id.ToString() == friendId);
+                .FirstOrDefaultAsync(f => f.Id == friendId);
 
             if (friendUser == null)
             {
                 return false;
             }
 
-            bool areFriends = currentUser.Friends.Any(f => f.Id.ToString() == friendUser.Id.ToString());
+            bool areFriends = currentUser!.Friends.Any(f => f.Id == friendUser.Id);
 
             if (!areFriends)
             {
                 return false;
             }
 
-            currentUser.Friends.Remove(friendUser);
+            currentUser!.Friends.Remove(friendUser);
 
-            friendUser.Friends.Remove(currentUser);
-            
             await dbContext.SaveChangesAsync();
 
             return true;
@@ -208,35 +221,36 @@
 
         public async Task<bool> AreFriendsAsync(Guid id, Guid friendId)
         {
-            var areFriends = await dbContext.ApplicationUsers
+           var friendIds = await dbContext.ApplicationUsers
                 .Where(u => u.Id == id)
                 .SelectMany(u => u.Friends)
-                .AnyAsync(friend => friend.Id == friendId);
+                .Select(f => f.Id)
+                .ToListAsync();
+
+            bool areFriends = friendIds.Any(f => f == friendId);
 
             return areFriends;
         }
 
-        public async Task<ICollection<FriendDetailsDto>?> GetFriendsAsync(string userId)
+        public async Task<ICollection<FriendDetailsDto>?> GetFriendsAsync(Guid userId)
         {
-            var user = await dbContext.ApplicationUsers
+            var userFriends = await dbContext.ApplicationUsers.Where(u => u.Id == userId)
                 .Include(u => u.Friends)
-                .FirstOrDefaultAsync(u => u.Id.ToString() == userId);
+                .SelectMany(u => u.Friends).ToListAsync();
 
-            if (user == null)
+            var friends = new List<FriendDetailsDto>();
+            foreach (var friend in userFriends)
             {
-                return null;
-            }
-
-            var friends = user.Friends
-                .Select(friend => new FriendDetailsDto
+                var friendDto = new FriendDetailsDto
                 {
                     UserName = friend.UserName,
                     FirstName = friend.FirstName,
                     LastName = friend.LastName,
                     Id = friend.Id,
                     ProfilePictureData = friend.ProfilePicture
-                })
-                .ToArray();
+                };
+                friends.Add(friendDto);
+            }
 
             return friends;
         }
@@ -248,9 +262,9 @@
             return user != null;
         }
 
-        public async Task<bool> CheckIfUserExistsByIdAsync(string id)
+        public async Task<bool> CheckIfUserExistsByIdAsync(Guid id)
         {
-            var user = await dbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.Id.ToString() == id);
+            var user = await dbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == id);
 
             return user != null;
         }
@@ -313,7 +327,16 @@
 
             return null;
         }
-        
-        
+        private Guid GetUserId()
+        {
+            var userId = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value!;
+
+            if (userId == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            return Guid.Parse(userId);
+        }
     }
 }
