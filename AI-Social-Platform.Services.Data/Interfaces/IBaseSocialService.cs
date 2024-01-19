@@ -22,7 +22,7 @@ namespace AI_Social_Platform.Services.Data.Interfaces
 
         //Likes
         public Task<IEnumerable<LikeDto>> GetLikesOnPublicationAsync(Guid publicationId);
-        public Task CreateLikesOnPublicationAsync(Guid publicationId);
+        public Task<LikeDto> CreateLikesOnPublicationAsync(Guid publicationId);
         public Task DeleteLikeOnPublicationAsync(Guid likeId);
 
         //Shares

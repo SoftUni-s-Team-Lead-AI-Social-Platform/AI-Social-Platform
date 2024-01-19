@@ -149,8 +149,8 @@ namespace AI_Social_Platform.Server.Controllers
         {
             try
             {
-                await baseSocialService.CreateLikesOnPublicationAsync(publicationId);
-                return CreatedAtAction(nameof(CreateLike), new { message = LikeSuccessfullyCreated });
+                var like = await baseSocialService.CreateLikesOnPublicationAsync(publicationId);
+                return CreatedAtAction(nameof(CreateLike), like);
             }
             catch (NullReferenceException ex)
             {
