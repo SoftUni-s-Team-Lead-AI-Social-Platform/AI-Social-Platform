@@ -18,8 +18,6 @@
 
         Task<bool> AddFriendAsync(Guid friendId);
 
-        Task<bool> AreFriendsAsync(Guid id, Guid friendId);
-
         Task<bool> RemoveFriendAsync(Guid friendId);
 
         Task<ICollection<FriendDetailsDto>?> GetFriendsAsync(Guid userId);

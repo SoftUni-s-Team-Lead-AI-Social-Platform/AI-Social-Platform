@@ -159,100 +159,64 @@
 
         public async Task<bool> AddFriendAsync(Guid friendId)
         {
-            var currentUser = await dbContext.ApplicationUsers
-                .Where(u => u.Id == GetUserId())
-                .Include(u => u.Friends)
-                .FirstOrDefaultAsync();
+            var friendShip = await dbContext.Friendships.FirstOrDefaultAsync(f => f.UserId == GetUserId() && f.FriendId == friendId);
 
-            ApplicationUser? friendUser = await dbContext.ApplicationUsers
-                .Where(u => u.Id == friendId)
-                .Include(u => u.Friends)
-                .FirstOrDefaultAsync();
-
-            if (friendUser == null)
+            if (friendShip != null)
             {
                 return false;
             }
-
-            bool areFriends = currentUser!.Friends.Any(f => f.Id == friendUser.Id);
-
-            if (areFriends)
+            var friendship = new List<Friendship>()
             {
-                return false;
-            }
-
-            currentUser!.Friends.Add(friendUser);
-
-            friendUser.Friends.Add(currentUser);
-
+                new Friendship
+                {
+                    UserId = GetUserId(),
+                    FriendId = friendId
+                },
+                new Friendship
+                {
+                    UserId = friendId,
+                    FriendId = GetUserId()
+                }
+            };
+           
+            await dbContext.Friendships.AddRangeAsync(friendship);
             await dbContext.SaveChangesAsync();
-
             return true;
         }
 
         public async Task<bool> RemoveFriendAsync(Guid friendId)
         {
-            var currentUser = await dbContext.ApplicationUsers
-                .Where(u => u.Id == GetUserId())
-                .Include(u => u.Friends)
-                .FirstOrDefaultAsync();
+           var friendShips = await dbContext.Friendships
+               .Where(f => (f.UserId == GetUserId() && f.FriendId == friendId)
+                           && (f.FriendId == GetUserId() && f.UserId == friendId)).ToListAsync();
 
-            ApplicationUser? friendUser = await dbContext.ApplicationUsers
-                .FirstOrDefaultAsync(f => f.Id == friendId);
-
-            if (friendUser == null)
-            {
+           if (friendShips.Count == 0)
+           {
                 return false;
-            }
+           }
+           
+           dbContext.Friendships.RemoveRange(friendShips);
+           await dbContext.SaveChangesAsync();
 
-            bool areFriends = currentUser!.Friends.Any(f => f.Id == friendUser.Id);
-
-            if (!areFriends)
-            {
-                return false;
-            }
-
-            currentUser!.Friends.Remove(friendUser);
-
-            await dbContext.SaveChangesAsync();
-
-            return true;
+           return true;
         }
 
-        public async Task<bool> AreFriendsAsync(Guid id, Guid friendId)
-        {
-           var friendIds = await dbContext.ApplicationUsers
-                .Where(u => u.Id == id)
-                .SelectMany(u => u.Friends)
-                .Select(f => f.Id)
-                .ToListAsync();
-
-            bool areFriends = friendIds.Any(f => f == friendId);
-
-            return areFriends;
-        }
 
         public async Task<ICollection<FriendDetailsDto>?> GetFriendsAsync(Guid userId)
         {
-            var userFriends = await dbContext.ApplicationUsers.Where(u => u.Id == userId)
-                .Include(u => u.Friends)
-                .SelectMany(u => u.Friends).ToListAsync();
+            var friendShips = dbContext.Friendships
+                .Where(f => f.UserId == userId)
+                .Include(u => u.Friend);
 
-            var friends = new List<FriendDetailsDto>();
-            foreach (var friend in userFriends)
-            {
-                var friendDto = new FriendDetailsDto
+           var friendsDto = await friendShips.Select(f => new FriendDetailsDto()
                 {
-                    UserName = friend.UserName,
-                    FirstName = friend.FirstName,
-                    LastName = friend.LastName,
-                    Id = friend.Id,
-                    ProfilePictureData = friend.ProfilePicture
-                };
-                friends.Add(friendDto);
-            }
-
-            return friends;
+                    Id = f.FriendId,
+                    FirstName = f.Friend.FirstName,
+                    LastName = f.Friend.LastName,
+                    ProfilePictureData = f.Friend.ProfilePicture
+                }).ToListAsync();
+           
+           return friendsDto;
         }
 
         public async Task<bool> CheckIfUserExistByEmailAsync(string userEmail) //returns true if user exists
