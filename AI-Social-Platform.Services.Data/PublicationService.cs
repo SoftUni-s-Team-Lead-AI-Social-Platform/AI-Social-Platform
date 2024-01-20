@@ -75,6 +75,37 @@ public class PublicationService : IPublicationService
         return indexPublicationDto;
     }
 
+    public async Task<IndexPublicationDto> GetUserPublicationsAsync(int pageNum, Guid userId)
+    {
+        int pageSize = 10;
+        if (pageNum <= 0) pageNum = 1;
+        int skip = (pageNum - 1) * pageSize;
+
+        var userPublicationsQuery = dbContext.Publications
+            .Where(p => p.AuthorId == userId)
+            .OrderByDescending(p => p.LatestActivity)
+            .ProjectTo<PublicationDto>(mapper.ConfigurationProvider);
+
+        var publicationsCount = userPublicationsQuery.Count();
+
+        var publications = await userPublicationsQuery
+            .Skip(skip)
+            .Take(pageSize)
+            .ToListAsync();
+
+        publications.ForEach(p => p.IsLiked = dbContext.Likes.Any(l => l.PublicationId == p.Id && l.UserId == GetUserId()));
+
+        var indexPublicationDto = new IndexPublicationDto
+        {
+            Publications = publications,
+            CurrentPage = pageNum,
+            TotalPages = (int)Math.Ceiling(publicationsCount / (double)pageSize),
+            TotalPublications = publicationsCount,
+            PublicationsLeft = publicationsCount - (pageNum * 10) < 0 ? 0 : publicationsCount - (pageNum * 10)
+        };
+        return indexPublicationDto;
+    }
+
     public async Task<PublicationDto> GetPublicationAsync(Guid id)
     {
         var publication = await dbContext.Publications
@@ -180,4 +211,6 @@ public class PublicationService : IPublicationService
 
         return Guid.Parse(userId);
     }
+
+   
 }
