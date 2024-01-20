@@ -36,6 +36,7 @@
                 .WithMany(c => c.UsersInThisState)
                 .HasForeignKey(u => u.StateId)
                 .OnDelete(DeleteBehavior.Restrict);
+
         }
 
         private ApplicationUser[] GenerateIdentityUser()
