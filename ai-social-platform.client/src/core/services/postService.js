@@ -13,3 +13,6 @@ export const getPostById = async (postId) =>
 
 export const deletePost = async (postId) =>
     await api.remove(endpoints.deletePost(postId));
+
+export const editPost = async (postId, requestBody) =>
+    await api.put(endpoints.editPost(postId), requestBody, ContentType.ApplicationJSON);

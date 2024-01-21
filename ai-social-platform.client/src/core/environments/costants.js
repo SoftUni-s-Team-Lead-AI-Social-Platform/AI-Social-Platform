@@ -12,6 +12,8 @@ export const PATH = {
     profileedit: '/profileedit/:userId',
     successfully: '/successfuly',
     userProfile: (userId) => `/profile/${userId}`,
+    postlist: '/postlist',
+    postedit: `/postedit/:postId`,
     notFound: '*',
 };
 
@@ -35,6 +37,8 @@ export const endpoints = {
     getAllPosts: 'Publication',
     getPostById: (postId) => `Publication/${postId}`,
     deletePost: (postId) => `Publication/${postId}`,
+    editPost: (postId) => `Publication/${postId}`,
+
 
     // MEDIA
     addMedia: 'Media/upload?isItPublication=true',
@@ -81,6 +85,11 @@ export const ProfileFormKeys = {
     School: 'School',
     Birthday: 'Birthday',
     Relationship: 'Relationship',
+};
+
+export const EditPostFormKeys = {
+    PostDescription: 'content',
+    TopicId: 'topicId',
 };
 
 export const CreateFormKeys = {

@@ -1,3 +1,19 @@
+.section-heading {
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.post-description {
+    padding: 1em;
+    resize: none;
+    border: 0;
+}
+
+.create-form {
+    display: flex;
+    flex-direction: column;
+}
+
 .user-profile {
     background-color: #eee;
     padding: 2em 0;
@@ -22,6 +38,43 @@
        
 }
 
+.profile-button {
+    background-color: #004aad;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    padding: 10px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer; 
+  }
+
+.parent-button{
+    text-align: center;
+  }
+
+.user-img {
+    width: 10em;
+    height:10em;
+    border-radius: 40px;
+}
+
+.user-img:hover {
+    border-radius: 0px;
+  transform: scale(1.4); 
+}
+
+  
+
+
+
+
+
+
+
 .user-info-wrapper {
     display: flex;
     gap: 1em;
@@ -30,16 +83,9 @@
     justify-content: space-between;
 }
 
-.user-img {
-    width: 7em;
-    height:7em;
-    border-radius: 40px;
-}
 
-.user-img:hover {
-    border-radius: 0px;
-  transform: scale(1.4); 
-}
+
+
 .user-cover {
     width: 30em;
     height: 10em;
@@ -124,23 +170,7 @@
     margin-left: auto;
 }
 
-.profile-button {
-    background-color: #004aad;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    padding: 10px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer; 
-  }
 
-.parent-button{
-    text-align: center;
-  }
 
 .friend-img {
     width: 1.3em;
