@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
 
         localStorage.removeItem('accessToken');
 
-        navigate(PATH.home);
+        navigate(PATH.login);
     };
 
     const values = {
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
         lastName: auth?.lastName,
         isAuthenticated: !!auth.token,
         userId: auth?.userId,
-        avatar: auth?.profilPictureUrl,
+        avatar: auth?.profilePicture,
     };
 
     return (
