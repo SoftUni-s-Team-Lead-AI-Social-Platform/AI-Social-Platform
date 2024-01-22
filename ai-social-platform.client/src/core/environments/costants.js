@@ -59,6 +59,7 @@ export const endpoints = {
     getNotifications: 'SocialFeature/notification',
     readNotification: (notificationId) =>
         `SocialFeature/notification/read?notificationId=${notificationId}`,
+
 };
 
 export const LoginFormKeys = {
