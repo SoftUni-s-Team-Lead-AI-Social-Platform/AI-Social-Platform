@@ -38,6 +38,7 @@ export const endpoints = {
     getPostById: (postId) => `Publication/${postId}`,
     deletePost: (postId) => `Publication/${postId}`,
     editPost: (postId) => `Publication/${postId}`,
+    getPostsByUserId: (userId, page) => `Publication/${userId}?page`,
 
 
     // MEDIA

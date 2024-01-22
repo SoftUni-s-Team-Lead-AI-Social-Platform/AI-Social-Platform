@@ -15,11 +15,13 @@ import styles from './Postedit.css';
 export default function Postlist() {
     //const { firstName, userId } = useContext(AuthContext);
     //debugger;
+    const [authUserData, setAuthUserData] = useState(null);
+    const authContext = useContext(AuthContext);
     const [postData, setPostData] = useState(null);
     const [error, setError] = useState(null);
     useEffect(() => {
         // Използваме Promise.all за изчакване на завършването на двете заявки
-        Promise.all([postService.getAllPosts(1)])
+        Promise.all([postService.getPostsByUserId(authContext.userId, 1)])
             .then(([postResult]) => {
                 setPostData(postResult);
             })

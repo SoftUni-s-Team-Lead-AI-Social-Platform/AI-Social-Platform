@@ -16,3 +16,7 @@ export const deletePost = async (postId) =>
 
 export const editPost = async (postId, requestBody) =>
     await api.put(endpoints.editPost(postId), requestBody, ContentType.ApplicationJSON);
+
+export const getPostsByUserId = async (userId,page) =>
+    await api.get(`${endpoints.getPostsByUserId(userId)}?page=${page}`);
+    
