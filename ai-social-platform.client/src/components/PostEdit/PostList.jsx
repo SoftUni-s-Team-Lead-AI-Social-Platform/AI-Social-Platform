@@ -21,7 +21,7 @@ export default function Postlist() {
     const [error, setError] = useState(null);
     useEffect(() => {
         // Използваме Promise.all за изчакване на завършването на двете заявки
-        Promise.all([postService.getPostsByUserId(authContext.userId, 1)])
+        Promise.all([postService.getPostsByUserId(authContext.userId)])
             .then(([postResult]) => {
                 setPostData(postResult);
             })
@@ -40,18 +40,9 @@ export default function Postlist() {
                                 ? post.content.substring(0, 30) + '...'
                                 : post.content}{' '}
                             Date Created: {post.dateCreated} Post id {post.id}{' '}
+                            <Link to={`/posts/${post.id}`}>Read more Item</Link>{' '}
                             <Link
-                                to={
-                                    '/posts/67a97399-04b0-41c8-90a7-17bc238a3c36'
-                                }
-                            >
-                                Read more Item
-                            </Link>{' '}
-                            <Link
-                                to={PATH.postedit.replace(
-                                    ':postId',
-                                    '67a97399-04b0-41c8-90a7-17bc238a3c36'
-                                )}
+                                to={PATH.postedit.replace(':postId', post.id)}
                             >
                                 Edit post
                             </Link>

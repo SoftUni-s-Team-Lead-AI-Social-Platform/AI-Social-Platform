@@ -10,14 +10,17 @@ import { EditPostFormKeys, PATH } from '../../core/environments/costants';
 export default function Postedit() {
     const { postId } = useParams();
     const [postData, setPostData] = useState({});
-    const [mediaData, setMediaData] = useState({});
+    const [mediaData, setMediaData] = useState([]);
     const [error, setError] = useState(null);
     const [textareaRows, setTextareaRows] = useState(2);
     useEffect(() => {
-        postService
-            .getPostById(postId)
-            .then((postResult) => {
+        Promise.all([
+            postService.getPostById(postId),
+            mediaService.getMediaByPostId(postId),
+        ])
+            .then(([postResult, mediaResult]) => {
                 setPostData(postResult);
+                setMediaData(mediaResult);
             })
             .catch((error) => setError(error));
     }, []);
@@ -26,15 +29,15 @@ export default function Postedit() {
         return <div>Loading...</div>;
     }
 
-    useEffect(() => {
-        mediaService
-            .getMediaByPostId(postId)
-            .then((mediaResult) => {
-                setMediaData(mediaResult);
-            })
-            .catch((error) => setError(error));
-    }, []);
-    console.log(mediaData[0]);
+    // useEffect(() => {
+    //     mediaService
+    //         .getMediaByPostId(postId)
+    //         .then((mediaResult) => {
+    //             setMediaData(mediaResult);
+    //         })
+    //         .catch((error) => setError(error));
+    // }, []);
+    //console.log(mediaData[0].url);
 
     const initialValues = {
         [EditPostFormKeys.PostDescription]: postData.content,
@@ -91,11 +94,15 @@ export default function Postedit() {
                         onChange={handleChange}
                         value={values[EditPostFormKeys.PostDescription]}
                     ></textarea>
-                    <img
-                        className="user-img"
-                        src={mediaData[0].url}
-                        alt="User profile pic"
-                    />
+                    {mediaData.map((media) => (
+                        <li className="userprofile-li" key={media.fileId}>
+                            <img
+                                className="media-img"
+                                src={media.url}
+                                alt="Post pic"
+                            />
+                        </li>
+                    ))}
                     <div className="parent-button">
                         <button
                             className="profile-button"

@@ -67,8 +67,14 @@
   transform: scale(1.4); 
 }
 
-  
+.userprofile-li {
+    list-style-type:none;
+    padding: 0em 1em 0em 1em;
+    } 
 
+.media-img {
+        width: 100%;
+    }
 
 
 
@@ -154,10 +160,7 @@
     padding-left: 0.2em;
     margin-top: 0.2em;
 }
- .userprofile-li {
-    list-style-type:none;
-    padding: 0em 1em 0em 1em;
-    }
+ 
 
  .userprofile-fieldset {
     width: 90%;
