@@ -99,6 +99,7 @@ export const ProfileFormKeys = {
 export const EditPostFormKeys = {
     PostDescription: 'content',
     TopicId: 'topicId',
+    PostPicture: 'PostPicture',
 };
 
 export const CreateFormKeys = {
