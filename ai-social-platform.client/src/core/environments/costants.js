@@ -47,6 +47,8 @@ export const endpoints = {
     getMediaById: (mediaId) => `Media/serve/${mediaId}`,
     getMediaByPostId: (postId) => `Media/${postId}`,
     deleteMedia: (mediaId) => `Media/delete/${mediaId}`,
+    editMedia: (mediaId) => `Media/edit/${mediaId}`,
+
 
     // COMMENTS
     createComment: 'SocialFeature/comment',
@@ -100,6 +102,7 @@ export const EditPostFormKeys = {
     PostDescription: 'content',
     TopicId: 'topicId',
     PostPicture: 'PostPicture',
+    ChangePostPicture: 'ChangePostPicture',
 };
 
 export const CreateFormKeys = {

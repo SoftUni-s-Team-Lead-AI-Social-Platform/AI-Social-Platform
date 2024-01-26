@@ -34,6 +34,7 @@ export default function Postedit() {
         [EditPostFormKeys.PostDescription]: postData.content,
         [EditPostFormKeys.TopicId]: postData.topic,
         [EditPostFormKeys.PostPicture]: '',
+        [EditPostFormKeys.ChangePostPicture]: '',
     };
 
     const {
@@ -80,21 +81,39 @@ export default function Postedit() {
     const handleRemoveImage = async (mediaId) => {
         try {
             await mediaService.deleteMedia(mediaId);
-            //     // // Промени състоянието, че сега потребителят не е приятел
-            //     // isUserFriend = false;
-            //     // // Извикване на нова заявка, за да актуализира информацията за приятелите
-            //     // const friendsResult = await userService.getFriendsData(
-            //     //     authContext.userId
-            //     // );
-            //     // setFriendsData(friendsResult);
-            //     // const friendsResultFriend = await userService.getFriendsData(
-            //     //     userId
-            //     // );
-            //     // setFriendsDataFriend(friendsResultFriend);
+            
         } catch (error) {
             setError(error.message);
         }
     };
+    const handleChangeImage = async (mediaId) => {
+        debugger;
+        const formData = new FormData();
+        const fileInput = document.getElementById(EditPostFormKeys.ChangePostPicture+mediaId);
+        const selectedFile = fileInput.files[0];
+        formData.append('DataFile', selectedFile);
+        try {
+            await mediaService.editMedia(formData);
+        } catch (error) {
+            console.log('Error:', error);
+        }
+    };
+
+    
+    // const handleChangeImage = async (mediaId, e) => {
+    //     debugger;
+    //     const formData = new FormData();
+    //     const fileInput = e.target;
+    //     const selectedFile = fileInput.files[0];
+    //     formData.append('DataFile', selectedFile);
+    
+    //     try {
+    //         await mediaService.editMedia(formData);
+    //     } catch (error) {
+    //         console.log('Error:', error);
+    //     }
+    // };
+
     return (
         <div className="user-profile">
             <article className="post-item">
@@ -142,6 +161,30 @@ export default function Postedit() {
                                     }
                                 >
                                     Remove image
+                                </button>
+                                <label
+                        htmlFor={`${EditPostFormKeys.ChangePostPicture}${media.fileId}`}
+                        className="section-heading"
+                    >
+                        Change image{' '}
+                    </label>
+
+                    <input
+                        type="file"
+                        className="userprofile-input"
+                        id={`${EditPostFormKeys.ChangePostPicture}${media.fileId}`}
+                        name={EditPostFormKeys.ChangePostPicture}
+                        placeholder="Upload a photo..."
+                        // onChange={handleChange}
+                        onBlur={handleBlur}
+                    />
+                                <button
+                                    className="profile-button"
+                                    onClick={
+                                        handleChangeImage(media.fileId)
+                                    }
+                                >
+                                    Change image
                                 </button>
                             </div>
                         </>

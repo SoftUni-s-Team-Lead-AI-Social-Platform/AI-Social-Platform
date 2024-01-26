@@ -16,3 +16,6 @@ export const getMediaByPostId = async (postId) =>
 
 export const deleteMedia = async (mediaId) =>
     await api.post(endpoints.deleteMedia(mediaId));
+
+export const editMedia = async (media) =>
+    await api.put(endpoints.editMedia,media,ContentType.MulitpartFormData);
