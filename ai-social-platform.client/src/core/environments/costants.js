@@ -60,6 +60,9 @@ export const endpoints = {
     readNotification: (notificationId) =>
         `SocialFeature/notification/read?notificationId=${notificationId}`,
 
+    // OpenAI
+    getTextWhitOpenAi: 'OpenAi/generateText'
+
 };
 
 export const LoginFormKeys = {
