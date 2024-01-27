@@ -13,7 +13,7 @@
 
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class OpenAiController : ControllerBase
     {
         private readonly HttpClient httpClient;
