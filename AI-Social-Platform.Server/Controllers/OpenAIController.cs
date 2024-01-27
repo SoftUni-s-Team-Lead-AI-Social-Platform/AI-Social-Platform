@@ -110,7 +110,7 @@
         }
 
         [HttpPost("GenerateAIImage")]
-        public async Task<IActionResult> GenerateImage(string ImageDescription)
+        public async Task<IActionResult> GenerateImage([FromBody] string ImageDescription)
         {
             try
             {
