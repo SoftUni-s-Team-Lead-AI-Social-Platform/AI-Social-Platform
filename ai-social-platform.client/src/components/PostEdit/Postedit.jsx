@@ -59,7 +59,7 @@ export default function Postedit() {
             content: values[EditPostFormKeys.PostDescription],
             topicId: values[EditPostFormKeys.TopicId],
         };
-        console.log('requestBody', requestBody);
+        //console.log('requestBody', requestBody);
         try {
             await postService.editPost(postId, requestBody);
         } catch (error) {
@@ -80,38 +80,19 @@ export default function Postedit() {
         navigate(PATH.postlist);
     }
 
-    // const handleRemoveImage = async (mediaId) => {
-    //     try {
-    //         await mediaService.deleteMedia(mediaId);
-    //     } catch (error) {
-    //         setError(error.message);
-    //     }
-    // };
-
-    const handleRemoveImage = (mediaId, e) => {
-        //debugger;
-        e.stopPropagation();
-        setMediaIdToDelete(mediaId);
-        setShowConfirmation(true);
-    };
-
-    const handleConfirmation = async (confirmed) => {
-        setShowConfirmation(false);
-
-        if (confirmed && mediaIdToDelete) {
+    const handleRemoveImage = async (mediaId) => {
+        const shouldDelete = window.confirm(
+            'Are you sure you want to delete this image?'
+        );
+        if (shouldDelete) {
             try {
-                await mediaService.deleteMedia(mediaIdToDelete);
-                // Изтриването е успешно
+                await mediaService.deleteMedia(mediaId);
             } catch (error) {
                 setError(error.message);
             }
-        } else {
         }
     };
 
-    const handleModalClick = (e) => {
-        e.stopPropagation();
-    };
     const handleChangeImage = async (mediaId) => {
         //debugger;
         const formData = new FormData();
@@ -130,7 +111,7 @@ export default function Postedit() {
 
     return (
         <div className="user-profile">
-            <article className="post-item">
+            <article className="post-item-list">
                 <h2 className="section-heading">Edit Post</h2>
                 <form className="create-form">
                     <textarea
@@ -142,6 +123,7 @@ export default function Postedit() {
                         onChange={handleChange}
                         value={values[EditPostFormKeys.PostDescription]}
                     ></textarea>
+
                     {/* <label
                         htmlFor={EditPostFormKeys.PostPicture}
                         className="section-heading"
@@ -183,11 +165,11 @@ export default function Postedit() {
                                     id={`${EditPostFormKeys.ChangePostPicture}${media.fileId}`}
                                     name={EditPostFormKeys.ChangePostPicture}
                                     placeholder="Upload a photo..."
-                                    // onChange={handleChangeImage(media.fileId)}
+                                    //onChange={handleChangeImage(media.fileId)}
                                     onBlur={handleBlur}
                                 />
                                 <button
-                                    className="profile-button"
+                                    //className="profile-button"
                                     onClick={() =>
                                         handleChangeImage(media.fileId)
                                     }
@@ -196,18 +178,10 @@ export default function Postedit() {
                                 </button>
                             </div>
                             <div className="parent-button">
-                                {/* <button
-                                    className="profile-button"
+                                <button
+                                    //className="profile-button"
                                     onClick={() =>
                                         handleRemoveImage(media.fileId)
-                                    }
-                                >
-                                    Remove image
-                                </button> */}
-                                <button
-                                    className="profile-button"
-                                    onClick={(е) =>
-                                        handleRemoveImage(media.fileId, е)
                                     }
                                 >
                                     Remove image

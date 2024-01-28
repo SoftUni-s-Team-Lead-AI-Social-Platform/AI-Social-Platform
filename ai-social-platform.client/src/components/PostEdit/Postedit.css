@@ -1,6 +1,7 @@
 .section-heading {
     text-align: center;
     font-size: 1.2em;
+    margin-top: 0.5em;
 }
 
 .post-description {
@@ -26,10 +27,10 @@
     margin-top: 3em;
 }
 
-.post-item {
+.post-item-list {
     background-color: #fff;
     overflow: hidden;
-    width: 30em;
+    width: 35em;
     display: flex;
     flex-direction: column;
     border-radius: 0.5em;

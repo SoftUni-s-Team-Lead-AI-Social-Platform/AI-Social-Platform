@@ -22,6 +22,7 @@ export default function Postlist() {
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [mediaData, setMediaData] = useState([]);
 
     useEffect(() => {
         Promise.all([
@@ -49,6 +50,27 @@ export default function Postlist() {
         );
         if (shouldDelete) {
             try {
+                const [mediaResult] = await Promise.all([
+                    mediaService.getMediaByPostId(id),
+                ]);
+                const mediaData = mediaResult || [];
+
+                console.log('mediaData', mediaData);
+
+                if (mediaData.length > 0) {
+                    // Събираме всички Promise-и за изтриване на снимките в един масив
+                    const deletePromises = mediaData.map(async (media) => {
+                        await mediaService.deleteMedia(media.fileId);
+                    });
+
+                    // Изчакваме всички Promise-и да завършат
+                    await Promise.all(deletePromises);
+
+                    // Изтриването на снимките е успешно
+                    console.log('Всички снимки бяха изтрити успешно');
+                }
+
+                // Сега можем да изтрием поста
                 await postService.deletePost(id);
                 reloadPostList(); // Извикване на функцията за презареждане след успешно изтриване
             } catch (error) {
@@ -74,39 +96,20 @@ export default function Postlist() {
 
     return (
         <div className="user-profile">
-            <article className="post-item">
+            <article className="post-item-list">
                 <p className="section-heading">My Posts</p>
                 {postData && postData.publications ? (
                     <>
                         {postData.publications.map((post) => (
-                            // <li className="userprofile-li" key={post.id}>
-                            //     Post:{' '}
-                            //     {post.content && post.content.length > 30
-                            //         ? post.content.substring(0, 30) + '...'
-                            //         : post.content}{' '}
-                            //     Date Created: {post.dateCreated} Post id {post.id}{' '}
-                            //     <Link to={`/posts/${post.id}`}>Read more Item</Link>{' '}
-                            //     <Link
-                            //         to={PATH.postedit.replace(':postId', post.id)}
-                            //     >
-                            //         Edit post
-                            //     </Link>
-                            //     <button
-                            //         className="profile-button"
-                            //         onClick={() => handleRemovePost(post.id)}
-                            //     >
-                            //         Remove Post
-                            //     </button>
-                            // </li>
-                            <article className="post-item">
+                            <article className="post-item-list">
                                 <section
                                     // ref={mediaSectionRef}
                                     className="content-description"
                                 >
                                     <p>
                                         {post.content &&
-                                        post.content.length > 30
-                                            ? post.content.substring(0, 30) +
+                                        post.content.length > 80
+                                            ? post.content.substring(0, 80) +
                                               '...'
                                             : post.content}{' '}
                                     </p>
