@@ -13,6 +13,8 @@ export default function Postedit() {
     const [mediaData, setMediaData] = useState([]);
     const [error, setError] = useState(null);
     const [textareaRows, setTextareaRows] = useState(2);
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [mediaIdToDelete, setMediaIdToDelete] = useState(null);
     const navigate = useNavigate();
     useEffect(() => {
         Promise.all([
@@ -63,56 +65,68 @@ export default function Postedit() {
         } catch (error) {
             console.log('Error:', error);
         }
+        // debugger;
+        // const formData = new FormData();
+        // const fileInput = document.getElementById(EditPostFormKeys.PostPicture);
 
-        const formData = new FormData();
-        const fileInput = document.getElementById(EditPostFormKeys.PostPicture);
-
-        const selectedFile = fileInput.files[0];
-        formData.append('files', selectedFile);
-        try {
-            await mediaService.addMedia(formData);
-        } catch (error) {
-            console.log('Error:', error);
-        }
+        // const selectedFile = fileInput.files[0];
+        // formData.append('files', selectedFile);
+        // try {
+        //     await mediaService.addMedia(formData);
+        // } catch (error) {
+        //     console.log('Error:', error);
+        // }
 
         navigate(PATH.postlist);
     }
 
-    const handleRemoveImage = async (mediaId) => {
-        try {
-            await mediaService.deleteMedia(mediaId);
-            
-        } catch (error) {
-            setError(error.message);
+    // const handleRemoveImage = async (mediaId) => {
+    //     try {
+    //         await mediaService.deleteMedia(mediaId);
+    //     } catch (error) {
+    //         setError(error.message);
+    //     }
+    // };
+
+    const handleRemoveImage = (mediaId, e) => {
+        //debugger;
+        e.stopPropagation();
+        setMediaIdToDelete(mediaId);
+        setShowConfirmation(true);
+    };
+
+    const handleConfirmation = async (confirmed) => {
+        setShowConfirmation(false);
+
+        if (confirmed && mediaIdToDelete) {
+            try {
+                await mediaService.deleteMedia(mediaIdToDelete);
+                // Изтриването е успешно
+            } catch (error) {
+                setError(error.message);
+            }
+        } else {
         }
     };
+
+    const handleModalClick = (e) => {
+        e.stopPropagation();
+    };
     const handleChangeImage = async (mediaId) => {
-        debugger;
+        //debugger;
         const formData = new FormData();
-        const fileInput = document.getElementById(EditPostFormKeys.ChangePostPicture+mediaId);
+        const fileInput = document.getElementById(
+            EditPostFormKeys.ChangePostPicture + mediaId
+        );
+        console.log(fileInput);
         const selectedFile = fileInput.files[0];
         formData.append('DataFile', selectedFile);
         try {
-            await mediaService.editMedia(formData);
+            await mediaService.editMedia(mediaId, formData);
         } catch (error) {
             console.log('Error:', error);
         }
     };
-
-    
-    // const handleChangeImage = async (mediaId, e) => {
-    //     debugger;
-    //     const formData = new FormData();
-    //     const fileInput = e.target;
-    //     const selectedFile = fileInput.files[0];
-    //     formData.append('DataFile', selectedFile);
-    
-    //     try {
-    //         await mediaService.editMedia(formData);
-    //     } catch (error) {
-    //         console.log('Error:', error);
-    //     }
-    // };
 
     return (
         <div className="user-profile">
@@ -128,14 +142,14 @@ export default function Postedit() {
                         onChange={handleChange}
                         value={values[EditPostFormKeys.PostDescription]}
                     ></textarea>
-                    <label
+                    {/* <label
                         htmlFor={EditPostFormKeys.PostPicture}
                         className="section-heading"
                     >
                         Add image{' '}
-                    </label>
+                    </label> */}
 
-                    <input
+                    {/* <input
                         type="file"
                         className="userprofile-input"
                         id={EditPostFormKeys.PostPicture}
@@ -143,7 +157,7 @@ export default function Postedit() {
                         placeholder="Upload a photo..."
                         onChange={handleChange}
                         onBlur={handleBlur}
-                    />
+                    /> */}
                     {mediaData.map((media) => (
                         <>
                             <li className="userprofile-li" key={media.fileId}>
@@ -153,40 +167,72 @@ export default function Postedit() {
                                     alt="Post pic"
                                 />
                             </li>
-                            <div className="parent-button">
+                            <div className="user-info-wrapper">
+                                <label
+                                    // htmlFor={`${EditPostFormKeys.ChangePostPicture}${media.fileId}`}
+                                    htmlFor={EditPostFormKeys.ChangePostPicture}
+                                    //className="section-heading"
+                                    className="change-image"
+                                >
+                                    Change image
+                                </label>
+
+                                <input
+                                    type="file"
+                                    className="userprofile-input"
+                                    id={`${EditPostFormKeys.ChangePostPicture}${media.fileId}`}
+                                    name={EditPostFormKeys.ChangePostPicture}
+                                    placeholder="Upload a photo..."
+                                    // onChange={handleChangeImage(media.fileId)}
+                                    onBlur={handleBlur}
+                                />
                                 <button
+                                    className="profile-button"
+                                    onClick={() =>
+                                        handleChangeImage(media.fileId)
+                                    }
+                                >
+                                    Change
+                                </button>
+                            </div>
+                            <div className="parent-button">
+                                {/* <button
                                     className="profile-button"
                                     onClick={() =>
                                         handleRemoveImage(media.fileId)
                                     }
                                 >
                                     Remove image
-                                </button>
-                                <label
-                        htmlFor={`${EditPostFormKeys.ChangePostPicture}${media.fileId}`}
-                        className="section-heading"
-                    >
-                        Change image{' '}
-                    </label>
-
-                    <input
-                        type="file"
-                        className="userprofile-input"
-                        id={`${EditPostFormKeys.ChangePostPicture}${media.fileId}`}
-                        name={EditPostFormKeys.ChangePostPicture}
-                        placeholder="Upload a photo..."
-                        // onChange={handleChange}
-                        onBlur={handleBlur}
-                    />
+                                </button> */}
                                 <button
                                     className="profile-button"
-                                    onClick={
-                                        handleChangeImage(media.fileId)
+                                    onClick={(е) =>
+                                        handleRemoveImage(media.fileId, е)
                                     }
                                 >
-                                    Change image
+                                    Remove image
                                 </button>
                             </div>
+                            {showConfirmation && (
+                                <div
+                                    className="confirmation-modal"
+                                    onClick={handleModalClick}
+                                >
+                                    <p>Сигурен ли сте?</p>
+                                    <button
+                                        onClick={() => handleConfirmation(true)}
+                                    >
+                                        Yes
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            handleConfirmation(false)
+                                        }
+                                    >
+                                        No
+                                    </button>
+                                </div>
+                            )}
                         </>
                     ))}
                     <div className="parent-button">

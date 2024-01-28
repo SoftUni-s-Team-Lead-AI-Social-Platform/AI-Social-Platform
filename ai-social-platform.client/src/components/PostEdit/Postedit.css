@@ -35,7 +35,8 @@
     border-radius: 0.5em;
     box-shadow: 0 0 0.2em 0.1em #ddd;
     justify-content: space-between;
-       
+    position: relative;
+   
 }
 
 .profile-button {
@@ -68,27 +69,20 @@
 }
 
 .userprofile-li {
-    list-style-type:none;
-    padding: 0em 1em 0em 1em;
+    /* list-style-type:none; */
+    padding: 0em 1em 0.5em 1em;
     } 
 
 .media-img {
         width: 100%;
+        margin-top: 0.5em;
     }
 
 .userprofile-input {
         font-size: 0.8em;
         font-weight: 600;
-        border: 1px solid #aaa;      
+        border: 1px solid #004aad;      
     }
-
-
-
-
-
-
-
-
 
 .user-info-wrapper {
     display: flex;
@@ -97,6 +91,68 @@
     align-items: center;
     justify-content: space-between;
 }
+
+.change-image {
+    padding: 0em;
+    resize: none;
+    border: 0;
+    font-size: 0.8em;
+    font-weight: 600;
+}
+
+.content-description {
+    padding: 0em 1em 0.5em 1em;
+    font-size: 1.2em;
+    text-align: justify;
+    text-indent: 0em;
+}
+
+.posted-on {
+    font-size: 0.6em;
+    color: #636363;
+}
+
+.likes {
+    display: flex;
+    justify-content: space-between;
+    color: #636363;
+    
+}
+
+.likes-count {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: 0.6em;
+
+}
+
+.likes-count i {
+    color: #369;
+}
+
+.comments{
+    font-size: 0.6em;
+}
+
+.pagination{
+    font-size: 0.8em;
+    margin: auto;
+    width: 30%; 
+    padding: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 .user-cover {
     width: 30em;
@@ -131,12 +187,7 @@
     margin-top: 8px;
 }
 
-.content-description {
-    padding: 0em 1em 0.5em 1em;
-    font-size: 0.8em;
-    text-align: justify;
-    text-indent: 2em;
-}
+
 
 .name-input {
     font-size: 0.8em;
