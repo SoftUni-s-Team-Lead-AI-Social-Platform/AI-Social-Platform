@@ -7,7 +7,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useFormik, Field } from 'formik';
 import { EditPostFormKeys, PATH } from '../../core/environments/costants';
 
-
 export default function Postedit() {
     const { postId } = useParams();
     const [postData, setPostData] = useState({});
@@ -58,9 +57,9 @@ export default function Postedit() {
     async function onSubmit(values) {
         const requestBody = {
             content: values[EditPostFormKeys.PostDescription],
-            topicId: values[EditPostFormKeys.TopicId],
+            // topicId: values[EditPostFormKeys.TopicId],
         };
-        
+
         try {
             await postService.editPost(postId, requestBody);
         } catch (error) {
@@ -82,10 +81,9 @@ export default function Postedit() {
     }
 
     async function handleSubmitText(values) {
-        
         const requestBody = {
             content: values[EditPostFormKeys.PostDescription],
-            topicId: values[EditPostFormKeys.TopicId],
+            //topicId: values[EditPostFormKeys.TopicId],
         };
         console.log('requestBody', requestBody);
         try {
@@ -93,7 +91,6 @@ export default function Postedit() {
         } catch (error) {
             console.log('Error:', error);
         }
-        
     }
     const handleRemoveImage = async (mediaId) => {
         const shouldDelete = window.confirm(
@@ -109,7 +106,6 @@ export default function Postedit() {
     };
 
     const handleChangeImage = async (mediaId) => {
-        
         const formData = new FormData();
         const fileInput = document.getElementById(
             EditPostFormKeys.ChangePostPicture + mediaId
@@ -136,17 +132,13 @@ export default function Postedit() {
                         onFocus={incrementTextareaRows}
                         rows={textareaRows}
                         onChange={handleChange}
-                        
                         value={values[EditPostFormKeys.PostDescription]}
                     ></textarea>
                     <div className="parent-button">
                         <button
                             className="profile-button"
-                            
                             disabled={isSubmitting}
-                            
-                            onClick={() =>handleSubmitText(values)}
-                            
+                            onClick={() => handleSubmitText(values)}
                         >
                             Save text
                         </button>
@@ -181,7 +173,6 @@ export default function Postedit() {
                                 <label
                                     // htmlFor={`${EditPostFormKeys.ChangePostPicture}${media.fileId}`}
                                     htmlFor={EditPostFormKeys.ChangePostPicture}
-                                    
                                     className="change-image"
                                 >
                                     Change image
@@ -193,11 +184,9 @@ export default function Postedit() {
                                     id={`${EditPostFormKeys.ChangePostPicture}${media.fileId}`}
                                     name={EditPostFormKeys.ChangePostPicture}
                                     placeholder="Upload a photo..."
-                                    
                                     onBlur={handleBlur}
                                 />
                                 <button
-                                    
                                     onClick={() =>
                                         handleChangeImage(media.fileId)
                                     }
@@ -207,7 +196,6 @@ export default function Postedit() {
                             </div>
                             <div className="parent-button">
                                 <button
-                                   
                                     onClick={() =>
                                         handleRemoveImage(media.fileId)
                                     }
@@ -215,7 +203,6 @@ export default function Postedit() {
                                     Remove image
                                 </button>
                             </div>
-                            
                         </>
                     ))}
                     <div className="parent-button">
