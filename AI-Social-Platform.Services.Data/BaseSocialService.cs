@@ -169,8 +169,11 @@ namespace AI_Social_Platform.Services.Data
             publication.LastCommented = DateTime.UtcNow;
             publication.LatestActivity = DateTime.UtcNow;
 
-            await CreateNotificationAsync(publication.AuthorId, userId, NotificationType.Comment, publication.Id);
-
+            if (publication.AuthorId != userId)
+            {
+                await CreateNotificationAsync(publication.AuthorId, userId, NotificationType.Comment, publication.Id);
+            }
+            
             await dbContext.Comments.AddAsync(comment);
             await dbContext.SaveChangesAsync();
 
@@ -281,12 +284,14 @@ namespace AI_Social_Platform.Services.Data
                 UserId = userId
             };
 
-            await CreateNotificationAsync(
+            if (publication.AuthorId != userId)
+            {
+                await CreateNotificationAsync(
                     publication.AuthorId,
                     userId,
                     NotificationType.Like,
                     publication.Id);
-
+            }
             await dbContext.Likes.AddAsync(like);
             await dbContext.SaveChangesAsync();
 
@@ -341,12 +346,14 @@ namespace AI_Social_Platform.Services.Data
                 UserId = userId
             };
 
-            await CreateNotificationAsync(
-                publication.AuthorId,
-                userId,
-                NotificationType.Share,
-                publicationId);
-
+            if (publication.AuthorId != userId)
+            {
+                await CreateNotificationAsync(
+                    publication.AuthorId,
+                    userId,
+                    NotificationType.Share,
+                    publicationId);
+            }
             await dbContext.Shares.AddAsync(share);
             await dbContext.SaveChangesAsync();
         }
