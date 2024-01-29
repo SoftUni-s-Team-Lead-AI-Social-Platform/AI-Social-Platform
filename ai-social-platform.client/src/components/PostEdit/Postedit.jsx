@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
-import styles from './Postedit.css';
+
+import './Postedit.css';
 import * as postService from '../../core/services/postService';
 import * as mediaService from '../../core/services/mediaService';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useFormik, Field } from 'formik';
 import { EditPostFormKeys, PATH } from '../../core/environments/costants';
-//import Posts from '../Posts/Posts';
+
 
 export default function Postedit() {
     const { postId } = useParams();
@@ -59,7 +60,7 @@ export default function Postedit() {
             content: values[EditPostFormKeys.PostDescription],
             topicId: values[EditPostFormKeys.TopicId],
         };
-        //console.log('requestBody', requestBody);
+        
         try {
             await postService.editPost(postId, requestBody);
         } catch (error) {
@@ -80,6 +81,20 @@ export default function Postedit() {
         navigate(PATH.postlist);
     }
 
+    async function handleSubmitText(values) {
+        
+        const requestBody = {
+            content: values[EditPostFormKeys.PostDescription],
+            topicId: values[EditPostFormKeys.TopicId],
+        };
+        console.log('requestBody', requestBody);
+        try {
+            await postService.editPost(postId, requestBody);
+        } catch (error) {
+            console.log('Error:', error);
+        }
+        
+    }
     const handleRemoveImage = async (mediaId) => {
         const shouldDelete = window.confirm(
             'Are you sure you want to delete this image?'
@@ -94,7 +109,7 @@ export default function Postedit() {
     };
 
     const handleChangeImage = async (mediaId) => {
-        //debugger;
+        
         const formData = new FormData();
         const fileInput = document.getElementById(
             EditPostFormKeys.ChangePostPicture + mediaId
@@ -121,8 +136,21 @@ export default function Postedit() {
                         onFocus={incrementTextareaRows}
                         rows={textareaRows}
                         onChange={handleChange}
+                        
                         value={values[EditPostFormKeys.PostDescription]}
                     ></textarea>
+                    <div className="parent-button">
+                        <button
+                            className="profile-button"
+                            
+                            disabled={isSubmitting}
+                            
+                            onClick={() =>handleSubmitText(values)}
+                            
+                        >
+                            Save text
+                        </button>
+                    </div>
 
                     {/* <label
                         htmlFor={EditPostFormKeys.PostPicture}
@@ -153,7 +181,7 @@ export default function Postedit() {
                                 <label
                                     // htmlFor={`${EditPostFormKeys.ChangePostPicture}${media.fileId}`}
                                     htmlFor={EditPostFormKeys.ChangePostPicture}
-                                    //className="section-heading"
+                                    
                                     className="change-image"
                                 >
                                     Change image
@@ -165,11 +193,11 @@ export default function Postedit() {
                                     id={`${EditPostFormKeys.ChangePostPicture}${media.fileId}`}
                                     name={EditPostFormKeys.ChangePostPicture}
                                     placeholder="Upload a photo..."
-                                    //onChange={handleChangeImage(media.fileId)}
+                                    
                                     onBlur={handleBlur}
                                 />
                                 <button
-                                    //className="profile-button"
+                                    
                                     onClick={() =>
                                         handleChangeImage(media.fileId)
                                     }
@@ -179,7 +207,7 @@ export default function Postedit() {
                             </div>
                             <div className="parent-button">
                                 <button
-                                    //className="profile-button"
+                                   
                                     onClick={() =>
                                         handleRemoveImage(media.fileId)
                                     }
@@ -187,26 +215,7 @@ export default function Postedit() {
                                     Remove image
                                 </button>
                             </div>
-                            {showConfirmation && (
-                                <div
-                                    className="confirmation-modal"
-                                    onClick={handleModalClick}
-                                >
-                                    <p>Сигурен ли сте?</p>
-                                    <button
-                                        onClick={() => handleConfirmation(true)}
-                                    >
-                                        Yes
-                                    </button>
-                                    <button
-                                        onClick={() =>
-                                            handleConfirmation(false)
-                                        }
-                                    >
-                                        No
-                                    </button>
-                                </div>
-                            )}
+                            
                         </>
                     ))}
                     <div className="parent-button">

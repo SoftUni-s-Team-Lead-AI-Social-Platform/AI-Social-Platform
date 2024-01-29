@@ -143,7 +143,9 @@
     padding: 10px;
 }
 
-
+.editPostLink{
+    text-decoration: underline;
+}
 
 
 

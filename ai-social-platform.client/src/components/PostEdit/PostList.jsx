@@ -9,13 +9,12 @@ import { CreateFormKeys, PATH, host } from '../../core/environments/costants';
 import AuthContext from '../../contexts/authContext';
 
 import Posts from '../Posts/Posts';
-import styles from './Postedit.css';
+import './Postedit.css';
 import dateFormater from '../../utils/dateFormatter';
-//import Postedit from './components/PostEdit/Postedit';
+
 
 export default function Postlist() {
-    //const { firstName, userId } = useContext(AuthContext);
-    //debugger;
+    
     const [authUserData, setAuthUserData] = useState(null);
     const authContext = useContext(AuthContext);
     const [postData, setPostData] = useState(null);
@@ -35,15 +34,7 @@ export default function Postlist() {
             .catch((error) => setError(error));
     }, [currentPage]);
 
-    //console.log(postData);
-    // const handleRemovePost = async (id) => {
-    //     //debugger;
-    //     try {
-    //         await postService.deletePost(id);
-    //     } catch (error) {
-    //         setError(error.message);
-    //     }
-    // };
+    
     const handleRemovePost = async (id) => {
         const shouldDelete = window.confirm(
             'Are you sure you want to delete this post?'
@@ -67,7 +58,7 @@ export default function Postlist() {
                     await Promise.all(deletePromises);
 
                     // Изтриването на снимките е успешно
-                    console.log('Всички снимки бяха изтрити успешно');
+                    //console.log('Всички снимки бяха изтрити успешно');
                 }
 
                 // Сега можем да изтрием поста
@@ -103,7 +94,7 @@ export default function Postlist() {
                         {postData.publications.map((post) => (
                             <article className="post-item-list">
                                 <section
-                                    // ref={mediaSectionRef}
+                                    
                                     className="content-description"
                                 >
                                     <p>
@@ -140,18 +131,18 @@ export default function Postlist() {
                                 <div className="userprofile-li">
                                     <Link
                                         to={`/posts/${post.id}`}
-                                        // clasName="userprofile-li"
+                                        
                                     >
-                                        Read more Item
+                                        <ins>Read more Item</ins>
                                     </Link>{' '}
                                     <Link
                                         to={PATH.postedit.replace(
                                             ':postId',
                                             post.id
                                         )}
-                                        // clasName="userprofile-li"
+                                        
                                     >
-                                        Edit post
+                                       <ins> Edit post</ins>
                                     </Link>{' '}
                                     <button
                                         // className="profile-button"
