@@ -56,8 +56,8 @@ namespace AI_Social_Platform.Services.Data
                     notification.RedirectUrl = $"/posts/{returningId}";
                     break;
                 case NotificationType.Follow:
-                    notification.Content = $"{user} followed you";
-                    notification.RedirectUrl = $"/user/{creatingUserId}";
+                    notification.Content = $"{user} added you as a friend";
+                    notification.RedirectUrl = $"/profile/{creatingUserId}";
                     break;
                 case NotificationType.Share: 
                     notification.Content = $"{user} shared your publication";
