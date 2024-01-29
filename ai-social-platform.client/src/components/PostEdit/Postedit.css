@@ -147,36 +147,6 @@
     text-decoration: underline;
 }
 
-
-
-
-
-
-
-
-
-
-
-.user-cover {
-    width: 30em;
-    height: 10em;
-}
-.username-profile {
-    font-size: 0.9em;
-    font-weight: 700;
-}
-
-.cover-profile {
-    font-size: 1.0em;
-    font-weight: 700;
-}
-
-
-.posted-user {
-    font-size: 0.8em;
-   
-}
-
 .edit {
     display: flex;
     align-items: flex-start;
@@ -185,68 +155,3 @@
     color: #585858;
 }
 
-.edit-img {
-    width: 30px;
-    margin-top: 8px;
-}
-
-
-
-.name-input {
-    font-size: 0.8em;
-    font-weight: 600;
-    border: 1px solid #aaa;
-    width: 70%;
-}
-
-.name-input-error {
-    font-size: 0.8em;
-    font-weight: 600;
-    border: 1px solid #a10000;
-    width: 70%;
-}
-
-.error-message {
-    color: #a10000;
-    font-size: 0.9em;
-    text-align: left;
-    padding-left: 0.2em;
-    margin-top: 0.2em;
-}
- 
-
- .userprofile-fieldset {
-    width: 90%;
-    padding: 0.5em 1em 0.5em 1em;
-    border: 2px solid #004aad;
-    border-radius: 10px;
-    margin-top: auto;
-    margin-bottom: 10px;
-    margin-right: auto;
-    margin-left: auto;
-}
-
-
-
-.friend-img {
-    width: 1.3em;
-    height:1.3em;
-    border-radius: 40px;
-}
-
-.friend-img:hover {
-    border-radius: 0px;
-  transform: scale(2.3); 
-}
-
-.profile-link {
-    border: 2px solid #004aad;
-    border-radius: 10px;
-    padding: 10px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 18px;
-    margin: 4px 8px;
-    cursor: pointer; 
-  }
