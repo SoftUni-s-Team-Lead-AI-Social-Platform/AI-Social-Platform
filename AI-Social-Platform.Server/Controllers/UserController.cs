@@ -136,19 +136,26 @@ namespace AI_Social_Platform.Server.Controllers
             await signInManager.SignInAsync(user, true);
 
             string userId = user.Id.ToString();
+            //var image = user.ProfilePicture
 
-            bool userHasImage = user.ProfilePicture.IsNullOrEmpty();
-
-            return Ok(new LoginResponse
+            var response = new LoginResponse
             {
                 Succeeded = true,
                 UserId = userId,
                 Username = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                ProfilePicture = userHasImage ? GetProfileImageUrl(user.Id) : null,
+                ProfilePictureData = user.ProfilePicture,
                 Token = userService.BuildToken(userId)
-            });
+            };
+            
+            if (response.ProfilePictureData != null)
+            {
+                response.ProfilePicture = GetProfileImageUrl(user.Id);
+                response.ProfilePictureData = null;
+            }
+
+            return Ok(response);
         }
 
 
