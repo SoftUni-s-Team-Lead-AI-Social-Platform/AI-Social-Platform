@@ -1,4 +1,5 @@
 ﻿using AI_Social_Platform.Services.Data.Models.UserDto;
+using Duende.IdentityServer.Extensions;
 
 namespace AI_Social_Platform.Server.Controllers
 {
@@ -136,6 +137,8 @@ namespace AI_Social_Platform.Server.Controllers
 
             string userId = user.Id.ToString();
 
+            bool userHasImage = user.ProfilePicture.IsNullOrEmpty();
+
             return Ok(new LoginResponse
             {
                 Succeeded = true,
@@ -143,7 +146,7 @@ namespace AI_Social_Platform.Server.Controllers
                 Username = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                ProfilePicture = GetProfileImageUrl(user.Id),
+                ProfilePicture = userHasImage ? GetProfileImageUrl(user.Id) : null,
                 Token = userService.BuildToken(userId)
             });
         }
