@@ -1,4 +1,5 @@
 ﻿using AI_Social_Platform.Services.Data.Models.UserDto;
+using Duende.IdentityServer.Extensions;
 
 namespace AI_Social_Platform.Server.Controllers
 {
@@ -135,17 +136,26 @@ namespace AI_Social_Platform.Server.Controllers
             await signInManager.SignInAsync(user, true);
 
             string userId = user.Id.ToString();
+            //var image = user.ProfilePicture
 
-            return Ok(new LoginResponse
+            var response = new LoginResponse
             {
                 Succeeded = true,
                 UserId = userId,
                 Username = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                ProfilePicture = GetProfileImageUrl(user.Id),
+                ProfilePictureData = user.ProfilePicture,
                 Token = userService.BuildToken(userId)
-            });
+            };
+            
+            if (response.ProfilePictureData != null)
+            {
+                response.ProfilePicture = GetProfileImageUrl(user.Id);
+                response.ProfilePictureData = null;
+            }
+
+            return Ok(response);
         }
 
 
@@ -335,6 +345,38 @@ namespace AI_Social_Platform.Server.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = $"An error occurred: {ex.Message}"});
+            }
+        }
+
+
+        [HttpGet("allUsers")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                ICollection<UserDetailsDto>? users = await userService.GetAllUsers();
+
+                if (users.Any())
+                {
+                    foreach (var user in users)
+                    {
+                        if (user.ProfilePictureData == null)
+                        {
+                            user.ProfilePictureUrl = null;
+                        }
+                        else
+                        {
+                            user.ProfilePictureUrl = GetProfileImageUrl(user.Id);
+                            user.ProfilePictureData = null;
+                        }
+                    }
+                }
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"An error occurred: {ex.Message}" });
             }
         }
         
