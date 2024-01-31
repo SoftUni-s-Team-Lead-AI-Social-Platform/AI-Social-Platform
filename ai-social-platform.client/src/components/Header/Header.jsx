@@ -9,7 +9,7 @@ import AuthContext from '../../contexts/authContext';
 
 import Notifications from '../Notifications/Notifications';
 
-import Logo from '../../../public/images/Logo-White.svg'
+import Logo from '/images/Logo-White.svg'
 
 export default function Header() {
     const [showUserMenu, setShowUserMenu] = useState(false);
