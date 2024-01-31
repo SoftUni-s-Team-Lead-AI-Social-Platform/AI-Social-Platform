@@ -9,12 +9,15 @@ import AuthContext from '../../contexts/authContext';
 
 import Notifications from '../Notifications/Notifications';
 
+import Logo from '/images/Logo-White.svg'
+
 export default function Header() {
     const [showUserMenu, setShowUserMenu] = useState(false);
     const [showNotificationsMenu, setShowNotificationsMenu] = useState(false);
 
     const { isAuthenticated, firstName, lastName, userId, avatar } =
         useContext(AuthContext);
+
     const [notificationsCount, setNotificationsCount] = useState(0);
 
     useEffect(() => {
@@ -72,6 +75,7 @@ export default function Header() {
                 <div onClick={hideMenus} className={styles['backdrop']}></div>
             )}
             <header className={styles['app-header']}>
+            <img src={Logo} alt="AI-Social-Platform Logo" className={styles['logo-image']} />
                 <h1 className={styles['logo-heading']}>
                     <Link className={styles['logo-text']} to={PATH.home}>
                         AI-Social-Platform

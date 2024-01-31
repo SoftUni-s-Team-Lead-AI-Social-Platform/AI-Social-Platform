@@ -1,5 +1,5 @@
 .search-section {
-    margin-top: 5em;
+    margin-top: 3.5em;
 }
 
 .search-form {
@@ -58,8 +58,9 @@
 }
 
 .search-result {
-    margin: 2em 0;
+    margin: 2em auto;
     padding: 0 1em;
+    max-width: 35em;
 }
 
 .no-match-message {

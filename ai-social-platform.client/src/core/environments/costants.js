@@ -1,4 +1,6 @@
 export const host = 'https://localhost:7172/api/';
+// replace with this on deploy to production
+// export const host = 'https://ai-social-platform.azurewebsites.net/api/';
 
 export const PATH = {
     home: '/',
@@ -37,6 +39,7 @@ export const endpoints = {
     addFriend: (userId) => `User/addFriend/${userId}`,
     removeFriend: (userId) => `User/removeFriend/${userId}`,
     allFriends: (userId) => `User/allFriends?userId=${userId}`,
+    isFriend: (friendId) => `User/usersAreFriends/${friendId}`,
 
     // POSTS
     createPost: 'Publication',
