@@ -65,17 +65,6 @@ export default function Postedit() {
         } catch (error) {
             console.log('Error:', error);
         }
-        // debugger;
-        // const formData = new FormData();
-        // const fileInput = document.getElementById(EditPostFormKeys.PostPicture);
-
-        // const selectedFile = fileInput.files[0];
-        // formData.append('files', selectedFile);
-        // try {
-        //     await mediaService.addMedia(formData);
-        // } catch (error) {
-        //     console.log('Error:', error);
-        // }
 
         navigate(PATH.postlist);
     }
@@ -111,7 +100,6 @@ export default function Postedit() {
     }
 
     const handleRemoveImage = async (mediaId, event) => {
-        //debugger;
         event.preventDefault(); // Предотвратява стандартното поведение на бутона
         const shouldDelete = window.confirm(
             'Are you sure you want to delete this image?'
@@ -143,23 +131,23 @@ export default function Postedit() {
     //     navigate(PATH.postlist);
     // };
 
-    async function handleChangeImage(mediaId, event) {
-        event.preventDefault(); // Предотвратява стандартното поведение на бутона
-        const formData = new FormData();
-        const fileInput = document.getElementById(
-            EditPostFormKeys.ChangePostPicture + mediaId
-        );
-        console.log(fileInput);
-        const selectedFile = fileInput.files[0];
-        formData.append('DataFile', selectedFile);
-        try {
-            await mediaService.editMedia(mediaId, formData);
-            window.location.reload();
-        } catch (error) {
-            console.log('Error:', error);
-        }
-        navigate(PATH.postlist);
-    }
+    // async function handleChangeImage(mediaId, event) {
+    //     event.preventDefault(); // Предотвратява стандартното поведение на бутона
+    //     const formData = new FormData();
+    //     const fileInput = document.getElementById(
+    //         EditPostFormKeys.ChangePostPicture + mediaId
+    //     );
+    //     console.log(fileInput);
+    //     const selectedFile = fileInput.files[0];
+    //     formData.append('DataFile', selectedFile);
+    //     try {
+    //         await mediaService.editMedia(mediaId, formData);
+    //         window.location.reload();
+    //     } catch (error) {
+    //         console.log('Error:', error);
+    //     }
+    //     navigate(PATH.postlist);
+    // }
 
     return (
         <div className="user-profile">
@@ -177,7 +165,7 @@ export default function Postedit() {
                     ></textarea>
                     <div className="parent-button">
                         <button
-                            className="profile-button"
+                            //className="profile-button"
                             disabled={isSubmitting}
                             // onClick={() => handleSubmitText(values)}
                             onClick={(event) => handleSubmitText(values, event)}
@@ -211,7 +199,7 @@ export default function Postedit() {
                                     alt="Post pic"
                                 />
                             </li>
-                            <div className="user-info-wrapper">
+                            {/* <div className="user-info-wrapper">
                                 <label
                                     // htmlFor={`${EditPostFormKeys.ChangePostPicture}${media.fileId}`}
                                     htmlFor={EditPostFormKeys.ChangePostPicture}
@@ -237,7 +225,7 @@ export default function Postedit() {
                                 >
                                     Change
                                 </button>
-                            </div>
+                            </div> */}
                             <div className="parent-button">
                                 <button
                                     // onClick={() =>
