@@ -179,40 +179,14 @@ export default function CreatePost() {
                 </div>
                 <div className={styles['openAi']}>
                     <section className={styles['openAi-section']}>
-                        <img
-                            src={FILES.aiLogo}
-                            alt="OpenAI Logo"
-                            className={styles['openAi-logo']}
-                        />
-                        <p className={styles['openAi']}>
-                            <strong>Generate text with OpenAI</strong>
-                        </p>
+                        <img src={FILES.aiLogo} alt="OpenAI Logo" className={styles['openAi-logo']}/>   
+                        <p className={styles['openAi']}><strong>Generate with OpenAI</strong></p>
                     </section>
-                    <button
-                        className={styles['openAi-button']}
-                        onClick={toggleOpenAiForm}
-                    >
-                        Try
-                    </button>
+                    <button className={styles['openAi-button']} onClick={toggleOpenAiForm}>Text</button>
+                    <p className={styles['openAi-button-or']}>and</p>
+                    <button className={styles['openAi-button']}onClick={openGenerateImageSection}>Image</button>
                 </div>
-                <div className={styles['openAi']}>
-                    <section className={styles['openAi-section']}>
-                        <img
-                            src={FILES.aiLogo}
-                            alt="OpenAI Logo"
-                            className={styles['openAi-logo']}
-                        />
-                        <p className={styles['openAi']}>
-                            <strong>Generate image with OpenAI</strong>
-                        </p>
-                    </section>
-                    <button
-                        className={styles['openAi-button']}
-                        onClick={openGenerateImageSection}
-                    >
-                        Try
-                    </button>
-                </div>
+                
                 <div className={styles['text-length-error']}>
                     {errors[CreateFormKeys.PostDescription] && (
                         <p>{errors[CreateFormKeys.PostDescription]}</p>
